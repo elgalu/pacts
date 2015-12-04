@@ -67,8 +67,8 @@ Redirect all traffic to the latest
 ##### Delete old stacks
 TODO: How to wait for the traffic to be fully switched before deletion?
 
-    senza delete pacts-live v001
-    senza wait -d pacts-live v001
+    senza delete pacts-live v000
+    senza wait -d pacts-live v000
 
 ##### CNAME Alias
 Only the first time make an alias to the live DNS using [cli53](https://github.com/barnybug/cli53)
