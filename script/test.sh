@@ -123,7 +123,7 @@ if [ "${DISPOSABLE_PSQL}" == "true" ]; then
   # Using `--privileged` due to
   #  pg_ctl: could not send stop signal (PID: 55): Permission denied
   #  in TravisCI
-  docker run --privileged -d --name=${PSQL_CONT_NAME} -p 5432 \
+  docker run -d --name=${PSQL_CONT_NAME} -p 5432 \
     -e POSTGRES_PASSWORD=${PGPASSWORD} \
     -e PGPASSWORD \
     -e PGUSER \
@@ -156,7 +156,7 @@ fi
 echo ""
 echo "Run the built Pact Broker"
 # Using `--privileged` due to unspecified issues in TravisCI
-docker run --privileged --name=${PACT_CONT_NAME} -d -p ${PORT_BIND} \
+docker run --name=${PACT_CONT_NAME} -d -p ${PORT_BIND} \
   -e PACT_BROKER_DATABASE_USERNAME \
   -e PACT_BROKER_DATABASE_PASSWORD \
   -e PACT_BROKER_PORT \
@@ -165,6 +165,7 @@ docker run --privileged --name=${PACT_CONT_NAME} -d -p ${PORT_BIND} \
   -e PACT_BROKER_DATABASE_NAME \
   -e SKIP_HTTPS_ENFORCER \
   -e OAUTH_TOKEN_INFO \
+  -e STAGE=test \
   pact_broker
 sleep 2 && docker logs ${PACT_CONT_NAME}
 

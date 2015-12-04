@@ -34,8 +34,10 @@ elif [ "${STAGE}" == "staging" ]; then
   export PACT_BROKER_DATABASE_USERNAME=${STAGING_PACT_BROKER_DATABASE_USERNAME}
   export PACT_BROKER_DATABASE_NAME=${STAGING_PACT_BROKER_DATABASE_NAME}
   export PACT_BROKER_DATABASE_PASSWORD=${STAGING_PACT_BROKER_DATABASE_PASSWORD}
+elif [ "${STAGE}" == "test" ]; then
+  echo "Testing"
 else
-  die "STAGE can be either 'live' or 'staging'"
+  die "STAGE must be one of: live, staging, test"
 fi
 
 # Rest of the required params

@@ -1,6 +1,14 @@
+## Prepare
+    GETOK="https://token.info.example.org/access_token"
+    token=$(zign token --user elgalu --url $GETOK -n pact)
+    ./script/gen-scm-source.sh
+
 ## Test
 How to run the tests
 
+    export DISPOSABLE_PSQL=true
+    export OAUTH_TOKEN_INFO=https://auth.example.org/oauth2/tokeninfo?access_token=
+    export MYUSER=elgalu
     script/test.sh
 
 ## Commit
