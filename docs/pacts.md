@@ -1,4 +1,4 @@
-# myusr team Pacts via STUPS
+# Pact Broker via STUPS
 
 ## Requirements
 
