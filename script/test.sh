@@ -31,10 +31,12 @@ required_args () {
   echoerr "environment variables. Read POSTGRESQL.md for instructions."
   echoerr ""
   echoerr "Set below environment variables with appropriate values for your database:"
-  echoerr "  export PACT_BROKER_DATABASE_USERNAME=pact_broker"
-  echoerr "  export PACT_BROKER_DATABASE_PASSWORD=pact_broker"
-  echoerr "  export PACT_BROKER_DATABASE_NAME=pact_broker"
-  echoerr "  export PACT_BROKER_DATABASE_HOST=192.168.0.XXX"
+  echoerr "  export PACT_BROKER_DATABASE_USERNAME=postgres"
+  echoerr "  export PACT_BROKER_DATABASE_PASSWORD=postgres"
+  echoerr "  export PACT_BROKER_DATABASE_NAME=pact"
+  echoerr "  export PACT_BROKER_DATABASE_HOST=172.17.0.2"
+  echoerr "  export OAUTH_TOKEN_INFO=https://auth.example.org/oauth2/tokeninfo?access_token="
+  echoerr "  export MYUSER=elgalu"
   echoerr ""
   echoerr "And ensure you have allowed external connections."
   # if $2 is defined AND NOT EMPTY, use $2; otherwise, set to "150"
@@ -48,31 +50,42 @@ report_postgres_failed () {
   die "Postgres failed to start"
 }
 
+# show docker logs if any then die
+report_pact_failed () {
+  docker logs ${PACT_CONT_NAME} || true
+  die "Pact Broker failed"
+}
+
 if [ "${TRAVIS}" == "true" ]; then
   DISPOSABLE_PSQL=true
 fi
 
 # defaults
-[ -z "${PACT_BROKER_PORT}" ]  && PACT_BROKER_PORT=80
-[ -z "${PSQL_WAIT_TIMEOUT}" ] && PSQL_WAIT_TIMEOUT="10s"
-[ -z "${PACT_WAIT_TIMEOUT}" ] && PACT_WAIT_TIMEOUT="15s"
-[ -z "${PACT_CONT_NAME}" ]    && PACT_CONT_NAME="broker_app"
-[ -z "${PSQL_CONT_NAME}" ]    && PSQL_CONT_NAME="postgres"
+[ -z "${PACT_BROKER_PORT}" ]    && export PACT_BROKER_PORT=443
+[ -z "${BIND_TO}" ]             && export BIND_TO="0.0.0.0"
+[ -z "${PSQL_WAIT_TIMEOUT}" ]   && export PSQL_WAIT_TIMEOUT="10s"
+[ -z "${PACT_WAIT_TIMEOUT}" ]   && export PACT_WAIT_TIMEOUT="15s"
+[ -z "${PACT_CONT_NAME}" ]      && export PACT_CONT_NAME="broker_app"
+[ -z "${PSQL_CONT_NAME}" ]      && export PSQL_CONT_NAME="postgres"
+[ -z "${SKIP_HTTPS_ENFORCER}" ] && export SKIP_HTTPS_ENFORCER="true"
+[ -z "${GETOK}" ]               && export GETOK="https://token.info.example.org/access_token"
+
+# ensure token works before continuing
+zign token --user $MYUSER --url $GETOK -n pact
 
 echo "Will build the pact broker"
-docker build -t=dius/pact_broker .
+docker build -t=pact_broker .
 
 # Stop and remove any running broker_app container instances before updating
 if docker ps -a | grep ${PACT_CONT_NAME}; then
   echo ""
   echo "Stopping and removing running instance of pact broker container"
-  docker stop ${PACT_CONT_NAME}
+  docker stop -t=1 ${PACT_CONT_NAME}
   docker rm ${PACT_CONT_NAME}
 fi
 
 if [ "$(uname)" == "Darwin" ]; then
   PORT_BIND="${PACT_BROKER_PORT}:${PACT_BROKER_PORT}"
-  EXTERN_BROKER_PORT=${PACT_BROKER_PORT}
   if [ "true" == "$(command -v boot2docker > /dev/null 2>&1 && echo 'true' || echo 'false')" ]; then
     test_ip=$(boot2docker ip)
   else
@@ -90,8 +103,8 @@ if [ "${DISPOSABLE_PSQL}" == "true" ]; then
   [ "$(uname)" == "Darwin" ] && die \
     "Running the disposable postgres is only supported in Linux for now."
 
-  PACT_BROKER_DATABASE_USERNAME=postgres
-  PACT_BROKER_DATABASE_NAME=pact
+  export PACT_BROKER_DATABASE_USERNAME=postgres
+  export PACT_BROKER_DATABASE_NAME=pact
   PGUSER=${PACT_BROKER_DATABASE_USERNAME}
   PGDATABASE=${PACT_BROKER_DATABASE_NAME}
   if pwgen -n1 >/dev/null 2>&1; then
@@ -99,7 +112,7 @@ if [ "${DISPOSABLE_PSQL}" == "true" ]; then
   else
     PGPASSWORD="no_pwdgen_so_hardcoded_password"
   fi
-  PACT_BROKER_DATABASE_PASSWORD=$PGPASSWORD
+  export PACT_BROKER_DATABASE_PASSWORD=$PGPASSWORD
 
   # Run psql
   PSQL_IMG=postgres:9.4.5
@@ -121,7 +134,7 @@ if [ "${DISPOSABLE_PSQL}" == "true" ]; then
   timeout --foreground ${PSQL_WAIT_TIMEOUT} \
     $(dirname "$0")/wait_psql.sh ${PSQL_CONT_NAME} || report_postgres_failed
 
-  PACT_BROKER_DATABASE_HOST=`docker inspect -f '{{ .NetworkSettings.IPAddress }}' ${PSQL_CONT_NAME}`
+  export PACT_BROKER_DATABASE_HOST=`docker inspect -f '{{ .NetworkSettings.IPAddress }}' ${PSQL_CONT_NAME}`
   echo "Postgres container IP is: ${PACT_BROKER_DATABASE_HOST}"
 
   echo ""
@@ -137,23 +150,23 @@ fi
 [ -z "${PACT_BROKER_DATABASE_PASSWORD}" ] && required_args
 [ -z "${PACT_BROKER_DATABASE_HOST}" ] && required_args
 [ -z "${PACT_BROKER_DATABASE_NAME}" ] && required_args
+[ -z "${OAUTH_TOKEN_INFO}" ] && required_args
+[ -z "${MYUSER}" ] && required_args
 
 echo ""
 echo "Run the built Pact Broker"
 # Using `--privileged` due to unspecified issues in TravisCI
 docker run --privileged --name=${PACT_CONT_NAME} -d -p ${PORT_BIND} \
-  -e PACT_BROKER_DATABASE_USERNAME=${PACT_BROKER_DATABASE_USERNAME} \
-  -e PACT_BROKER_DATABASE_PASSWORD=${PACT_BROKER_DATABASE_PASSWORD} \
-  -e PACT_BROKER_DATABASE_HOST=${PACT_BROKER_DATABASE_HOST} \
-  -e PACT_BROKER_DATABASE_NAME=${PACT_BROKER_DATABASE_NAME} \
-  dius/pact_broker
-sleep 1 && docker logs ${PACT_CONT_NAME}
-
-# If the port was dynamically allocated by docker then find it out
-if [ -z "${EXTERN_BROKER_PORT}" ]; then
-  QUERY="{{(index (index .NetworkSettings.Ports "${PACT_BROKER_PORT}/tcp") 0).HostPort}}"
-  EXTERN_BROKER_PORT=`docker inspect -f='${QUERY}' ${PACT_CONT_NAME}`
-fi
+  -e PACT_BROKER_DATABASE_USERNAME \
+  -e PACT_BROKER_DATABASE_PASSWORD \
+  -e PACT_BROKER_PORT \
+  -e BIND_TO \
+  -e PACT_BROKER_DATABASE_HOST \
+  -e PACT_BROKER_DATABASE_NAME \
+  -e SKIP_HTTPS_ENFORCER \
+  -e OAUTH_TOKEN_INFO \
+  pact_broker
+sleep 2 && docker logs ${PACT_CONT_NAME}
 
 echo ""
 echo "Checking that the Pact Broker container is still up and running"
@@ -162,8 +175,7 @@ docker inspect -f "{{ .State.Running }}" ${PACT_CONT_NAME} | grep true || die \
 
 echo ""
 echo "Checking that server can be connected from within the Docker container"
-docker exec ${PACT_CONT_NAME} wait_ready ${PACT_WAIT_TIMEOUT} || die \
-  "When running wait_ready inside the container!"
+docker exec ${PACT_CONT_NAME} wait_ready ${PACT_WAIT_TIMEOUT} || report_pact_failed
 
 if [ -z "${test_ip}" ]; then
   test_ip=`docker inspect -f='{{ .NetworkSettings.IPAddress }}' ${PACT_CONT_NAME}`
@@ -174,21 +186,54 @@ echo "Checking that server can be connected from outside the Docker container"
 export PACT_BROKER_HOST=${test_ip}
 $(dirname "$0")/../container/usr/bin/wait_ready ${PACT_WAIT_TIMEOUT}
 
-echo ""
-echo "Checking that server accepts and return HTML from outside"
-curl -H "Accept:text/html" -s "http://${test_ip}:${EXTERN_BROKER_PORT}/ui/relationships"
+url="http://${test_ip}:${PACT_BROKER_PORT}/ui/relationships"
+
+# echo ""
+# echo "Checking that server accepts and return HTML from outside"
+# echo " at url: ${url}"
+# curl -H "Accept:text/html" -s "${url}" || curl -H "Accept:text/html" "${url}" || report_pact_failed
 
 echo ""
-echo "Checking for specific HTML content from outside: '0 pacts'"
-curl -H "Accept:text/html" -s "http://${test_ip}:${EXTERN_BROKER_PORT}/ui/relationships" | grep "0 pacts"
+echo "Checking that server returns 400 MissingTokenError from outside"
+echo " at url: ${url}"
+curl -H "Content-Type: application/json" -s "${url}" 2>&1 \
+   | grep "MissingTokenError" \
+  || curl -H "Accept:text/html" "${url}" || report_pact_failed
 
 echo ""
-echo "Checking that server accepts and responds with status 200"
-response_code=$(curl -s -o /dev/null -w "%{http_code}" http://${test_ip}:${EXTERN_BROKER_PORT})
+echo "Checking that server returns 401 InvalidTokenError from outside"
+echo " at url: ${url}"
+curl -H "Content-Type: application/json" -s "${url}" 2>&1 \
+   | grep "InvalidTokenError" \
+  || curl -H "Accept:text/html" "${url}" \
+          -H "Authorization: Bearer INVALIDtoken" || report_pact_failed
+echo ""
 
-if [[ "${response_code}" == '200' ]]; then
-  echo ""
-  echo "SUCCESS: All tests passed!"
-else
-  die "While checking HTML response status 200"
-fi
+# echo ""
+# echo "Checking for specific HTML content from outside: '0 pacts'"
+# echo " at url: ${url}"
+# curl -H "Accept:text/html" -s "${url}" | grep "0 pacts" || report_pact_failed
+
+# echo ""
+# echo "Checking that server accepts and responds with status 200"
+# response_code=$(curl -s -o /dev/null -w "%{http_code}" http://${test_ip}:${PACT_BROKER_PORT})
+
+# if [[ "${response_code}" != '200' ]]; then
+#   die "While checking HTML response status 200"
+# fi
+
+echo ""
+echo "Performance test with token verification"
+echo " at url: ${url}/"
+token=$(zign token --user $MYUSER --url $GETOK -n pact)
+ab -n 100 -c 10 -k -H "Authorization: Bearer $token" "${url}/"
+
+echo ""
+echo "Checking with valid token"
+echo " at url: ${url}"
+curl -H "Accept:text/html" \
+     -H "Authorization: Bearer $token" -s "${url}" 2>&1 \
+   | grep "0 pacts" || report_pact_failed
+
+echo ""
+echo "SUCCESS: All tests passed!"

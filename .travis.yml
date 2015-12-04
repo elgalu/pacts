@@ -30,8 +30,10 @@ env:
     - PSQL_WAIT_TIMEOUT="20s"
     - PACT_CONT_NAME="broker_app"
     - PACT_WAIT_TIMEOUT="30s"
+    - OAUTH_TOKEN_INFO="https://auth.example.org/oauth2/tokeninfo?access_token="
+    - SKIP_HTTPS_ENFORCER="true"
   matrix:
-    - PACT_BROKER_PORT=80
+    - PACT_BROKER_PORT=443
 #    - PACT_BROKER_PORT=9999
 
 # The test script is designed to run in a Linux machine and therefore

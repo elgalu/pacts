@@ -1,0 +1,100 @@
+# basic information for generating and executing this definition
+SenzaInfo:
+  StackName: "pacts-{{Arguments.Stage}}"
+  Parameters:
+  - Stage:
+      Description: "Environment target, should be live or staging"
+      AllowedValues: ["live", "staging"]
+  - ImgTag:
+      Description: "Docker image tag to deploy"
+
+# a list of senza components to apply to the definition
+SenzaComponents:
+
+  # this basic configuration is required for the other components
+  - Configuration:
+      Type: Senza::StupsAutoConfiguration # auto-detect network setup
+
+  # will create a launch configuration and auto scaling group with scaling triggers
+  - AppServer:
+      Type: Senza::TaupageAutoScalingGroup
+      # General Purpose T2: t2.micro, t2.small, t2.medium, t2.large
+      InstanceType: t2.micro
+      AutoScaling:
+        Minimum: 2
+        Maximum: 8
+        MetricType: CPU
+        ScaleUpThreshold: 70
+        ScaleDownThreshold: 40
+      SecurityGroups:
+        - app-pacts
+      IamRoles:
+        - app-pacts
+      ElasticLoadBalancer: AppLoadBalancer
+      AssociatePublicIpAddress: false # change for standalone deployment in default VPC
+      TaupageConfig:
+        application_id: pacts
+        application_version: "{{Arguments.version}}"
+        runtime: Docker
+        source: "docker.io/myusr/pacts:{{Arguments.ImgTag}}"
+        health_check_path: /diagnostic/status/heartbeat
+        health_check_timeout_seconds: 90
+        root: true
+        etcd_discovery_domain: "etcd.myteam.example.org"
+        scalyr_account_key: "aws:kms:SECRET!!!"
+        # https://docs.stups.io/en/latest/components/taupage.html?highlight=newrelic_account_key#newrelic-account-key
+        newrelic_account_key: "aws:kms:SECRET!!!"
+        mint_bucket: "myorg-stups-mint-123456789012-us-east-1"
+        ports:
+          443: 443
+        environment:
+          OAUTH_TOKEN_INFO: "https://auth.example.org/oauth2/tokeninfo?access_token="
+          SKIP_HTTPS_ENFORCER: false
+          BIND_TO: 0.0.0.0
+          PACT_BROKER_PORT: 443
+          RACK_THREADS_COUNT: 20
+          # New Relic server monitoring. Note AppDynamics doesn't support Ruby
+          # https://docs.newrelic.com/docs/agents/ruby-agent/installation-configuration/ruby-agent-configuration#Options
+          NEW_RELIC_LICENSE_KEY: "aws:kms:SECRET!!!"
+          # we can split new relic monitoring in the future: "pacts-{{Arguments.Stage}}"
+          NEW_RELIC_APP_NAME: pacts
+          NEW_RELIC_AGENT_ENABLED: true
+          NEW_RELIC_LOG_LEVEL: info
+          # can be 'live' or 'staging'
+          STAGE: "{{Arguments.Stage}}"
+          # live aka production
+          LIVE_PACT_BROKER_DATABASE_NAME: live_pacts
+          LIVE_PACT_BROKER_DATABASE_HOST: "aws:kms:SECRET!!!"
+          LIVE_PACT_BROKER_DATABASE_USERNAME: "aws:kms:SECRET!!!"
+          LIVE_PACT_BROKER_DATABASE_PASSWORD: "aws:kms:SECRET!!!"
+          # staging
+          STAGING_PACT_BROKER_DATABASE_NAME: staging_pact
+          STAGING_PACT_BROKER_DATABASE_HOST: "aws:kms:SECRET!!!"
+          STAGING_PACT_BROKER_DATABASE_USERNAME: "aws:kms:SECRET!!!"
+          STAGING_PACT_BROKER_DATABASE_PASSWORD: "aws:kms:SECRET!!!"
+        #configure logrotate for application.log
+        application_logrotate_size: 50M
+        application_logrotate_interval: weekly
+        application_logrotate_rotate: 4
+        hostname: "pacts-{{Arguments.Stage}}"
+        # defaults
+        privileged: false
+        docker_daemon_access: false
+        read_only: false
+        mount_var_log: false
+        mount_certs: false
+        keep_instance_users: false
+        enhanced_cloudwatch_metrics: false
+
+  # creates an ELB entry and Route53 domains to this ELB
+  - AppLoadBalancer:
+      Type: Senza::WeightedDnsElasticLoadBalancer
+      HTTPPort: 443
+      HealthCheckPath: /diagnostic/status/heartbeat
+      SecurityGroups:
+        - app-pacts-lb
+      Scheme: internet-facing
+      MainDomain: pacts-{{Arguments.Stage}}.myteam.example.org
+      VersionDomain: pacts-{{Arguments.Stage}}-{{SenzaInfo.StackVersion}}.myteam.example.org
+      # aws iam list-server-certificates | jq -r '.ServerCertificateMetadataList[0].ServerCertificateName'
+      SSLCertificateId: myteam-ssl-cert-name

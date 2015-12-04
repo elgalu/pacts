@@ -1,0 +1,72 @@
+#!/usr/bin/env python3
+
+import click
+import json
+import boto3
+import json
+import codecs
+import requests
+
+from clickclick import Action
+from clickclick import console
+from senza.templates._helper import get_mint_bucket_name
+from senza.cli import get_region
+
+@click.command()
+@click.argument('service-id')
+@click.option('--bucket', '-b')
+@click.option('--scope', '-s', default=['uid'], multiple=True)
+@click.option('--token-endpoint', '-t', default='https://auth.example.org/oauth2/access_token?realm=/services')
+@click.option('--region', envvar='AWS_DEFAULT_REGION', metavar='AWS_REGION_ID', help='AWS region ID (e.g. us-east-1)')
+def cli(service_id, bucket, scope, token_endpoint, region):
+    bucket = get_s3_bucket(bucket, region)
+    if not bucket:
+        raise click.ClickException("Unable to automatically detect S3 bucket.")
+
+    console.secho("Fetching credentials for [{}] from [{}]... ".format(service_id, bucket), nl=False)
+    try:
+        (client, user) = fetch_credentials(bucket, service_id)
+    except Exception as e:
+        console.error(repr(e))
+        raise click.ClickException("Unable to fetch credentials")
+    console.ok("OK")
+
+    console.secho("Requesting token for [{}] from [{}]... ".format(','.join(scope), token_endpoint), nl=False)
+    token = request_token(token_endpoint, client, user, scope)
+    console.ok("OK")
+
+    console.info(token)
+
+def get_s3_bucket(bucket, region):
+    if not bucket:
+        console.secho("Trying to detect your stups-mint bucket... ", nl=False)
+        bucket = get_mint_bucket_name(get_region(region))
+        if not bucket:
+            console.error("NOT FOUND")
+        else:
+            console.ok("[{}]".format(bucket))
+    return bucket
+
+def fetch_credentials(s3_bucket, service_id):
+    fetched = {}
+
+    reader = codecs.getreader("utf-8")
+    s3 = boto3.resource('s3')
+    bucket = s3.Bucket(s3_bucket)
+    for entry in bucket.objects.filter(Prefix=service_id + '/'):
+        filename = entry.key[entry.key.find("/") + 1:]
+        fetched[filename] = json.load(reader(entry.get().get("Body")))
+
+    return (fetched["client.json"], fetched["user.json"])
+
+def request_token(token_endpoint, client, user, scope):
+    payload = {"grant_type": "password", "scope": ' '.join(scope),
+        "username": user["application_username"], "password": user["application_password"]}
+    return requests.post(token_endpoint,
+        data=payload,
+        auth=(client["client_id"], client["client_secret"]),
+        timeout=5).text
+
+
+if __name__ == '__main__':
+    cli()

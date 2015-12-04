@@ -1,5 +1,41 @@
 source 'https://rubygems.org'
 
-gem "pact_broker"
-gem "pg"
-gem "passenger"
+# The Pact Broker
+gem 'pact_broker', '1.9.0'
+
+# PostgreSQL
+gem 'pg', '~> 0.18.3'
+
+# Web server and application server for Ruby, Python and Node.js
+# https://github.com/phusion/passenger
+# gem 'passenger', '~> 5.0.20'
+
+# A very fast & simple Ruby web server
+# https://github.com/macournoyer/thin/
+gem 'thin', '~> 1.6.4'
+
+# Fast HTTP client with a chainable API and full streaming support
+# https://github.com/httprb/http
+gem 'http', '~> 0.9.8'
+
+# Rack middleware for blocking & throttling
+# https://github.com/kickstarter/rack-attack
+gem 'rack-attack', '~> 4.3.0'
+
+# To use ActiveSupport::Cache at active_support/cache
+gem 'activesupport', '~> 4.2.4'
+
+# A simple Rack middleware to enforce ssl connections
+# https://github.com/tobmatth/rack-ssl-enforcer
+gem 'rack-ssl-enforcer', '~> 0.2.9'
+
+# Procfile manager (when starting the broker outside of nginx)
+gem 'foreman', '~> 0.78.0'
+
+# New Relic server monitoring agent
+gem 'newrelic_rpm', '~> 3.14'
+
+group :test, :development do
+  # Better debugging than irb
+  gem 'pry', '~> 0.10.3'
+end

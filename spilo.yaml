@@ -1,0 +1,160 @@
+# basic information for generating and executing this definition
+SenzaInfo:
+  Parameters:
+  - ScalyrAccountKey:
+      Description: scalyr account key
+  StackName: spilo
+  Tags:
+    - SpiloCluster: "{{Arguments.version}}"
+
+# a list of senza components to apply to the definition
+SenzaComponents:
+
+  # this basic configuration is required for the other components
+  - Configuration:
+      Type: Senza::StupsAutoConfiguration # auto-detect network setup
+
+  # will create a launch configuration and auto scaling group with scaling triggers
+  - AppServer:
+      Type: Senza::TaupageAutoScalingGroup
+      AutoScaling:
+        Minimum: 3
+        Maximum: 5
+        MetricType: CPU
+      InstanceType: t2.micro
+      BlockDeviceMappings:
+        - DeviceName: /dev/xvdk
+          Ebs:
+            VolumeSize: 10
+            VolumeType: gp2
+      ElasticLoadBalancer:
+        - PostgresLoadBalancer
+        - PostgresReplicaLoadBalancer
+      HealthCheckType: EC2
+      SecurityGroups:
+        - app-spilo
+      IamRoles:
+        - Ref: PostgresAccessRole
+      AssociatePublicIpAddress: false # change for standalone deployment in default VPC
+      TaupageConfig:
+        runtime: Docker
+        source: registry.opensource.zalan.do/acid/spilo-9.4:0.5-p1
+        ports:
+          5432: 5432
+          8008: 8008
+        etcd_discovery_domain: "etcd.myteam.example.org"
+        environment:
+          SCOPE: "{{Arguments.version}}"
+          ETCD_DISCOVERY_DOMAIN: "etcd.myteam.example.org"
+          WAL_S3_BUCKET: "myorg-myteam-us-east-1-spilo-pacts"
+        root: true
+        application_logrotate_size: 50M
+        application_logrotate_interval: weekly
+        application_logrotate_rotate: 4
+        mounts:
+          /home/postgres/pgdata:
+            partition: /dev/xvdk
+            filesystem: ext4
+            erase_on_boot: true
+            options: noatime,nodiratime,nobarrier
+        scalyr_account_key: '{{Arguments.ScalyrAccountKey}}'
+Resources:
+  PostgresReplicaRoute53Record:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      Type: CNAME
+      TTL: 20
+      HostedZoneName: myteam.example.org.
+      Name: "{{Arguments.version}}-replica.myteam.example.org."
+      ResourceRecords:
+        - Fn::GetAtt:
+           - PostgresReplicaLoadBalancer
+           - DNSName
+  PostgresRoute53Record:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      Type: CNAME
+      TTL: 20
+      HostedZoneName: myteam.example.org.
+      Name: "{{Arguments.version}}-master.myteam.example.org."
+      ResourceRecords:
+        - Fn::GetAtt:
+           - PostgresLoadBalancer
+           - DNSName
+  PostgresReplicaLoadBalancer:
+    Type: AWS::ElasticLoadBalancing::LoadBalancer
+    Properties:
+      CrossZone: true
+      HealthCheck:
+        HealthyThreshold: 2
+        Interval: 5
+        Target: HTTP:8008/slave
+        Timeout: 3
+        UnhealthyThreshold: 2
+      Listeners:
+        - InstancePort: 5432
+          LoadBalancerPort: 5432
+          Protocol: TCP
+      LoadBalancerName: "spilo-{{Arguments.version}}-replica"
+      ConnectionSettings:
+        IdleTimeout: 3600
+      SecurityGroups:
+        - sg-12a05476
+      Scheme: internal
+      Subnets:
+        Fn::FindInMap:
+          - LoadBalancerSubnets
+          - Ref: AWS::Region
+          - Subnets
+  PostgresLoadBalancer:
+    Type: AWS::ElasticLoadBalancing::LoadBalancer
+    Properties:
+      CrossZone: true
+      HealthCheck:
+        HealthyThreshold: 2
+        Interval: 5
+        Target: HTTP:8008/master
+        Timeout: 3
+        UnhealthyThreshold: 2
+      Listeners:
+        - InstancePort: 5432
+          LoadBalancerPort: 5432
+          Protocol: TCP
+      LoadBalancerName: "spilo-{{Arguments.version}}"
+      ConnectionSettings:
+        IdleTimeout: 3600
+      SecurityGroups:
+        - sg-12a05476
+      Scheme: internal
+      Subnets:
+        Fn::FindInMap:
+          - LoadBalancerSubnets
+          - Ref: AWS::Region
+          - Subnets
+  PostgresAccessRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service: ec2.amazonaws.com
+          Action: sts:AssumeRole
+      Path: /
+      Policies:
+      - PolicyName: SpiloEC2S3Access
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+          - Effect: Allow
+            Action: s3:*
+            Resource:
+              - arn:aws:s3:::myorg-myteam-us-east-1-spilo-pacts/spilo/*
+              - arn:aws:s3:::myorg-myteam-us-east-1-spilo-pacts
+          - Effect: Allow
+            Action: ec2:CreateTags
+            Resource: "*"
+          - Effect: Allow
+            Action: ec2:Describe*
+            Resource: "*"
