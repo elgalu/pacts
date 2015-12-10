@@ -18,8 +18,6 @@
 
 * To see the service on your browser see [Chrome OAuth Bearer Plugin][]
 
-* For the TODO list see [TODO.md][]
-
 * To run in in the host machine see [on-host.md][]
 
 * How the team etcd cluster was deployed: [etcd.md][]
