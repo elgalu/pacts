@@ -35,7 +35,6 @@
 [CONTRIBUTING.md]: ./docs/CONTRIBUTING.md
 [local-build-run.md]: ./docs/local-build-run.md
 [curl.md]: ./docs/curl.md
-[TODO.md]: ./TODO.md
 [on-host.md]: ./docs/on-host.md
 [etcd.md]: ./docs/etcd.md
 [spilo.md]: ./docs/spilo.md
