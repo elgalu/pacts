@@ -20,7 +20,8 @@ gem 'http', '~> 0.9.8'
 
 # Rack middleware for blocking & throttling
 # https://github.com/kickstarter/rack-attack
-gem 'rack-attack', '~> 4.3.0'
+gem 'blockenspiel', '~> 0.5.0'
+gem 'rack-attack', '~> 4.3.1'
 
 # To use ActiveSupport::Cache at active_support/cache
 gem 'activesupport', '~> 4.2.4'
