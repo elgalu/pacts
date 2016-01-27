@@ -105,7 +105,7 @@ Destroy pacts
 
 ## Performance
 
-Noticed that it makes no difference to use an instance bigger than `t2.micro` with a small amount of expected traffic.
+Noticed that it makes no difference to use an instance bigger than `t2.nano` with a small amount of expected traffic.
 
 ### Benchmark
 Simple performance test

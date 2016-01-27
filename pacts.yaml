@@ -18,11 +18,11 @@ SenzaComponents:
   # will create a launch configuration and auto scaling group with scaling triggers
   - AppServer:
       Type: Senza::TaupageAutoScalingGroup
-      # General Purpose T2: t2.micro, t2.small, t2.medium, t2.large
-      InstanceType: t2.micro
+      # General Purpose T2: t2.nano, t2.micro, t2.small, t2.medium, t2.large
+      InstanceType: t2.nano
       AutoScaling:
         Minimum: 2
-        Maximum: 8
+        Maximum: 20
         MetricType: CPU
         ScaleUpThreshold: 70
         ScaleDownThreshold: 40

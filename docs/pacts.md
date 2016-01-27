@@ -15,7 +15,7 @@
     Docker image without tag/version [stups/hello-world]: docker.io/myusr/pacts
     HTTP port [8080]: 443
     HTTP health check path [/]: /diagnostic/status/heartbeat
-    EC2 instance type [t2.micro]: t2.micro
+    EC2 instance type [t2.micro]: t2.nano
     Did you need OAuth-Credentials from Mint? [y/N]: y
     Mint S3 bucket name [myorg-stups-mint-123456789012-us-east-1]:
     Please select the load balancer scheme
@@ -54,6 +54,8 @@ Ref1: http://stups.readthedocs.org/en/latest/components/taupage.html#environment
 Navigate to **Encryption Keys** underneath **IAM** on AWS Console and click `Create Key`
 https://console.aws.amazon.com/iam/home?region=us-east-1#encryptionKeys/us-east-1
 
+Filter region, e.g. EU (Ireland)
+
     Alias: pacts_access
     Descr: Pacts encryption for DB and other access
 
@@ -65,6 +67,7 @@ Go to your terminal and encrypt the DB username using this `pacts_access` key
 
     pip3 install --upgrade awscli
 
+    mai #if you get ExpiredTokenException
     aws kms encrypt --key-id alias/pacts_access --plaintext "postgres" | jq .CiphertextBlob
 
 You can include `| xclip -selection c` at the end to directly copy it to the clipboard, on Ubuntu.

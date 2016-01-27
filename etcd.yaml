@@ -4,7 +4,7 @@ SenzaComponents:
 - AppServer:
     IamRoles:
     - Ref: EtcdRole
-    InstanceType: t2.micro
+    InstanceType: t2.nano
     SecurityGroups:
     - Fn::GetAtt:
       - EtcdSecurityGroup

@@ -2,9 +2,9 @@
 # |==> buildpack-deps:jessie-curl -- https://goo.gl/5hSvwt
 #      |==> buildpack-deps:jessie-scm -- https://goo.gl/AfBc8C
 #           |==> buildpack-deps:jessie -- https://goo.gl/hnND7b
-#                |==> ruby:2.2.3 -- https://goo.gl/wBOMyp
+#                |==> ruby:2.3.0 -- https://goo.gl/eDlvs7
 #                     |==> HERE
-FROM ruby:2.2.3
+FROM ruby:2.3.0
 
 MAINTAINER Leo Gallucci <elgalu3@gmail.com>
 

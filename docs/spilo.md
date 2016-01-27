@@ -13,7 +13,7 @@ Select `postgresapp: HA Postgres app` project [template](https://github.com/zala
 * Set docker image: y
 * Docker image: registry.opensource.zalan.do/acid/spilo-9.4:0.5-p1 (default)
 * WAL S3 to use: Change to unused one, e.g. `myorg-myteam-us-east-1-spilo-pacts`
-* EC2 instance type: t2.micro (default)
+* EC2 instance type: t2.nano
 * domain: [2]: myteam.example.org
 * ETCD Discovery Domain: etcd.myteam.example.org
 * DB size: 10GB (default)
