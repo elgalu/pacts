@@ -75,6 +75,12 @@ Only the first time make an alias to the live DNS using [cli53](https://github.c
 
     cli53 rrcreate myteam.example.org "pacts CNAME pacts-live.myteam.example.org."
 
+#### Troubleshooting
+
+    piu ... && ssh #function pi
+    cat /var/log/application.log
+    grep "docker run" /var/log/syslog
+
 ### Open
 
 #### New Version

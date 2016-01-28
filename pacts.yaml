@@ -40,7 +40,7 @@ SenzaComponents:
         health_check_path: /diagnostic/status/heartbeat
         health_check_timeout_seconds: 90
         root: true
-        etcd_discovery_domain: "etcd.myteam.example.org"
+        # etcd_discovery_domain: "etcd.myteam.example.org"
         scalyr_account_key: "aws:kms:SECRET!!!"
         # https://docs.stups.io/en/latest/components/taupage.html?highlight=newrelic_account_key#newrelic-account-key
         newrelic_account_key: "aws:kms:SECRET!!!"
@@ -58,7 +58,7 @@ SenzaComponents:
           NEW_RELIC_LICENSE_KEY: "aws:kms:SECRET!!!"
           # we can split new relic monitoring in the future: "pacts-{{Arguments.Stage}}"
           NEW_RELIC_APP_NAME: pacts
-          NEW_RELIC_AGENT_ENABLED: true
+          NEW_RELIC_AGENT_ENABLED: false
           NEW_RELIC_LOG_LEVEL: info
           # can be 'live' or 'staging'
           STAGE: "{{Arguments.Stage}}"
