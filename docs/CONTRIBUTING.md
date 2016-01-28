@@ -9,6 +9,7 @@ How to run the tests
     export DISPOSABLE_PSQL=true
     export OAUTH_TOKEN_INFO=https://auth.example.org/oauth2/tokeninfo?access_token=
     export MYUSER=elgalu
+    cd pact_broker && bundle install && cd ..
     script/test.sh
 
 ## Commit
