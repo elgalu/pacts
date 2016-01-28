@@ -1,14 +1,14 @@
 ## Prepare
     GETOK="https://token.info.example.org/access_token"
     token=$(zign token --user elgalu --url $GETOK -n pact)
-    ./script/gen-scm-source.sh
+    export DISPOSABLE_PSQL=true
+    export OAUTH_TOKEN_INFO=https://auth.example.org/oauth2/tokeninfo?access_token=
+    export MYUSER=elgalu
 
 ## Test
 How to run the tests
 
-    export DISPOSABLE_PSQL=true
-    export OAUTH_TOKEN_INFO=https://auth.example.org/oauth2/tokeninfo?access_token=
-    export MYUSER=elgalu
+    ./script/gen-scm-source.sh
     cd pact_broker && bundle install && cd ..
     script/test.sh
 
@@ -80,6 +80,7 @@ Only the first time make an alias to the live DNS using [cli53](https://github.c
 
     piu ... && ssh #function pi
     cat /var/log/application.log
+    cat /etc/taupage.yam
     grep "docker run" /var/log/syslog
 
 ### Open
