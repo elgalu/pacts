@@ -4,6 +4,7 @@
     export DISPOSABLE_PSQL=true
     export OAUTH_TOKEN_INFO=https://auth.example.org/oauth2/tokeninfo?access_token=
     export MYUSER=elgalu
+    REG="docker.io"
 
 ## Test
 How to run the tests
@@ -29,11 +30,6 @@ How to build the image
     TAG="0.0.1" && git tag $TAG
     git push && git push --tags
 
-## Env
-Define your docker registry
-
-    REG="docker.io"
-
 ## Push
 Login to the docker repo and push
 
@@ -49,7 +45,7 @@ Note: add `--disable-rollback` to troubleshoot when the stacks fails to create.
 
     senza create pacts.yaml v001 Stage=staging ImgTag=$TAG
     senza wait pacts-staging v001
-    senza console --limit 300 pacts-staging v001 | grep -iE "error|warn|failed"
+    senza console --limit 300 pacts-staging v001 | grep -iE "error|failed"
     senza traffic pacts-staging v001 100
 
 #### Live
@@ -93,3 +89,38 @@ open https://pacts.myteam.example.org/diagnostic/status/heartbeat
 
 ### Approve version
 Go to the [version approval page](https://yourturn.stups.example.org/application/detail/pacts/version/approve/v001)
+
+#### Via CLI
+List
+
+    export USER=elgalu
+    kio ver li pacts
+    #=> Approvals: CODE_CHANGE: elgalu,
+                   DEPLOY: elgalu,
+                   SPECIFICATION: elgalu,
+                   TEST: elgalu
+
+Create version
+
+    kio ver create pacts v001 docker://docker.io/myusr/pacts:0.0.1
+    #=> Creating version pacts v001.. OK
+
+Approve
+
+    kio ver approve pacts v001
+    #=> Approving SPECIFICATION of version pacts v001.. OK
+    #=> Approving CODE_CHANGE of version pacts v001.. OK
+    #=> Approving TEST of version pacts v001.. OK
+    #=> Approving DEPLOY of version pacts v001.. OK
+
+#### Violations
+Resolve all your old violations and start fresh for next time
+
+    export USER=elgalu
+    fullstop list-violations --accounts "123456789012" --output json --since 700d -l 50
+    fullstop resolve-violations --accounts "123456789012" --since 700d -l 9999 "Resolving old violations"
+    #=> Resolving violation 123456789012/us-east-1 APPLICATION_VERSION_NOT_PRESENT_IN_KIO 1005936.. OK
+    #=> Resolving violation 123456789012/us-east-1 SPEC_TYPE_IS_MISSING_IN_KIO 1005935.. OK
+    #=> Resolving violation 123456789012/us-east-1 APPLICATION_VERSION_NOT_PRESENT_IN_KIO 1005934.. OK
+    #=> Resolving violation 123456789012/us-east-1 SPEC_TYPE_IS_MISSING_IN_KIO 1005933.. OK
+    #=> ...
