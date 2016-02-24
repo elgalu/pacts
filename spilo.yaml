@@ -42,10 +42,10 @@ SenzaComponents:
         ports:
           5432: 5432
           8008: 8008
-        etcd_discovery_domain: "etcd.myteam.example.org"
+        etcd_discovery_domain: "etcd."
         environment:
           SCOPE: "{{Arguments.version}}"
-          ETCD_DISCOVERY_DOMAIN: "etcd.myteam.example.org"
+          ETCD_DISCOVERY_DOMAIN: "etcd."
           WAL_S3_BUCKET: "myorg-myteam-us-east-1-spilo-pacts"
         root: true
         application_logrotate_size: 50M
@@ -64,8 +64,8 @@ Resources:
     Properties:
       Type: CNAME
       TTL: 20
-      HostedZoneName: myteam.example.org.
-      Name: "{{Arguments.version}}-replica.myteam.example.org."
+      HostedZoneName: .
+      Name: "{{Arguments.version}}-replica.."
       ResourceRecords:
         - Fn::GetAtt:
            - PostgresReplicaLoadBalancer
@@ -75,8 +75,8 @@ Resources:
     Properties:
       Type: CNAME
       TTL: 20
-      HostedZoneName: myteam.example.org.
-      Name: "{{Arguments.version}}-master.myteam.example.org."
+      HostedZoneName: .
+      Name: "{{Arguments.version}}-master.."
       ResourceRecords:
         - Fn::GetAtt:
            - PostgresLoadBalancer

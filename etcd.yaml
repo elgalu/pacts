@@ -17,7 +17,7 @@ SenzaComponents:
       # https://github.com/zalando/stups-etcd-cluster#step-1-create-an-etcd-cluster
       source: 'registry.opensource.zalan.do/acid/etcd-cluster:2.2.2-p7'
       environment:
-        HOSTED_ZONE: 'myteam.example.org'
+        HOSTED_ZONE: ''
       application_logrotate_size: 50M
       application_logrotate_interval: weekly
       application_logrotate_rotate: 4

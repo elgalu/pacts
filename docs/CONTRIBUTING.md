@@ -58,7 +58,7 @@ Note: add `--disable-rollback` to troubleshoot
 Redirect all traffic to the latest
 
     senza traffic pacts v001 100
-    #=> Setting weights for ['pacts.myteam.example.org.'].. OK
+    #=> Setting weights for ['pacts..'].. OK
 
 ##### Delete old stacks
 TODO: How to wait for the traffic to be fully switched before deletion?
@@ -69,7 +69,7 @@ TODO: How to wait for the traffic to be fully switched before deletion?
 ##### CNAME Alias
 Only the first time make an alias to the live DNS using [cli53](https://github.com/barnybug/cli53)
 
-    cli53 rrcreate myteam.example.org "pacts CNAME pacts-live.myteam.example.org."
+    cli53 rrcreate  "pacts CNAME pacts-live.."
 
 #### Troubleshooting
 
@@ -81,10 +81,10 @@ Only the first time make an alias to the live DNS using [cli53](https://github.c
 ### Open
 
 #### New Version
-open https://pacts-staging.myteam.example.org/diagnostic/status/heartbeat
+open https://pacts-staging./diagnostic/status/heartbeat
 
 #### LB
-open https://pacts.myteam.example.org/diagnostic/status/heartbeat
+open https://pacts./diagnostic/status/heartbeat
 
 ### Approve version
 Go to the [version approval page](https://yourturn.stups.example.org/application/detail/pacts/version/approve/v001)

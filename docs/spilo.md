@@ -14,8 +14,8 @@ Select `postgresapp: HA Postgres app` project [template](https://github.com/zala
 * Docker image: registry.opensource.zalan.do/acid/spilo-9.4:0.5-p1 (default)
 * WAL S3 to use: Change to unused one, e.g. `myorg-myteam-us-east-1-spilo-pacts`
 * EC2 instance type: t2.nano
-* domain: [2]: myteam.example.org
-* ETCD Discovery Domain: etcd.myteam.example.org
+* domain: [2]: 
+* ETCD Discovery Domain: etcd.
 * DB size: 10GB (default)
 * DB volume type: gp2 (default) [differences](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSVolumeTypes.html)
 * Filesystem: ext4 (default)
@@ -76,14 +76,14 @@ Sample `senza instances` output of a healthy cluster:
 To connect to Postgres first open tunnel to Postgres:
 
     export MYUSER=elgalu
-    export JUMPH="${MYUSER}@odd-us-east-1.myteam.example.org"
+    export JUMPH="${MYUSER}@odd-us-east-1."
     export SOPTS="-o StrictHostKeyChecking=no"
     export TUNOPTS="-v -N $SOPTS"
     export JUMPOPTS="-tA $SOPTS"
-    export INST="db-master.myteam.example.org"
+    export INST="db-master."
     ssh $JUMPOPTS -vN -L localhost:6666:$INST:5432 $JUMPH
 
-Now connect from your machine through the tunnel. If you get error `administratively prohibited: open failed` is probably because you made a mistake with the DNS name, check `db-master.myteam.example.org` matches what will be build in `PostgresRoute53Record` => `Properties` => `Name`.
+Now connect from your machine through the tunnel. If you get error `administratively prohibited: open failed` is probably because you made a mistake with the DNS name, check `db-master.` matches what will be build in `PostgresRoute53Record` => `Properties` => `Name`.
 
     export PGPASSWORD=zalando
     psql -h localhost -p 6666 -U postgres -d postgres
@@ -110,12 +110,12 @@ Right now is not so simple, check https://github.com/zalando/spilo/issues/31 for
     sudo /etc/init.d/scalyr-agent-2 restart
 
 Restart Scalyr on all your AWS account instances deployed with senza
-Just change `odd-us-east-1.myteam.example.org` and `elgalu` depending on your team and user name.
+Just change `odd-us-east-1.` and `elgalu` depending on your team and user name.
 
     for ip in $(senza inst -o tsv | awk -F'\t' '{print $6}'); do
       [ "$ip" == "private_ip" ] && continue #skip header
       piu request-access -U elgalu --clip $ip "Restart Scalyr"
-      ssh -tA elgalu@odd-us-east-1.myteam.example.org ssh -o StrictHostKeyChecking=no elgalu@$ip sudo /etc/init.d/scalyr-agent-2 restart
+      ssh -tA elgalu@odd-us-east-1. ssh -o StrictHostKeyChecking=no elgalu@$ip sudo /etc/init.d/scalyr-agent-2 restart
     done
 
 

@@ -11,7 +11,7 @@ To do so you may need [specific certs](https://github.com/zalando/docker-ubuntu/
 
 ### Staging
 
-    export SHOST=https://pacts-staging.myteam.example.org
+    export SHOST=https://pacts-staging.myteam-test.example.org
 
 ### Production
 
@@ -51,7 +51,7 @@ From a service instance like an AWS Jenkins.
 Note you need the [get_token.sh](../container/usr/bin/get_token.sh) script.
 Ensure it has the correct token endpoint before using it, e.g. `https://auth.example.org/oauth2/access_token`
 
-    export SHOST=https://pacts.myteam.example.org
+    export SHOST=https://pacts-staging.myteam-test.example.org
     token=$(get_token.sh)
 
 ## Use
@@ -75,7 +75,7 @@ Get the HTML output instead of json
 
 Sample output
 
-    {"provider":{"name":"prov2"},"consumer":{"name":"cons2"},"createdAt":"2015-11-04T18:03:43+00:00","_links":{"self":{"title":"Pact","name":"Pact between cons2 (v1.0.0) and prov2","href":"https://pacts.myteam.example.org/pacts/provider/prov2/consumer/cons2/version/1.0.0"},"pb:consumer":{"title":"Consumer","name":"cons2","href":"https://pacts.myteam.example.org/pacticipants/cons2"},"pb:provider":{"title":"Provider","name":"prov2","href":"https://pacts.myteam.example.org/pacticipants/prov2"},"pb:latest-pact-version":{"title":"Pact","name":"Latest version of this pact","href":"https://pacts.myteam.example.org/pacts/provider/prov2/consumer/cons2/latest"},"pb:previous-distinct":{"title":"Pact","name":"Previous distinct version of this pact","href":"https://pacts.myteam.example.org/pacts/provider/prov2/consumer/cons2/version/1.0.0/previous-distinct"},"pb:diff-previous-distinct":{"title":"Diff","name":"Diff with previous distinct version of this pact","href":"https://pacts.myteam.example.org/pacts/provider/prov2/consumer/cons2/version/1.0.0/diff/previous-distinct"},"pb:pact-webhooks":{"title":"Webhooks for the pact between cons2 and prov2","href":"https://pacts.myteam.example.org/webhooks/provider/prov2/consumer/cons2"},"pb:tag-prod-version":{"title":"Tag this version as 'production'","href":"https://pacts.myteam.example.org/pacticipants/cons2/versions/1.0.0/tags/prod"},"pb:tag-version":{"title":"Tag version","href":"https://pacts.myteam.example.org/pacticipants/cons2/versions/1.0.0/tags/{tag}"},"curies":[{"name":"pb","href":"https://pacts.myteam.example.org/doc/{rel}","templated":true}]}}
+    {"provider":{"name":"prov2"},"consumer":{"name":"cons2"},"createdAt":"2015-11-04T18:03:43+00:00","_links":{"self":{"title":"Pact","name":"Pact between cons2 (v1.0.0) and prov2","href":"https://pacts-staging.myteam-test.example.org/pacts/provider/prov2/consumer/cons2/version/1.0.0"},"pb:consumer":{"title":"Consumer","name":"cons2","href":"https://pacts-staging.myteam-test.example.org/pacticipants/cons2"},"pb:provider":{"title":"Provider","name":"prov2","href":"https://pacts-staging.myteam-test.example.org/pacticipants/prov2"},"pb:latest-pact-version":{"title":"Pact","name":"Latest version of this pact","href":"https://pacts-staging.myteam-test.example.org/pacts/provider/prov2/consumer/cons2/latest"},"pb:previous-distinct":{"title":"Pact","name":"Previous distinct version of this pact","href":"https://pacts-staging.myteam-test.example.org/pacts/provider/prov2/consumer/cons2/version/1.0.0/previous-distinct"},"pb:diff-previous-distinct":{"title":"Diff","name":"Diff with previous distinct version of this pact","href":"https://pacts-staging.myteam-test.example.org/pacts/provider/prov2/consumer/cons2/version/1.0.0/diff/previous-distinct"},"pb:pact-webhooks":{"title":"Webhooks for the pact between cons2 and prov2","href":"https://pacts-staging.myteam-test.example.org/webhooks/provider/prov2/consumer/cons2"},"pb:tag-prod-version":{"title":"Tag this version as 'production'","href":"https://pacts-staging.myteam-test.example.org/pacticipants/cons2/versions/1.0.0/tags/prod"},"pb:tag-version":{"title":"Tag version","href":"https://pacts-staging.myteam-test.example.org/pacticipants/cons2/versions/1.0.0/tags/{tag}"},"curies":[{"name":"pb","href":"https://pacts-staging.myteam-test.example.org/doc/{rel}","templated":true}]}}
 
 ### Read
 Reading JSON
@@ -99,7 +99,7 @@ Destroy pacts
 
 ## Version example
     GETOK="https://token.info.example.org/access_token"
-    SHOST=https://pacts-staging.myteam.example.org
+    SHOST=https://pacts-staging.myteam-test.example.org
     token=$(zign token --user elgalu --url $GETOK -n pact)
     curl -H "Authorization: Bearer $token" $SHOST
 

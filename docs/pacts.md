@@ -83,13 +83,15 @@ Ref2: https://github.com/zalando/kmsclient
 ### Register the app
 Go to [Create Application](https://yourturn.stups.example.org/application/create) in your turn.
 
-* Team ID: myusr
+* Team ID: myteam or myteam-test depending on the env type
 
-* Application ID: pacts
+* Application ID: pacts or pacts-staging depending on the env type
 
-* Service url: pacts.myteam.example.org
+* Service url: pacts.myteam.example.org or pacts-staging.myteam-test.example.org
 
 * Fill all the other fields.
+
+* Is accessible without OAuth credentials: true, because we not return an error on GET / but unauthorized
 
 ### Create version
 [Create new version for Pacts Broker](https://yourturn.stups.example.org/application/detail/pacts/version/create)

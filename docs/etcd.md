@@ -46,11 +46,11 @@ Find `SCALYR_KEY` within [write logs](https://www.scalyr.com/keys)
 
 * Stack name and stack instance will be `etcd-cluster-etcd` see [why here](https://github.com/zalando/stups-etcd-cluster#step-2-confirm-successful-cluster-creation)
 
-* DNS A record 'etcd-server.etcd.myteam.example.org'
+* DNS A record 'etcd-server.etcd.'
 
-* DNS SRV peer port `2380` at '_etcd-server._tcp.etcd.myteam.example.org'
+* DNS SRV peer port `2380` at '_etcd-server._tcp.etcd.'
 
-* DNS SRV client port `2379` at '_etcd._tcp.etcd.myteam.example.org'
+* DNS SRV client port `2379` at '_etcd._tcp.etcd.'
 
 #### Status
     senza events etcd.yaml

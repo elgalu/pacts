@@ -38,6 +38,11 @@ create: checkSTAGE
 	senza wait pacts ${APP_VER}
 	senza console --limit 300 pacts ${APP_VER} | grep -iE "error|warn|failed"
 
+approve:
+	export USER=$(MYUSER)
+	kio ver create pacts $(APP_VER) docker://${REG}/tip/pacts:${IMG_TAG}
+	kio ver approve pacts $(APP_VER)
+
 # Validations
 checkIMG_TAG:
 ifndef IMG_TAG
