@@ -12,8 +12,10 @@ MAINTAINER Leo Gallucci <elgalu3@gmail.com>
 # To avoid using `curl --insecure` you need to
 # add Zalando CA or your specific company CA
 #----------------------------------------------
-RUN curl https://secure-static.ztat.net/ca/zalando-service.ca > /usr/local/share/ca-certificates/zalando-service.crt
-RUN curl https://secure-static.ztat.net/ca/zalando-root.ca > /usr/local/share/ca-certificates/zalando-root.crt
+# RUN curl https://secure-static.ztat.net/ca/zalando-service.ca > /usr/local/share/ca-certificates/zalando-service.crt
+# RUN curl https://secure-static.ztat.net/ca/zalando-root.ca > /usr/local/share/ca-certificates/zalando-root.crt
+ADD certs/zalando-service.crt /usr/local/share/ca-certificates/
+ADD certs/zalando-root.crt /usr/local/share/ca-certificates/
 # add AWS RDS CA bundle
 RUN mkdir /tmp/rds-ca && \
     curl https://s3.amazonaws.com/rds-downloads/rds-combined-ca-bundle.pem > /tmp/rds-ca/aws-rds-ca-bundle.pem

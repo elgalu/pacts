@@ -1,12 +1,24 @@
 # basic information for generating and executing this definition
 SenzaInfo:
-  StackName: "pacts-{{Arguments.Stage}}"
+  StackName: "pacts"
   Parameters:
-  - Stage:
-      Description: "Environment target, should be live or staging"
-      AllowedValues: ["live", "staging"]
   - ImgTag:
       Description: "Docker image tag to deploy"
+  - InstanceType:
+      Description: "Instance type to use"
+  - AWSAccountNum:
+      Description: "AWS account id number"
+  - ApplicationId:
+      Description: "Application id"
+      AllowedValues: ["pacts", "pacts-staging"]
+  - DBName:
+      Description: "Database name"
+  - DBHost:
+      Description: "Database host"
+  - DBUserName:
+      Description: "Database user name"
+  - DBPassword:
+      Description: "Database password"
 
 # a list of senza components to apply to the definition
 SenzaComponents:
@@ -19,7 +31,7 @@ SenzaComponents:
   - AppServer:
       Type: Senza::TaupageAutoScalingGroup
       # General Purpose T2: t2.nano, t2.micro, t2.small, t2.medium, t2.large
-      InstanceType: t2.nano
+      InstanceType: "{{Arguments.InstanceType}}"
       AutoScaling:
         Minimum: 2
         Maximum: 20
@@ -27,13 +39,13 @@ SenzaComponents:
         ScaleUpThreshold: 70
         ScaleDownThreshold: 40
       SecurityGroups:
-        - app-pacts
+        - app-{{Arguments.ApplicationId}}
       IamRoles:
-        - app-pacts
+        - app-{{Arguments.ApplicationId}}
       ElasticLoadBalancer: AppLoadBalancer
       AssociatePublicIpAddress: false # change for standalone deployment in default VPC
       TaupageConfig:
-        application_id: pacts
+        application_id: "{{Arguments.ApplicationId}}"
         application_version: "{{Arguments.version}}"
         runtime: Docker
         source: "docker.io/myusr/pacts:{{Arguments.ImgTag}}"
@@ -43,8 +55,8 @@ SenzaComponents:
         # etcd_discovery_domain: "etcd.myteam.example.org"
         scalyr_account_key: "aws:kms:SECRET!!!"
         # https://docs.stups.io/en/latest/components/taupage.html?highlight=newrelic_account_key#newrelic-account-key
-        newrelic_account_key: "aws:kms:SECRET!!!"
-        mint_bucket: "myorg-stups-mint-123456789012-us-east-1"
+        # newrelic_account_key: "aws:kms:SECRET!!!"
+        mint_bucket: "myorg-stups-mint-{{Arguments.AWSAccountNum}}-us-east-1"
         ports:
           443: 443
         environment:
@@ -55,28 +67,28 @@ SenzaComponents:
           RACK_THREADS_COUNT: 20
           # New Relic server monitoring. Note AppDynamics doesn't support Ruby
           # https://docs.newrelic.com/docs/agents/ruby-agent/installation-configuration/ruby-agent-configuration#Options
-          NEW_RELIC_LICENSE_KEY: "aws:kms:SECRET!!!"
+          # NEW_RELIC_LICENSE_KEY: "aws:kms:SECRET!!!"
           # we can split new relic monitoring in the future: "pacts-{{Arguments.Stage}}"
-          NEW_RELIC_APP_NAME: pacts
-          NEW_RELIC_AGENT_ENABLED: false
-          NEW_RELIC_LOG_LEVEL: info
+          # NEW_RELIC_APP_NAME: pacts
+          # NEW_RELIC_AGENT_ENABLED: false
+          # NEW_RELIC_LOG_LEVEL: info
           # can be 'live' or 'staging'
-          STAGE: "{{Arguments.Stage}}"
+          # STAGE: "{{Arguments.Stage}}"
           # live aka production
-          LIVE_PACT_BROKER_DATABASE_NAME: live_pacts
-          LIVE_PACT_BROKER_DATABASE_HOST: "aws:kms:SECRET!!!"
-          LIVE_PACT_BROKER_DATABASE_USERNAME: "aws:kms:SECRET!!!"
-          LIVE_PACT_BROKER_DATABASE_PASSWORD: "aws:kms:SECRET!!!"
+          PACT_BROKER_DATABASE_NAME: "{{Arguments.DBName}}"
+          PACT_BROKER_DATABASE_HOST: "{{Arguments.DBHost}}"
+          PACT_BROKER_DATABASE_USERNAME: "{{Arguments.DBUserName}}"
+          PACT_BROKER_DATABASE_PASSWORD: "{{Arguments.DBPassword}}"
           # staging
-          STAGING_PACT_BROKER_DATABASE_NAME: staging_pact
-          STAGING_PACT_BROKER_DATABASE_HOST: "aws:kms:SECRET!!!"
-          STAGING_PACT_BROKER_DATABASE_USERNAME: "aws:kms:SECRET!!!"
-          STAGING_PACT_BROKER_DATABASE_PASSWORD: "aws:kms:SECRET!!!"
+          # STAGING_PACT_BROKER_DATABASE_NAME: staging_pact
+          # STAGING_PACT_BROKER_DATABASE_HOST: "aws:kms:SECRET!!!"
+          # STAGING_PACT_BROKER_DATABASE_USERNAME: "aws:kms:SECRET!!!"
+          # STAGING_PACT_BROKER_DATABASE_PASSWORD: "aws:kms:SECRET!!!"
         #configure logrotate for application.log
-        application_logrotate_size: 50M
+        application_logrotate_size: 256M
         application_logrotate_interval: weekly
         application_logrotate_rotate: 4
-        hostname: "pacts-{{Arguments.Stage}}"
+        hostname: "{{Arguments.ApplicationId}}}"
         # defaults
         privileged: false
         docker_daemon_access: false
@@ -92,9 +104,9 @@ SenzaComponents:
       HTTPPort: 443
       HealthCheckPath: /diagnostic/status/heartbeat
       SecurityGroups:
-        - app-pacts-lb
+        - app-{{Arguments.ApplicationId}}-lb
       Scheme: internet-facing
-      MainDomain: pacts-{{Arguments.Stage}}.myteam.example.org
-      VersionDomain: pacts-{{Arguments.Stage}}-{{SenzaInfo.StackVersion}}.myteam.example.org
+      # MainDomain: pacts-{{Arguments.Stage}}.myteam.example.org
+      # VersionDomain: pacts-{{Arguments.Stage}}-{{SenzaInfo.StackVersion}}.myteam.example.org
       # aws iam list-server-certificates | jq -r '.ServerCertificateMetadataList[0].ServerCertificateName'
-      SSLCertificateId: myteam-ssl-cert-name
+      # SSLCertificateId: myteam-ssl-cert-name

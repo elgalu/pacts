@@ -1,6 +1,6 @@
 require 'http'
 require 'active_support/cache'
-require 'new_relic/agent'
+# require 'new_relic/agent'
 
 require './lib/validations'
 require './lib/conf'
@@ -61,8 +61,8 @@ module Rack::OAuth2::Bearer
       uid = JSON.parse(response.body)['uid']
       realm = JSON.parse(response.body)['realm'].delete('/')
       hsh = {iam_uid: uid, iam_realm: realm}
-      ::NewRelic::Agent.add_custom_attributes(hsh)
-      ::NewRelic::Agent.record_custom_event('users_kpi', hsh)
+      # ::NewRelic::Agent.add_custom_attributes(hsh)
+      # ::NewRelic::Agent.record_custom_event('users_kpi', hsh)
     end
   end
 end

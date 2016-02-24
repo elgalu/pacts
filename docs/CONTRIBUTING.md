@@ -3,7 +3,6 @@
     token=$(zign token --user elgalu --url $GETOK -n pact)
     export DISPOSABLE_PSQL=true
     export OAUTH_TOKEN_INFO=https://auth.example.org/oauth2/tokeninfo?access_token=
-    export MYUSER=elgalu
     REG="docker.io"
 
 ## Test
@@ -124,3 +123,25 @@ Resolve all your old violations and start fresh for next time
     #=> Resolving violation 123456789012/us-east-1 APPLICATION_VERSION_NOT_PRESENT_IN_KIO 1005934.. OK
     #=> Resolving violation 123456789012/us-east-1 SPEC_TYPE_IS_MISSING_IN_KIO 1005933.. OK
     #=> ...
+
+##### Or in the UI
+All
+
+    $('div.input-group > input').val('Resolving old no longer violations');
+    $('span:contains("Resolve")').click();
+
+One at a time
+
+    $('div.input-group > input')[0].value = 'Resolving old no longer violations';
+    $('span:contains("Resolve")')[0].click();
+
+		export REASON="Resolving old no longer violations"
+		export TOKEN="169333ab-d1e6-48b8-a777-27484cdf6442"
+		curl 'https://fullstop.stups.zalan.do/api/violations/4426/resolution' -X POST -H "Authorization: Bearer $TOKEN" -H 'Content-Type: text/plain' -H 'Accept: application/json' --data-binary "$REASON"
+
+		curl 'https://fullstop.stups.zalan.do/api/violations/#{num}/resolution' -X POST -H "Authorization: Bearer $TOKEN" -H 'Content-Type: text/plain' -H 'Accept: application/json' --data-binary "$REASON"
+
+
+		-H 'Origin: https://yourturn.stups.zalan.do' -H 'Accept-Encoding: gzip, deflate' -H 'Accept-Language: en-US,en;q=0.8' -H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.97 Safari/537.36' -H 'Referer: https://yourturn.stups.zalan.do/violation?accounts%5B%5D=157686764832&from=2013-12-31T23%3A00%3A00.000Z&activeTab=2&showUnresolved=true&showResolved=false&sortAsc=true&to=2016-01-29T12%3A57%3A52.781Z&page=0' -H 'Connection: keep-alive' -H 'Content-Length: 0' --compressed
+
+		curl 'https://fullstop.stups.zalan.do/api/violations/4423/resolution' -H 'Authorization: Bearer 169333ab-d1e6-48b8-a777-27484cdf6442' -H 'Origin: https://yourturn.stups.zalan.do' -H 'Accept-Encoding: gzip, deflate' -H 'Accept-Language: en-US,en;q=0.8' -H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.97 Safari/537.36' -H 'Content-Type: text/plain' -H 'Accept: application/json' -H 'Referer: https://yourturn.stups.zalan.do/violation?accounts%5B%5D=157686764832&from=2013-12-31T23%3A00%3A00.000Z&activeTab=2&showUnresolved=true&showResolved=false&sortAsc=true&to=2016-01-29T12%3A57%3A52.781Z&page=0' -H 'Connection: keep-alive' --data-binary 'old' --compressed

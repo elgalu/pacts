@@ -34,12 +34,12 @@ require './lib/rack-oauth2-bearer_checker'
 require './lib/rack-oauth2-bearer_helpers'
 require './lib/rack-attack_setup'
 
-require 'new_relic/rack'
-require 'new_relic/rack/agent_hooks'
-require 'new_relic/rack/error_collector'
-use NewRelic::Rack::AgentHooks
-use NewRelic::Rack::ErrorCollector
-NewRelic::Agent.manual_start
+# require 'new_relic/rack'
+# require 'new_relic/rack/agent_hooks'
+# require 'new_relic/rack/error_collector'
+# use NewRelic::Rack::AgentHooks
+# use NewRelic::Rack::ErrorCollector
+# NewRelic::Agent.manual_start
 
 unless ENV['SKIP_HTTPS_ENFORCER'] == 'true'
   use Rack::SslEnforcer, :except => [Conf::HEART_BEAT_REGEX]

@@ -38,6 +38,14 @@ required_args () {
   echoerr "  export OAUTH_TOKEN_INFO=https://auth.example.org/oauth2/tokeninfo?access_token="
   echoerr "  export MYUSER=elgalu"
   echoerr ""
+  echoerr "Current values:"
+  echoerr "  export PACT_BROKER_DATABASE_USERNAME='${PACT_BROKER_DATABASE_USERNAME}'"
+  echoerr "  export PACT_BROKER_DATABASE_PASSWORD='${PACT_BROKER_DATABASE_PASSWORD}'"
+  echoerr "  export PACT_BROKER_DATABASE_NAME='${PACT_BROKER_DATABASE_NAME}'"
+  echoerr "  export PACT_BROKER_DATABASE_HOST='${PACT_BROKER_DATABASE_HOST}'"
+  echoerr "  export OAUTH_TOKEN_INFO='${OAUTH_TOKEN_INFO}'"
+  echoerr "  export MYUSER='${MYUSER}'"
+  echoerr ""
   echoerr "And ensure you have allowed external connections."
   # if $2 is defined AND NOT EMPTY, use $2; otherwise, set to "150"
   errnum=${2-115}
@@ -66,12 +74,16 @@ fi
 [ -z "${PSQL_WAIT_TIMEOUT}" ]   && export PSQL_WAIT_TIMEOUT="10s"
 [ -z "${PACT_WAIT_TIMEOUT}" ]   && export PACT_WAIT_TIMEOUT="15s"
 [ -z "${PACT_CONT_NAME}" ]      && export PACT_CONT_NAME="broker_app"
-[ -z "${PSQL_CONT_NAME}" ]      && export PSQL_CONT_NAME="postgres"
+[ -z "${PSQL_CONT_NAME}" ]      && export PSQL_CONT_NAME="postgres_test"
 [ -z "${SKIP_HTTPS_ENFORCER}" ] && export SKIP_HTTPS_ENFORCER="true"
 [ -z "${GETOK}" ]               && export GETOK="https://token.info.example.org/access_token"
 
 # ensure token works before continuing
 zign token --user $MYUSER --url $GETOK -n pact
+
+# Cert issues
+curl https://secure-static.ztat.net/ca/zalando-service.ca > certs/zalando-service.crt
+curl https://secure-static.ztat.net/ca/zalando-root.ca > certs/zalando-root.crt
 
 echo "Will build the pact broker"
 docker build -t=pact_broker .
@@ -224,17 +236,17 @@ echo ""
 # fi
 
 echo ""
-echo "Performance test with token verification"
-echo " at url: ${url}/"
-token=$(zign token --user $MYUSER --url $GETOK -n pact)
-ab -n 100 -c 10 -k -H "Authorization: Bearer $token" "${url}/"
-
-echo ""
 echo "Checking with valid token"
 echo " at url: ${url}"
+token=$(zign token --user $MYUSER --url $GETOK -n pact)
 curl -H "Accept:text/html" \
      -H "Authorization: Bearer $token" -s "${url}" 2>&1 \
    | grep "0 pacts" || report_pact_failed
+
+echo ""
+echo "Performance test with token verification"
+echo " at url: ${url}/"
+ab -n 100 -c 10 -k -H "Authorization: Bearer $token" "${url}/"
 
 echo ""
 echo "SUCCESS: All tests passed!"

@@ -1,5 +1,7 @@
 # Dockerized Pact Broker with OAuth2 support [![Build Status](https://travis-ci.org/elgalu/pact_broker-docker.svg)](https://travis-ci.org/elgalu/pact_broker-docker)
 
+This projects starts at https://github.com/bethesque/pact_broker please read those docs first.
+
 ## Requirements
 
 * Latest stable docker
@@ -26,7 +28,7 @@
 
 * How the app was deployed to AWS: [pacts.md][]
 
-* Monitoring through New Relic [monitoring.md][]
+* Monitoring through New Relic [newrelic.md][]
 
 [Chrome OAuth Bearer Plugin]: https://github.com/zalando/chrome-oauth-bearer-plugin
 [postgres.md]: ./docs/postgres.md
@@ -37,4 +39,4 @@
 [etcd.md]: ./docs/etcd.md
 [spilo.md]: ./docs/spilo.md
 [pacts.md]: ./docs/pacts.md
-[monitoring.md]: ./docs/monitoring.md
+[newrelic.md]: ./docs/newrelic.md

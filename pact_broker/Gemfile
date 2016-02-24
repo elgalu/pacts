@@ -34,7 +34,7 @@ gem 'rack-ssl-enforcer', '~> 0.2.9'
 gem 'foreman', '~> 0.78.0'
 
 # New Relic server monitoring agent
-gem 'newrelic_rpm', '~> 3.14'
+# gem 'newrelic_rpm', '~> 3.14'
 
 group :test, :development do
   # Better debugging than irb

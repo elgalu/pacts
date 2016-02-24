@@ -6,7 +6,9 @@
 * [spilo.md](./spilo.md)
 
 ## Create a web-app senza definition
-    mai
+Note you need to execute these in your both AWS accounts, the live "myteam" and the testing account "myteam-test".
+
+    mai login myteam-PowerUser
     senza init pacts.yaml
 
     Please select the project template
@@ -61,7 +63,7 @@ Filter region, e.g. EU (Ireland)
 
 * Key Administrators roles: `sso-PowerUser`
 
-* Key Usage permissions roles: `app-pacts`
+* Key Usage permissions roles: `app-pacts` or `app-pacts-staging` depending on the account
 
 Go to your terminal and encrypt the DB username using this `pacts_access` key
 
