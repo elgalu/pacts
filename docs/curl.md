@@ -122,4 +122,4 @@ Ensure that the [impersonate](./script/impersonate) script has the correct `--to
     #=> Requesting token for [uid] from [https://auth.example.org/oauth2/access_token?realm=/services]... OK
     #=> {"scope":"uid","expires_in":3599,"token_type":"Bearer","access_token":"XXXX-****-4469-8243-0448c1cXXXXX"}
 
-Note in this case we use the application_id `pacts` and not a particular stack name: `pacts-live` or `pacts-staging`.
+Note in this case we use the application_id `pacts` and not a particular stack name.

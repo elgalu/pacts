@@ -115,18 +115,15 @@ Sample error if you skip this step:
 See [CONTRIBUTING](./CONTRIBUTING.md#deploy)
 
 ### Status
-    senza wait pacts-live v001
-    #=> Waiting up to 1800 more secs for stack pacts-live-v001 (CREATE_IN_PROGRESS)..
-    #=> ... Stack(s) pacts-live-v001 created successfully.
+    senza wait pacts v001
+    #=> Waiting up to 1800 more secs for stack pacts-v001 (CREATE_IN_PROGRESS)..
+    #=> ... Stack(s) pacts-v001 created successfully.
 
-    senza events pacts-live v001
-    #=> ... pacts-live v001 CloudFormation::Stack pacts-staging CREATE_COMPLETE
-
-    senza list pacts-staging
-    #=> pacts-staging CREATE_COMPLETE 7m ago Pacts (Stage: staging, ImgTag: 0.0.1)
+    senza events pacts v001
+    #=> ... pacts v001 CloudFormation::Stack pacts CREATE_COMPLETE
 
 ## Troubleshooting
-    senza inst pacts-staging v001 -o json | jq -r .[0].private_ip
+    senza inst pacts v001 -o json | jq -r .[0].private_ip
     #=> 172.31.144.171
     piu request-access -U elgalu --clip 172.31.144.171 "test"
 

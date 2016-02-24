@@ -13,9 +13,10 @@ test:
 
 build:
 	./script/gen-scm-source.sh
+	@cd pact_broker && bundle install
 	docker build -t pacts:latest .
 
-tag:
+tag: checkIMG_TAG
 	git tag ${IMG_TAG}
 	git push
 	git push --tags
@@ -29,18 +30,20 @@ create: checkSTAGE
 	@echo "Will work on AWS_ACC_NAME='${AWS_ACC_NAME}'"
 	@mai login ${AWS_ACC_NAME}-PowerUser
 	senza create pacts.yaml ${APP_VER} \
-	  ImgTag=${IMG_TAG} \
-	  InstanceType=${INSTANCE_TYPE} \
-	  AWSAccountNum=${AWS_ACC_NUM} \
-	  ApplicationId=${APPLICATION_ID} \
-	  DBName=${DB_NAME} \
-	  DBHost=${DB_HOST} \
-	  DBUserName=${DB_USERNAME} \
-	  DBPassword=${DB_PASSWORD} \
+	  ImgTag="${IMG_TAG}" \
+	  InstanceType="${INSTANCE_TYPE}" \
+	  AWSAccountNum="${AWS_ACC_NUM}" \
+	  ApplicationId="${APPLICATION_ID}" \
+	  Stage="${STAGE}"
 	senza wait pacts ${APP_VER}
-	senza console --limit 300 pacts-live ${APP_VER} | grep -iE "error|warn|failed"
+	senza console --limit 300 pacts ${APP_VER} | grep -iE "error|warn|failed"
 
 # Validations
+checkIMG_TAG:
+ifndef IMG_TAG
+	$(error IMG_TAG is not set)
+endif
+
 checkSTAGE:
 ifndef STAGE
 	$(error STAGE is not set)

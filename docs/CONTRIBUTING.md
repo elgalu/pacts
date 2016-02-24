@@ -51,20 +51,20 @@ Note: add `--disable-rollback` to troubleshoot when the stacks fails to create.
 Note: add `--disable-rollback` to troubleshoot
 
     senza create pacts.yaml v001 Stage=live ImgTag=$TAG
-    senza wait pacts-live v001 #=> Stack(s) pacts-live-vvvvv created successfully.
-    senza console --limit 300 pacts-live v001 | grep -iE "error|warn|failed"
+    senza wait pacts v001 #=> Stack(s) pacts-vvvvv created successfully.
+    senza console --limit 300 pacts v001 | grep -iE "error|warn|failed"
 
 ##### Traffic
 Redirect all traffic to the latest
 
-    senza traffic pacts-live v001 100
-    #=> Setting weights for ['pacts-live.myteam.example.org.'].. OK
+    senza traffic pacts v001 100
+    #=> Setting weights for ['pacts.myteam.example.org.'].. OK
 
 ##### Delete old stacks
 TODO: How to wait for the traffic to be fully switched before deletion?
 
-    senza delete pacts-live v000
-    senza wait -d pacts-live v000
+    senza delete pacts v000
+    senza wait -d pacts v000
 
 ##### CNAME Alias
 Only the first time make an alias to the live DNS using [cli53](https://github.com/barnybug/cli53)

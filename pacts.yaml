@@ -6,19 +6,15 @@ SenzaInfo:
       Description: "Docker image tag to deploy"
   - InstanceType:
       Description: "Instance type to use"
+      Description: "Instance type to use"
   - AWSAccountNum:
       Description: "AWS account id number"
+  - Stage:
+      Description: "Environment type"
+      AllowedValues: ["live", "test"]
   - ApplicationId:
       Description: "Application id"
       AllowedValues: ["pacts", "pacts-staging"]
-  - DBName:
-      Description: "Database name"
-  - DBHost:
-      Description: "Database host"
-  - DBUserName:
-      Description: "Database user name"
-  - DBPassword:
-      Description: "Database password"
 
 # a list of senza components to apply to the definition
 SenzaComponents:
@@ -73,17 +69,17 @@ SenzaComponents:
           # NEW_RELIC_AGENT_ENABLED: false
           # NEW_RELIC_LOG_LEVEL: info
           # can be 'live' or 'staging'
-          # STAGE: "{{Arguments.Stage}}"
+          STAGE: "{{Arguments.Stage}}"
           # live aka production
-          PACT_BROKER_DATABASE_NAME: "{{Arguments.DBName}}"
-          PACT_BROKER_DATABASE_HOST: "{{Arguments.DBHost}}"
-          PACT_BROKER_DATABASE_USERNAME: "{{Arguments.DBUserName}}"
-          PACT_BROKER_DATABASE_PASSWORD: "{{Arguments.DBPassword}}"
-          # staging
-          # STAGING_PACT_BROKER_DATABASE_NAME: staging_pact
-          # STAGING_PACT_BROKER_DATABASE_HOST: "aws:kms:SECRET!!!"
-          # STAGING_PACT_BROKER_DATABASE_USERNAME: "aws:kms:SECRET!!!"
-          # STAGING_PACT_BROKER_DATABASE_PASSWORD: "aws:kms:SECRET!!!"
+          LIVE_PACT_BROKER_DATABASE_NAME: "live_pacts"
+          LIVE_PACT_BROKER_DATABASE_HOST: "aws:kms:SECRET!!!"
+          LIVE_PACT_BROKER_DATABASE_USERNAME: "aws:kms:SECRET!!!"
+          LIVE_PACT_BROKER_DATABASE_PASSWORD: "aws:kms:SECRET!!!"
+          # test (staging)
+          STAGING_PACT_BROKER_DATABASE_NAME: "staging_pact"
+          STAGING_PACT_BROKER_DATABASE_HOST: "aws:kms:SECRET!!!"
+          STAGING_PACT_BROKER_DATABASE_USERNAME: "aws:kms:SECRET!!!"
+          STAGING_PACT_BROKER_DATABASE_PASSWORD: "aws:kms:SECRET!!!"
         #configure logrotate for application.log
         application_logrotate_size: 256M
         application_logrotate_interval: weekly

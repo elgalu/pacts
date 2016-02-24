@@ -177,7 +177,7 @@ docker run --name=${PACT_CONT_NAME} -d -p ${PORT_BIND} \
   -e PACT_BROKER_DATABASE_NAME \
   -e SKIP_HTTPS_ENFORCER \
   -e OAUTH_TOKEN_INFO \
-  -e STAGE=test \
+  -e STAGE=local \
   pact_broker
 sleep 2 && docker logs ${PACT_CONT_NAME}
 
