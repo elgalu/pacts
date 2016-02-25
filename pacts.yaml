@@ -59,7 +59,7 @@ SenzaComponents:
         # etcd_discovery_domain: "etcd.myteam.example.org"
         scalyr_account_key: "{{Arguments.ScalyrKey}}"
         # https://docs.stups.io/en/latest/components/taupage.html?highlight=newrelic_account_key#newrelic-account-key
-        # newrelic_account_key: "aws:kms:SECRET!!!"
+        # newrelic_account_key:
         mint_bucket: "myorg-stups-mint-{{Arguments.AWSAccountNum}}-{{Arguments.AWSMintRegion}}"
         ports:
           443: 443
@@ -71,7 +71,7 @@ SenzaComponents:
           RACK_THREADS_COUNT: 20
           # New Relic server monitoring. Note AppDynamics doesn't support Ruby
           # https://docs.newrelic.com/docs/agents/ruby-agent/installation-configuration/ruby-agent-configuration#Options
-          # NEW_RELIC_LICENSE_KEY: "aws:kms:SECRET!!!"
+          # NEW_RELIC_LICENSE_KEY:
           # we can split new relic monitoring in the future: "pacts-{{Arguments.Stage}}"
           # NEW_RELIC_APP_NAME: pacts
           # NEW_RELIC_AGENT_ENABLED: false
