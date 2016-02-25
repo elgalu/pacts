@@ -35,7 +35,7 @@ kio_create:
 approve:
 	USER=${MYUSER} kio ver approve ${APPLICATION_ID} $(APP_VER)
 
-# Note you can also use env var `AWS_DEFAULT_REGION` instead of `--region`
+# Note you can also use or export env var `AWS_DEFAULT_REGION` instead of `--region`
 senza_create: checkSTAGE
 	@echo "Will work on AWS_ACC_NAME='${AWS_ACC_NAME}'"
 	@mai login ${AWS_ACC_NAME}-PowerUser
