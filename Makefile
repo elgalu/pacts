@@ -44,6 +44,7 @@ senza_create: checkSTAGE
 	  InstanceType="${INSTANCE_TYPE}" \
 	  AWSAccountNum="${AWS_ACC_NUM}" \
 	  AWSRegion="${AWS_REGION}" \
+	  AWSMintRegion="${AWS_MINT_REGION}" \
 	  ApplicationId="${APPLICATION_ID}" \
 	  Stage="${STAGE}"
 	senza wait --region "${AWS_REGION}" pacts ${APP_VER}

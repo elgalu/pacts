@@ -75,7 +75,12 @@ Open [pacts.yaml](../pacts.yaml)
 Ref1: http://stups.readthedocs.org/en/latest/components/taupage.html#environment
 
 Navigate to **Encryption Keys** underneath **IAM** on AWS Console and click `Create Key`
+e.g. for live region
+
 https://console.aws.amazon.com/iam/home?region=us-east-2#encryptionKeys/us-east-2
+
+e.g. for staging region
+https://console.aws.amazon.com/iam/home?region=us-east-3#encryptionKeys/us-east-3
 
 Filter region, e.g. EU (Ireland)
 
@@ -90,8 +95,14 @@ Go to your terminal and encrypt the DB username using this `pacts_access` key
 
     pip3 install --upgrade awscli
 
-    mai #if you get ExpiredTokenException
-    aws kms encrypt --key-id alias/pacts_access --plaintext "postgres" | jq .CiphertextBlob
+    #`mai login` if you get ExpiredTokenException
+    mai login myteam-PowerUser
+    AWS_DEFAULT_REGION=us-east-2 aws kms encrypt --key-id alias/pacts_access --plaintext "postgres" | jq .CiphertextBlob
+
+Or staging:
+
+    mai login myteam-test-PowerUser
+    AWS_DEFAULT_REGION=us-east-3 aws kms encrypt --key-id alias/pacts_access --plaintext "postgres" | jq .CiphertextBlob
 
 You can include `| xclip -selection c` at the end to directly copy it to the clipboard, on Ubuntu.
 
