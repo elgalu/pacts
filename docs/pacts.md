@@ -9,7 +9,7 @@
 Note you need to execute these in your both AWS accounts, the live "myteam" and the testing account "myteam-test".
 
     mai login myteam-PowerUser
-    senza init pacts.yaml
+    senza init --region us-east-2 pacts.yaml
 
     Please select the project template
     Selected 5) webapp: HTTP app with auto scaling, ELB and DNS
@@ -17,9 +17,30 @@ Note you need to execute these in your both AWS accounts, the live "myteam" and 
     Docker image without tag/version [stups/hello-world]: docker.io/myusr/pacts
     HTTP port [8080]: 443
     HTTP health check path [/]: /diagnostic/status/heartbeat
-    EC2 instance type [t2.micro]: t2.nano
+    EC2 instance type [t2.micro]: t2.micro
     Did you need OAuth-Credentials from Mint? [y/N]: y
     Mint S3 bucket name [myorg-stups-mint-123456789012-us-east-2]:
+    Please select the load balancer scheme
+    1) internal: only accessible from the own VPC
+    2) internet-facing: accessible from the public internet
+    Please select (1-2) [1]: 2
+    Security group app-pacts does not exist. Do you want Senza to create it now? [Y/n]: Y
+    Security group app-pacts-lb does not exist. Do you want Senza to create it now? [Y/n]: Y
+
+Or for staging
+
+    mai login myteam-PowerUser
+    senza init --region us-east-3 pacts-staging.yaml
+
+    Please select the project template
+    Selected 5) webapp: HTTP app with auto scaling, ELB and DNS
+    Application ID [hello-world]: pacts-staging
+    Docker image without tag/version [stups/hello-world]: docker.io/myusr/pacts
+    HTTP port [8080]: 443
+    HTTP health check path [/]: /diagnostic/status/heartbeat
+    EC2 instance type [t2.micro]: t2.nano
+    Did you need OAuth-Credentials from Mint? [y/N]: y
+    Mint S3 bucket name [myorg-stups-mint-234567890123-us-east-3]:
     Please select the load balancer scheme
     1) internal: only accessible from the own VPC
     2) internet-facing: accessible from the public internet
