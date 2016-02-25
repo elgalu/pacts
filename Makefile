@@ -41,7 +41,7 @@ approve:
 senza_create: checkSTAGE
 	@echo "Will work on AWS_ACC_NAME='${AWS_ACC_NAME}'"
 	@mai login ${AWS_ACC_NAME}-PowerUser
-	senza create --region "${AWS_REGION}" pacts.yaml ${APP_VER} \
+	senza create --region ${AWS_REGION} pacts.yaml ${APP_VER} \
 	  ImgTag="${IMG_TAG}" \
 	  InstanceType="${INSTANCE_TYPE}" \
 	  AWSAccountNum="${AWS_ACC_NUM}" \
@@ -49,8 +49,8 @@ senza_create: checkSTAGE
 	  AWSMintRegion="${AWS_MINT_REGION}" \
 	  ApplicationId="${APPLICATION_ID}" \
 	  Stage="${STAGE}"
-	senza wait --region "${AWS_REGION}" pacts ${APP_VER}
-	senza console --region "${AWS_REGION}" --limit 300 pacts ${APP_VER} | grep -iE "error|warn|failed|SUCCESS"
+	senza wait --region ${AWS_REGION} pacts ${APP_VER} || true
+	senza console --region ${AWS_REGION} --limit 300 pacts ${APP_VER} | grep -iE "error|warn|failed|SUCCESS"
 
 # Validations
 checkIMG_TAG:
