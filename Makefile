@@ -27,12 +27,15 @@ push:
 	docker push ${REG}/tip/pacts:${IMG_TAG}
 
 kio_create:
-	USER=${MYUSER} kio ver create pacts $(APP_VER) docker://${REG}/tip/pacts:${IMG_TAG}
+	@if kio ver show ${APPLICATION_ID} $(APP_VER) >/dev/null 2>&1; then \
+	  echo "App ${APPLICATION_ID} version $(APP_VER) already in Kio!"; fi
+	@if ! kio ver show ${APPLICATION_ID} $(APP_VER) >/dev/null 2>&1; then \
+	  USER=${MYUSER} kio ver create ${APPLICATION_ID} $(APP_VER) docker://${REG}/tip/pacts:${IMG_TAG}; fi
 
 approve:
-	USER=${MYUSER} kio ver approve pacts $(APP_VER)
+	USER=${MYUSER} kio ver approve ${APPLICATION_ID} $(APP_VER)
 
-create: checkSTAGE
+senza_create: checkSTAGE
 	@echo "Will work on AWS_ACC_NAME='${AWS_ACC_NAME}'"
 	@mai login ${AWS_ACC_NAME}-PowerUser
 	senza create --region "${AWS_REGION}" pacts.yaml ${APP_VER} \
@@ -62,8 +65,11 @@ endif
 # so .PHONY is used to skip that logic for the listed task names
 .PHONY: \
 	checkSTAGE \
+	checkIMG_TAG \
 	build \
 	tag \
 	push \
-	create \
+	kio_create \
+	approve \
+	senza_create \
 	test
