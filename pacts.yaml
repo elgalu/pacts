@@ -13,6 +13,8 @@ SenzaInfo:
       Description: "AWS region to deploy to"
   - AWSMintRegion:
       Description: "AWS region for the mint bucket, could be different from the instance region"
+  - ScalyrKey:
+      Description: "Scalyr logs access key"
   - Stage:
       Description: "Environment type"
       AllowedValues: ["live", "test"]
@@ -55,7 +57,7 @@ SenzaComponents:
         health_check_timeout_seconds: 90
         root: true
         # etcd_discovery_domain: "etcd.myteam.example.org"
-        scalyr_account_key: "aws:kms:SECRET!!!"
+        scalyr_account_key: "{{Arguments.ScalyrKey}}"
         # https://docs.stups.io/en/latest/components/taupage.html?highlight=newrelic_account_key#newrelic-account-key
         # newrelic_account_key: "aws:kms:SECRET!!!"
         mint_bucket: "myorg-stups-mint-{{Arguments.AWSAccountNum}}-{{Arguments.AWSMintRegion}}"

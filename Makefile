@@ -49,6 +49,7 @@ senza_create: checkSTAGE
 	  AWSRegion="${AWS_REGION}" \
 	  AWSMintRegion="${AWS_MINT_REGION}" \
 	  ApplicationId="${APPLICATION_ID}" \
+	  ApplicationId="${SCALYR_KEY}" \
 	  Stage="${STAGE}"
 	senza wait --region ${AWS_REGION} pacts ${APP_VER} || true
 	senza console --region ${AWS_REGION} --limit 300 pacts ${APP_VER} | grep -iE "error|warn|failed|SUCCESS"
