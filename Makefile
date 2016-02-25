@@ -41,6 +41,7 @@ approve:
 senza_create: checkSTAGE
 	@echo "Will work on AWS_ACC_NAME='${AWS_ACC_NAME}'"
 	@mai login ${AWS_ACC_NAME}-PowerUser
+	@pierone login --url ${REG} --user ${MYUSER}
 	senza create --region ${AWS_REGION} pacts.yaml ${APP_VER} \
 	  ImgTag="${IMG_TAG}" \
 	  InstanceType="${INSTANCE_TYPE}" \
