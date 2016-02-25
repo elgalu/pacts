@@ -54,6 +54,11 @@ senza_create: checkSTAGE
 	senza wait --region ${AWS_REGION} pacts ${APP_VER} || true
 	senza console --region ${AWS_REGION} --limit 300 pacts ${APP_VER} | grep -iE "error|warn|failed" || true
 
+senza_traffic: checkSTAGE
+	@echo "Will update traffic on AWS_ACC_NAME='${AWS_ACC_NAME}'"
+	@mai login ${AWS_ACC_NAME}-PowerUser
+	senza traffic --region ${AWS_REGION} pacts ${APP_VER} 100
+
 # Validations
 checkIMG_TAG:
 ifndef IMG_TAG
