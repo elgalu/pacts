@@ -26,21 +26,24 @@ push:
 	pierone login --url ${REG} --user ${MYUSER}
 	docker push ${REG}/tip/pacts:${IMG_TAG}
 
-approve:
+kio_create:
 	USER=${MYUSER} kio ver create pacts $(APP_VER) docker://${REG}/tip/pacts:${IMG_TAG}
+
+approve:
 	USER=${MYUSER} kio ver approve pacts $(APP_VER)
 
 create: checkSTAGE
 	@echo "Will work on AWS_ACC_NAME='${AWS_ACC_NAME}'"
 	@mai login ${AWS_ACC_NAME}-PowerUser
-	senza create pacts.yaml ${APP_VER} \
+	senza create --region "${AWS_REGION}" pacts.yaml ${APP_VER} \
 	  ImgTag="${IMG_TAG}" \
 	  InstanceType="${INSTANCE_TYPE}" \
 	  AWSAccountNum="${AWS_ACC_NUM}" \
+	  AWSRegion="${AWS_REGION}" \
 	  ApplicationId="${APPLICATION_ID}" \
 	  Stage="${STAGE}"
-	senza wait pacts ${APP_VER}
-	senza console --limit 300 pacts ${APP_VER} | grep -iE "error|warn|failed|SUCCESS"
+	senza wait --region "${AWS_REGION}" pacts ${APP_VER}
+	senza console --region "${AWS_REGION}" --limit 300 pacts ${APP_VER} | grep -iE "error|warn|failed|SUCCESS"
 
 # Validations
 checkIMG_TAG:

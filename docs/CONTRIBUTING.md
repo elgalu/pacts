@@ -118,10 +118,10 @@ Resolve all your old violations and start fresh for next time
     export USER=elgalu
     fullstop list-violations --accounts "123456789012" --output json --since 700d -l 50
     fullstop resolve-violations --accounts "123456789012" --since 700d -l 9999 "Resolving old violations"
-    #=> Resolving violation 123456789012/us-east-1 APPLICATION_VERSION_NOT_PRESENT_IN_KIO 1005936.. OK
-    #=> Resolving violation 123456789012/us-east-1 SPEC_TYPE_IS_MISSING_IN_KIO 1005935.. OK
-    #=> Resolving violation 123456789012/us-east-1 APPLICATION_VERSION_NOT_PRESENT_IN_KIO 1005934.. OK
-    #=> Resolving violation 123456789012/us-east-1 SPEC_TYPE_IS_MISSING_IN_KIO 1005933.. OK
+    #=> Resolving violation 123456789012/us-east-2 APPLICATION_VERSION_NOT_PRESENT_IN_KIO 1005936.. OK
+    #=> Resolving violation 123456789012/us-east-2 SPEC_TYPE_IS_MISSING_IN_KIO 1005935.. OK
+    #=> Resolving violation 123456789012/us-east-2 APPLICATION_VERSION_NOT_PRESENT_IN_KIO 1005934.. OK
+    #=> Resolving violation 123456789012/us-east-2 SPEC_TYPE_IS_MISSING_IN_KIO 1005933.. OK
     #=> ...
 
 ##### Or in the UI

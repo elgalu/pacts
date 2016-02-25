@@ -117,8 +117,8 @@ Ensure that the [impersonate](./script/impersonate) script has the correct `--to
 
     ./script/impersonate pacts
 
-    #=> Trying to detect your stups-mint bucket... [myorg-stups-mint-123456789012-us-east-1]
-    #=> Fetching credentials for [pacts] from [myorg-stups-mint-123456789012-us-east-1]... OK
+    #=> Trying to detect your stups-mint bucket... [myorg-stups-mint-123456789012-us-east-2]
+    #=> Fetching credentials for [pacts] from [myorg-stups-mint-123456789012-us-east-2]... OK
     #=> Requesting token for [uid] from [https://auth.example.org/oauth2/access_token?realm=/services]... OK
     #=> {"scope":"uid","expires_in":3599,"token_type":"Bearer","access_token":"XXXX-****-4469-8243-0448c1cXXXXX"}
 

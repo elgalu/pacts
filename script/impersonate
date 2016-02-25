@@ -17,7 +17,7 @@ from senza.cli import get_region
 @click.option('--bucket', '-b')
 @click.option('--scope', '-s', default=['uid'], multiple=True)
 @click.option('--token-endpoint', '-t', default='https://auth.example.org/oauth2/access_token?realm=/services')
-@click.option('--region', envvar='AWS_DEFAULT_REGION', metavar='AWS_REGION_ID', help='AWS region ID (e.g. us-east-1)')
+@click.option('--region', envvar='AWS_DEFAULT_REGION', metavar='AWS_REGION_ID', help='AWS region ID (e.g. us-east-2)')
 def cli(service_id, bucket, scope, token_endpoint, region):
     bucket = get_s3_bucket(bucket, region)
     if not bucket:

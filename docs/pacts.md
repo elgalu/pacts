@@ -19,7 +19,7 @@ Note you need to execute these in your both AWS accounts, the live "myteam" and 
     HTTP health check path [/]: /diagnostic/status/heartbeat
     EC2 instance type [t2.micro]: t2.nano
     Did you need OAuth-Credentials from Mint? [y/N]: y
-    Mint S3 bucket name [myorg-stups-mint-123456789012-us-east-1]:
+    Mint S3 bucket name [myorg-stups-mint-123456789012-us-east-2]:
     Please select the load balancer scheme
     1) internal: only accessible from the own VPC
     2) internet-facing: accessible from the public internet
@@ -54,7 +54,7 @@ Open [pacts.yaml](../pacts.yaml)
 Ref1: http://stups.readthedocs.org/en/latest/components/taupage.html#environment
 
 Navigate to **Encryption Keys** underneath **IAM** on AWS Console and click `Create Key`
-https://console.aws.amazon.com/iam/home?region=us-east-1#encryptionKeys/us-east-1
+https://console.aws.amazon.com/iam/home?region=us-east-2#encryptionKeys/us-east-2
 
 Filter region, e.g. EU (Ireland)
 
@@ -105,13 +105,13 @@ Go to [Create Application](https://yourturn.stups.example.org/application/create
 ### Add mint bucket
 The app will show mint bucker errors as we are missing this step.
 
-Go to [Access Control](https://yourturn.stups.example.org/application/access-control/pacts) and activate mint bucket `myorg-stups-mint-123456789012-us-east-1`
+Go to [Access Control](https://yourturn.stups.example.org/application/access-control/pacts) and activate mint bucket `myorg-stups-mint-123456789012-us-east-2`
 
 Then click [Renew Credentials](https://yourturn.stups.example.org/application/access-control/pacts)
 
 Sample error if you skip this step:
 
-    berry: ERROR: Access denied while trying to read "pacts/user.json" from mint S3 bucket "myorg-stups-mint-123456789012-us-east-1"
+    berry: ERROR: Access denied while trying to read "pacts/user.json" from mint S3 bucket "myorg-stups-mint-123456789012-us-east-2"
 
 ### Deploy
 See [CONTRIBUTING](./CONTRIBUTING.md#deploy)

@@ -18,7 +18,7 @@ Note `myteam` is our account name:
     mai set-default myteam-PowerUser
 
 ### Region
-    echo -e "[default]\nregion = us-east-1\n" > $HOME/.aws/config
+    echo -e "[default]\nregion = us-east-2\n" > $HOME/.aws/config
 
 ## Create the etcd cluster
 Docs: http://spilo.readthedocs.org/en/latest/user-guide/deploy_etcd/

@@ -9,6 +9,8 @@ SenzaInfo:
       Description: "Instance type to use"
   - AWSAccountNum:
       Description: "AWS account id number"
+  - AWSRegion:
+      Description: "AWS region to deploy to"
   - Stage:
       Description: "Environment type"
       AllowedValues: ["live", "test"]
@@ -52,7 +54,7 @@ SenzaComponents:
         scalyr_account_key: "aws:kms:SECRET!!!"
         # https://docs.stups.io/en/latest/components/taupage.html?highlight=newrelic_account_key#newrelic-account-key
         # newrelic_account_key: "aws:kms:SECRET!!!"
-        mint_bucket: "myorg-stups-mint-{{Arguments.AWSAccountNum}}-us-east-1"
+        mint_bucket: "myorg-stups-mint-{{Arguments.AWSAccountNum}}-{{Arguments.AWSRegion}}"
         ports:
           443: 443
         environment:

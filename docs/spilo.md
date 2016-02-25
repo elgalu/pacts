@@ -12,7 +12,7 @@ Select `postgresapp: HA Postgres app` project [template](https://github.com/zala
 
 * Set docker image: y
 * Docker image: registry.opensource.zalan.do/acid/spilo-9.4:0.5-p1 (default)
-* WAL S3 to use: Change to unused one, e.g. `myorg-myteam-us-east-1-spilo-pacts`
+* WAL S3 to use: Change to unused one, e.g. `myorg-myteam-us-east-2-spilo-pacts`
 * EC2 instance type: t2.nano
 * domain: [2]: 
 * ETCD Discovery Domain: etcd.
@@ -25,8 +25,8 @@ Select `postgresapp: HA Postgres app` project [template](https://github.com/zala
 Sample output
 
     Checking security group app-spilo.. OK
-    Checking S3 bucket myorg-myteam-us-east-1-spilo-pacts.. OK
-    Creating S3 bucket myorg-myteam-us-east-1-spilo-pacts... OK
+    Checking S3 bucket myorg-myteam-us-east-2-spilo-pacts.. OK
+    Creating S3 bucket myorg-myteam-us-east-2-spilo-pacts... OK
     Generating Senza definition file spilo.yaml.. OK
 
 Note latest spilo docker image can be found [here](https://registry.opensource.zalan.do/v1/repositories/acid/spilo-9.4/tags) and tag `latest` should be a pointer to the most recent.
@@ -76,7 +76,7 @@ Sample `senza instances` output of a healthy cluster:
 To connect to Postgres first open tunnel to Postgres:
 
     export MYUSER=elgalu
-    export JUMPH="${MYUSER}@odd-us-east-1."
+    export JUMPH="${MYUSER}@odd-us-east-2."
     export SOPTS="-o StrictHostKeyChecking=no"
     export TUNOPTS="-v -N $SOPTS"
     export JUMPOPTS="-tA $SOPTS"
@@ -110,12 +110,12 @@ Right now is not so simple, check https://github.com/zalando/spilo/issues/31 for
     sudo /etc/init.d/scalyr-agent-2 restart
 
 Restart Scalyr on all your AWS account instances deployed with senza
-Just change `odd-us-east-1.` and `elgalu` depending on your team and user name.
+Just change `odd-us-east-2.` and `elgalu` depending on your team and user name.
 
     for ip in $(senza inst -o tsv | awk -F'\t' '{print $6}'); do
       [ "$ip" == "private_ip" ] && continue #skip header
       piu request-access -U elgalu --clip $ip "Restart Scalyr"
-      ssh -tA elgalu@odd-us-east-1. ssh -o StrictHostKeyChecking=no elgalu@$ip sudo /etc/init.d/scalyr-agent-2 restart
+      ssh -tA elgalu@odd-us-east-2. ssh -o StrictHostKeyChecking=no elgalu@$ip sudo /etc/init.d/scalyr-agent-2 restart
     done
 
 
