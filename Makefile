@@ -52,7 +52,7 @@ senza_create: checkSTAGE
 	  ScalyrKey="${SCALYR_KEY}" \
 	  Stage="${STAGE}"
 	senza wait --region ${AWS_REGION} pacts ${APP_VER} || true
-	senza console --region ${AWS_REGION} --limit 300 pacts ${APP_VER} | grep -iE "error|warn|failed|SUCCESS"
+	senza console --region ${AWS_REGION} --limit 300 pacts ${APP_VER} | grep -iE "error|warn|failed" || true
 
 # Validations
 checkIMG_TAG:
