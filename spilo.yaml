@@ -21,7 +21,7 @@ SenzaComponents:
         Minimum: 3
         Maximum: 5
         MetricType: CPU
-      InstanceType: t2.nano
+      InstanceType: t2.micro
       BlockDeviceMappings:
         - DeviceName: /dev/xvdk
           Ebs:

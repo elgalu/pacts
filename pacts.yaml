@@ -31,6 +31,8 @@ SenzaComponents:
   - AppServer:
       Type: Senza::TaupageAutoScalingGroup
       # General Purpose T2: t2.nano, t2.micro, t2.small, t2.medium, t2.large
+      # Note that if an instance type is not available in one region you will get
+      # ERROR: AppServer CREATE_FAILED: The requested configuration is currently not supported. Please check the documentation for supported configurations. Launching EC2 instance failed.
       InstanceType: "{{Arguments.InstanceType}}"
       AutoScaling:
         Minimum: 2

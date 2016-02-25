@@ -1,4 +1,6 @@
 include .env
+# Note STAGE can be "live" or "test" and when empty it has the same
+# effect as `include .env` as the first line in this script
 include $(STAGE).env
 
 # default executed task when no name is provided

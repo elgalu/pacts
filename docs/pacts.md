@@ -38,7 +38,7 @@ Or for staging
     Docker image without tag/version [stups/hello-world]: docker.io/myusr/pacts
     HTTP port [8080]: 443
     HTTP health check path [/]: /diagnostic/status/heartbeat
-    EC2 instance type [t2.micro]: t2.nano
+    EC2 instance type [t2.micro]: t2.micro
     Did you need OAuth-Credentials from Mint? [y/N]: y
     Mint S3 bucket name [myorg-stups-mint-234567890123-us-east-3]:
     Please select the load balancer scheme
