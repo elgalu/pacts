@@ -84,7 +84,7 @@ https://console.aws.amazon.com/iam/home?region=us-east-3#encryptionKeys/us-east-
 
 Filter region, e.g. EU (Ireland)
 
-    Alias: pacts_access
+    Alias: pacts_access or pacts_stage_access
     Descr: Pacts encryption for DB and other access
 
 * Key Administrators roles: `sso-PowerUser`
@@ -102,7 +102,7 @@ Go to your terminal and encrypt the DB username using this `pacts_access` key
 Or staging:
 
     mai login myteam-test-PowerUser
-    AWS_DEFAULT_REGION=us-east-3 aws kms encrypt --key-id alias/pacts_access --plaintext "postgres" | jq .CiphertextBlob
+    AWS_DEFAULT_REGION=us-east-3 aws kms encrypt --key-id alias/pacts_stage_access --plaintext "postgres" | jq .CiphertextBlob
 
 You can include `| xclip -selection c` at the end to directly copy it to the clipboard, on Ubuntu.
 
