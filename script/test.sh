@@ -35,7 +35,8 @@ required_args () {
   echoerr "  export PACT_BROKER_DATABASE_PASSWORD=postgres"
   echoerr "  export PACT_BROKER_DATABASE_NAME=pact"
   echoerr "  export PACT_BROKER_DATABASE_HOST=172.17.0.2"
-  echoerr "  export OAUTH_TOKEN_INFO=https://auth.example.org/oauth2/tokeninfo?access_token="
+  echoerr "  export TOKENINFO_URL=\"https://info.service.example.com/oauth2/tokeninfo\""
+  echoerr "  export TOKENINFO_PARAMS=\"?access_token=\""
   echoerr "  export MYUSER=elgalu"
   echoerr ""
   echoerr "Current values:"
@@ -43,7 +44,8 @@ required_args () {
   echoerr "  export PACT_BROKER_DATABASE_PASSWORD='${PACT_BROKER_DATABASE_PASSWORD}'"
   echoerr "  export PACT_BROKER_DATABASE_NAME='${PACT_BROKER_DATABASE_NAME}'"
   echoerr "  export PACT_BROKER_DATABASE_HOST='${PACT_BROKER_DATABASE_HOST}'"
-  echoerr "  export OAUTH_TOKEN_INFO='${OAUTH_TOKEN_INFO}'"
+  echoerr "  export TOKENINFO_URL='${TOKENINFO_URL}'"
+  echoerr "  export TOKENINFO_PARAMS='${TOKENINFO_PARAMS}'"
   echoerr "  export MYUSER='${MYUSER}'"
   echoerr ""
   echoerr "And ensure you have allowed external connections."
@@ -69,17 +71,20 @@ if [ "${TRAVIS}" == "true" ]; then
 fi
 
 # defaults
-[ -z "${PACT_BROKER_PORT}" ]    && export PACT_BROKER_PORT=443
-[ -z "${BIND_TO}" ]             && export BIND_TO="0.0.0.0"
-[ -z "${PSQL_WAIT_TIMEOUT}" ]   && export PSQL_WAIT_TIMEOUT="10s"
-[ -z "${PACT_WAIT_TIMEOUT}" ]   && export PACT_WAIT_TIMEOUT="15s"
-[ -z "${PACT_CONT_NAME}" ]      && export PACT_CONT_NAME="broker_app"
-[ -z "${PSQL_CONT_NAME}" ]      && export PSQL_CONT_NAME="postgres_test"
-[ -z "${SKIP_HTTPS_ENFORCER}" ] && export SKIP_HTTPS_ENFORCER="true"
-[ -z "${GETOK}" ]               && export GETOK="https://token.info.example.org/access_token"
+[ -z "${PACT_BROKER_PORT}" ]           && export PACT_BROKER_PORT=443
+[ -z "${BIND_TO}" ]                    && export BIND_TO="0.0.0.0"
+[ -z "${PSQL_WAIT_TIMEOUT}" ]          && export PSQL_WAIT_TIMEOUT="10s"
+[ -z "${PACT_WAIT_TIMEOUT}" ]          && export PACT_WAIT_TIMEOUT="15s"
+[ -z "${PACT_CONT_NAME}" ]             && export PACT_CONT_NAME="broker_app"
+[ -z "${PSQL_CONT_NAME}" ]             && export PSQL_CONT_NAME="postgres_test"
+[ -z "${SKIP_HTTPS_ENFORCER}" ]        && export SKIP_HTTPS_ENFORCER="true"
+[ -z "${OAUTH2_ACCESS_TOKEN_URL}" ]    && export OAUTH2_ACCESS_TOKEN_URL="https://token.example.com/access_token"
+[ -z "${OAUTH2_ACCESS_TOKEN_PARAMS}" ] && export OAUTH2_ACCESS_TOKEN_PARAMS="?realm=/employees"
+[ -z "${OAUTH2_ACCESS_TOKEN_URL_PARAMS}" ] && \
+  export OAUTH2_ACCESS_TOKEN_URL_PARAMS="${OAUTH2_ACCESS_TOKEN_URL}${OAUTH2_ACCESS_TOKEN_PARAMS}"
 
 # ensure token works before continuing
-zign token --user $MYUSER --url $GETOK -n pact
+zign token --user ${MYUSER} --url ${OAUTH2_ACCESS_TOKEN_URL_PARAMS} -n pact
 
 # Cert issues
 curl https://secure-static.ztat.net/ca/zalando-service.ca > certs/zalando-service.crt
@@ -162,8 +167,12 @@ fi
 [ -z "${PACT_BROKER_DATABASE_PASSWORD}" ] && required_args
 [ -z "${PACT_BROKER_DATABASE_HOST}" ] && required_args
 [ -z "${PACT_BROKER_DATABASE_NAME}" ] && required_args
-[ -z "${OAUTH_TOKEN_INFO}" ] && required_args
+[ -z "${TOKENINFO_URL}" ] && required_args
+[ -z "${TOKENINFO_PARAMS}" ] && required_args
 [ -z "${MYUSER}" ] && required_args
+
+export TOKENINFO_URL_PARAMS="${TOKENINFO_URL}${TOKENINFO_PARAMS}"
+echo "TOKENINFO_URL_PARAMS=${TOKENINFO_URL_PARAMS}"
 
 echo ""
 echo "Run the built Pact Broker"
@@ -176,7 +185,9 @@ docker run --name=${PACT_CONT_NAME} -d -p ${PORT_BIND} \
   -e PACT_BROKER_DATABASE_HOST \
   -e PACT_BROKER_DATABASE_NAME \
   -e SKIP_HTTPS_ENFORCER \
-  -e OAUTH_TOKEN_INFO \
+  -e TOKENINFO_URL \
+  -e TOKENINFO_PARAMS \
+  -e TOKENINFO_URL_PARAMS \
   -e STAGE=local \
   pact_broker
 sleep 2 && docker logs ${PACT_CONT_NAME}
@@ -238,7 +249,8 @@ echo ""
 echo ""
 echo "Checking with valid token"
 echo " at url: ${url}"
-token=$(zign token --user $MYUSER --url $GETOK -n pact)
+token=$(zign token --user ${MYUSER} --url ${OAUTH2_ACCESS_TOKEN_URL_PARAMS} -n pact)
+# echo "Got token=$token"
 curl -H "Accept:text/html" \
      -H "Authorization: Bearer $token" -s "${url}" 2>&1 \
    | grep "0 pacts" || report_pact_failed

@@ -7,10 +7,12 @@ SenzaInfo:
   - InstanceType:
       Description: "Instance type to use"
       Description: "Instance type to use"
-  - AWSAccountNum:
-      Description: "AWS account id number"
-  - AWSRegion:
-      Description: "AWS region to deploy to"
+  # AWSAccountNum replace with {{AccountInfo.AccountID}}
+  # - AWSAccountNum:
+  #     Description: "AWS account id number"
+  # AWSRegion replace with {{AccountInfo.Region}}
+  # - AWSRegion:
+  #     Description: "AWS region to deploy to"
   - AWSMintRegion:
       Description: "AWS region for the mint bucket, could be different from the instance region"
   - ScalyrKey:
@@ -55,29 +57,27 @@ SenzaComponents:
         source: "docker.io/myusr/pacts:{{Arguments.ImgTag}}"
         health_check_path: /diagnostic/status/heartbeat
         health_check_timeout_seconds: 90
+        health_check_port: 443
         root: true
-        # etcd_discovery_domain: "etcd.myteam.example.org"
+        # etcd_discovery_domain: "etcd.{{AccountInfo.TeamID}}"
         scalyr_account_key: "{{Arguments.ScalyrKey}}"
-        # https://docs.stups.io/en/latest/components/taupage.html?highlight=newrelic_account_key#newrelic-account-key
-        # newrelic_account_key:
-        mint_bucket: "myorg-stups-mint-{{Arguments.AWSAccountNum}}-{{Arguments.AWSMintRegion}}"
+        mint_bucket: "myorg-stups-mint-{{AccountInfo.AccountID}}-{{Arguments.AWSMintRegion}}"
         ports:
           443: 443
         environment:
-          OAUTH_TOKEN_INFO: "https://auth.example.org/oauth2/tokeninfo?access_token="
+          # No need to set TOKENINFO_URL here since it should be automatically
+          # set by taupage left this here for reference only
+          # TOKENINFO_URL: "https://info.service.example.com/oauth2/tokeninfo"
+          TOKENINFO_PARAMS: "?access_token="
+          OAUTH2_ACCESS_TOKEN_URL: "https://token.service.example.com/oauth2/access_token"
+          OAUTH2_ACCESS_TOKEN_PARAMS: "?realm=/services"
+          # Enforce https on production/staging
           SKIP_HTTPS_ENFORCER: false
           BIND_TO: 0.0.0.0
           PACT_BROKER_PORT: 443
           RACK_THREADS_COUNT: 20
-          # New Relic server monitoring. Note AppDynamics doesn't support Ruby
-          # https://docs.newrelic.com/docs/agents/ruby-agent/installation-configuration/ruby-agent-configuration#Options
-          # NEW_RELIC_LICENSE_KEY:
-          # we can split new relic monitoring in the future: "pacts-{{Arguments.Stage}}"
-          # NEW_RELIC_APP_NAME: pacts
-          # NEW_RELIC_AGENT_ENABLED: false
-          # NEW_RELIC_LOG_LEVEL: info
-          # can be 'live' or 'staging'
           STAGE: "{{Arguments.Stage}}"
+          TAUPAGE_DOMAIN: "{{AccountInfo.Domain}}"
           # live aka production
           LIVE_PACT_BROKER_DATABASE_NAME: "live_pacts"
           LIVE_PACT_BROKER_DATABASE_HOST: "aws:kms:SECRET!!!"
@@ -93,6 +93,7 @@ SenzaComponents:
         application_logrotate_interval: weekly
         application_logrotate_rotate: 4
         hostname: "{{Arguments.ApplicationId}}}"
+        domain: "{{AccountInfo.Domain}}"
         # defaults
         privileged: false
         docker_daemon_access: false
@@ -110,7 +111,7 @@ SenzaComponents:
       SecurityGroups:
         - app-{{Arguments.ApplicationId}}-lb
       Scheme: internet-facing
-      # MainDomain: pacts-{{Arguments.Stage}}.myteam.example.org
-      # VersionDomain: pacts-{{Arguments.Stage}}-{{SenzaInfo.StackVersion}}.myteam.example.org
+      # MainDomain: pacts-{{Arguments.Stage}}.{{AccountInfo.TeamID}}
+      # VersionDomain: pacts-{{Arguments.Stage}}-{{SenzaInfo.StackVersion}}.{{AccountInfo.TeamID}}
       # aws iam list-server-certificates | jq -r '.ServerCertificateMetadataList[0].ServerCertificateName'
       # SSLCertificateId: myteam-ssl-cert-name

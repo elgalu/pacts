@@ -36,8 +36,10 @@ Bad token
 Get valid token. Note you need python3 and `pip3 install httpie-zign`. You also need to replace `elgalu` with your token service user id, most likely is the same as your machine `$USER`.
 This will be a user token to test from your machine, if you need to do this from another service machine like an AWS Jenkins one see "Service token" below.
 
-    GETOK="https://token.info.example.org/access_token"
-    token=$(zign token --user elgalu --url $GETOK -n pact)
+    OAUTH2_ACCESS_TOKEN_URL="https://token.example.com/access_token"
+    OAUTH2_ACCESS_TOKEN_PARAMS="?realm=/employees"
+    OAUTH2_ACCESS_TOKEN_URL_PARAMS="${OAUTH2_ACCESS_TOKEN_URL}${OAUTH2_ACCESS_TOKEN_PARAMS}"
+    token=$(zign token --user elgalu --url $OAUTH2_ACCESS_TOKEN_URL_PARAMS -n pact)
 
 ### Service token
 From a service instance like an AWS Jenkins.
@@ -49,7 +51,6 @@ From a service instance like an AWS Jenkins.
 
 #### Get token
 Note you need the [get_token.sh](../container/usr/bin/get_token.sh) script.
-Ensure it has the correct token endpoint before using it, e.g. `https://auth.example.org/oauth2/access_token`
 
     export SHOST=https://pacts.myteam-test.example.org
     token=$(get_token.sh)
@@ -98,9 +99,11 @@ Destroy pacts
             "$SHOST/pacts/provider/prov2/consumer/cons2/version/1.0.0"
 
 ## Version example
-    GETOK="https://token.info.example.org/access_token"
+    OAUTH2_ACCESS_TOKEN_URL="https://token.example.com/access_token"
+    OAUTH2_ACCESS_TOKEN_PARAMS="?realm=/employees"
+    OAUTH2_ACCESS_TOKEN_URL_PARAMS="${OAUTH2_ACCESS_TOKEN_URL}${OAUTH2_ACCESS_TOKEN_PARAMS}"
     SHOST=https://pacts.myteam-test.example.org
-    token=$(zign token --user elgalu --url $GETOK -n pact)
+    token=$(zign token --user elgalu --url $OAUTH2_ACCESS_TOKEN_URL_PARAMS -n pact)
     curl -H "Authorization: Bearer $token" $SHOST
 
 ## Performance
@@ -119,7 +122,7 @@ Ensure that the [impersonate](./script/impersonate) script has the correct `--to
 
     #=> Trying to detect your stups-mint bucket... [myorg-stups-mint-123456789012-us-east-2]
     #=> Fetching credentials for [pacts] from [myorg-stups-mint-123456789012-us-east-2]... OK
-    #=> Requesting token for [uid] from [https://auth.example.org/oauth2/access_token?realm=/services]... OK
+    #=> Requesting token for [uid] from [https://token.service.example.com/oauth2/access_token?realm=/services]... OK
     #=> {"scope":"uid","expires_in":3599,"token_type":"Bearer","access_token":"XXXX-****-4469-8243-0448c1cXXXXX"}
 
 Note in this case we use the application_id `pacts` and not a particular stack name.

@@ -1,8 +1,12 @@
 ## Prepare
-    GETOK="https://token.info.example.org/access_token"
-    token=$(zign token --user elgalu --url $GETOK -n pact)
+    export OAUTH2_ACCESS_TOKEN_URL="https://token.example.com/access_token"
+    export OAUTH2_ACCESS_TOKEN_PARAMS="?realm=/employees"
+    export OAUTH2_ACCESS_TOKEN_URL_PARAMS="${OAUTH2_ACCESS_TOKEN_URL}${OAUTH2_ACCESS_TOKEN_PARAMS}"
+    token=$(zign token --user elgalu --url ${OAUTH2_ACCESS_TOKEN_URL_PARAMS} -n pact)
     export DISPOSABLE_PSQL=true
-    export OAUTH_TOKEN_INFO=https://auth.example.org/oauth2/tokeninfo?access_token=
+    export TOKENINFO_URL="https://token.example.com/oauth2/tokeninfo"
+    export TOKENINFO_PARAMS="?access_token="
+    export TOKENINFO_URL_PARAMS="${TOKENINFO_URL}${TOKENINFO_PARAMS}"
     REG="docker.io"
 
 ## Test

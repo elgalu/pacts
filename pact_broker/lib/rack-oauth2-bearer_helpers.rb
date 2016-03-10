@@ -40,7 +40,7 @@ module Rack::OAuth2::Bearer
     def valid_token?
       return false unless has_token?
 
-      oauth_token_info_url = Conf::OAUTH_TOKEN_INFO_URL
+      oauth_token_info_url = Conf::TOKENINFO_URL_PARAMS
       raise ArgumentError, 'Need oauth_token_info_url' unless oauth_token_info_url
       response = HTTP.get(oauth_token_info_url + bearer_token)
       valid = response.code == 200

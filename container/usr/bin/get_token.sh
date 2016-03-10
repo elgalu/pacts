@@ -22,7 +22,7 @@ application_password=$(jq -r .application_password /meta/credentials/user.json)
 client_id=$(jq -r .client_id /meta/credentials/client.json)
 client_secret=$(jq -r .client_secret /meta/credentials/client.json)
 encoded_application_password=$(urlenc $application_password)
-access_token=$(curl -u "$client_id:$client_secret" --silent -d "grant_type=password&username=$application_username&password=$encoded_application_password&scope=$encoded_scopes" https://auth.example.org/oauth2/access_token\?realm\=/services | jq -r .access_token)
+access_token=$(curl -u "$client_id:$client_secret" --silent -d "grant_type=password&username=$application_username&password=$encoded_application_password&scope=$encoded_scopes" $OAUTH2_ACCESS_TOKEN_URL_PARAMS | jq -r .access_token)
 
 # Return the token without new line
 echo -n "$access_token"

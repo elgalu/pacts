@@ -17,11 +17,18 @@ die () {
 }
 
 # Required params
-[ -z "${OAUTH_TOKEN_INFO}" ] && die "Required env var OAUTH_TOKEN_INFO"
+[ -z "${TOKENINFO_URL}" ] && die "Required env var TOKENINFO_URL"
+[ -z "${TOKENINFO_PARAMS}" ] && die "Required env var TOKENINFO_PARAMS"
 [ -z "${PACT_BROKER_PORT}" ] && die "Required env var PACT_BROKER_PORT"
 [ -z "${BIND_TO}" ] && die "Required env var BIND_TO"
 [ -z "${RACK_LOG}" ] && die "Required env var RACK_LOG"
 [ -z "${RACK_THREADS_COUNT}" ] && die "Required env var RACK_THREADS_COUNT"
+
+# Generate token full url if not already present
+[ -z "${TOKENINFO_URL_PARAMS}" ] && \
+  export TOKENINFO_URL_PARAMS="${TOKENINFO_URL}${TOKENINFO_PARAMS}"
+[ -z "${OAUTH2_ACCESS_TOKEN_URL_PARAMS}" ] && \
+  export OAUTH2_ACCESS_TOKEN_URL_PARAMS="${OAUTH2_ACCESS_TOKEN_URL}${OAUTH2_ACCESS_TOKEN_PARAMS}"
 
 # Depending on the target server set our env vars
 if [ "${STAGE}" == "live" ]; then

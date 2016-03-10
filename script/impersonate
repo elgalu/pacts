@@ -6,6 +6,7 @@ import boto3
 import json
 import codecs
 import requests
+import os
 
 from clickclick import Action
 from clickclick import console
@@ -16,7 +17,7 @@ from senza.cli import get_region
 @click.argument('service-id')
 @click.option('--bucket', '-b')
 @click.option('--scope', '-s', default=['uid'], multiple=True)
-@click.option('--token-endpoint', '-t', default='https://auth.example.org/oauth2/access_token?realm=/services')
+@click.option('--token-endpoint', '-t', default='os.environ["OAUTH2_ACCESS_TOKEN_URL_PARAMS"]')
 @click.option('--region', envvar='AWS_DEFAULT_REGION', metavar='AWS_REGION_ID', help='AWS region ID (e.g. us-east-2)')
 def cli(service_id, bucket, scope, token_endpoint, region):
     bucket = get_s3_bucket(bucket, region)

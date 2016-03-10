@@ -46,7 +46,7 @@ SenzaComponents:
         environment:
           SCOPE: "{{Arguments.version}}"
           ETCD_DISCOVERY_DOMAIN: "etcd."
-          WAL_S3_BUCKET: "myorg-myteam-us-east-2-spilo-pacts"
+          WAL_S3_BUCKET: "myorg-{{AccountInfo.TeamID}}-{{AccountInfo.Region}-spilo-pacts"
         root: true
         application_logrotate_size: 50M
         application_logrotate_interval: weekly
@@ -150,8 +150,8 @@ Resources:
           - Effect: Allow
             Action: s3:*
             Resource:
-              - arn:aws:s3:::myorg-myteam-us-east-2-spilo-pacts/spilo/*
-              - arn:aws:s3:::myorg-myteam-us-east-2-spilo-pacts
+              - arn:aws:s3:::myorg-{{AccountInfo.TeamID}}-{{AccountInfo.Region}-spilo-pacts/spilo/*
+              - arn:aws:s3:::myorg-{{AccountInfo.TeamID}}-{{AccountInfo.Region}-spilo-pacts
           - Effect: Allow
             Action: ec2:CreateTags
             Resource: "*"

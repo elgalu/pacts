@@ -12,7 +12,7 @@ Select `postgresapp: HA Postgres app` project [template](https://github.com/zala
 
 * Set docker image: y
 * Docker image: registry.opensource.zalan.do/acid/spilo-9.4:0.5-p1 (default)
-* WAL S3 to use: Change to unused one, e.g. `myorg-myteam-us-east-2-spilo-pacts`
+* WAL S3 to use: Change to unused one, e.g. `myorg-{{AccountInfo.TeamID}}-us-east-2-spilo-pacts`
 * EC2 instance type: t2.micro
 * domain: [2]: 
 * ETCD Discovery Domain: etcd.
@@ -25,8 +25,8 @@ Select `postgresapp: HA Postgres app` project [template](https://github.com/zala
 Sample output
 
     Checking security group app-spilo.. OK
-    Checking S3 bucket myorg-myteam-us-east-2-spilo-pacts.. OK
-    Creating S3 bucket myorg-myteam-us-east-2-spilo-pacts... OK
+    Checking S3 bucket myorg-{{AccountInfo.TeamID}}-us-east-2-spilo-pacts.. OK
+    Creating S3 bucket myorg-{{AccountInfo.TeamID}}-us-east-2-spilo-pacts... OK
     Generating Senza definition file spilo.yaml.. OK
 
 Note latest spilo docker image can be found [here](https://registry.opensource.zalan.do/v1/repositories/acid/spilo-9.4/tags) and tag `latest` should be a pointer to the most recent.

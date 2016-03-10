@@ -48,8 +48,7 @@ ADD pact_broker/Gemfile $APP_HOME/
 ADD pact_broker/Gemfile.lock $APP_HOME/
 
 WORKDIR $APP_HOME
-RUN  bundle install \
-  && bundle install --deployment --without='development test'
+RUN bundle install --deployment --without='development test'
 
 USER root
 ADD pact_broker/ $APP_HOME/

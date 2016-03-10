@@ -6,6 +6,9 @@ include $(STAGE).env
 # default executed task when no name is provided
 default: none
 
+echoenv:
+	env
+
 test:
 	./script/gen-scm-source.sh
 	cd pact_broker && bundle install && cd ..
@@ -45,8 +48,6 @@ senza_create: checkSTAGE
 	senza create --region ${AWS_REGION} pacts.yaml ${APP_VER} \
 	  ImgTag="${IMG_TAG}" \
 	  InstanceType="${INSTANCE_TYPE}" \
-	  AWSAccountNum="${AWS_ACC_NUM}" \
-	  AWSRegion="${AWS_REGION}" \
 	  AWSMintRegion="${AWS_MINT_REGION}" \
 	  ApplicationId="${APPLICATION_ID}" \
 	  ScalyrKey="${SCALYR_KEY}" \
@@ -83,4 +84,5 @@ endif
 	kio_create \
 	approve \
 	senza_create \
+	echoenv \
 	test

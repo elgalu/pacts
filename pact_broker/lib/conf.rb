@@ -2,7 +2,7 @@ require './lib/validations'
 
 module Conf
   # default token info endpoint to validate bearer tokens
-  OAUTH_TOKEN_INFO_URL ||= ENV['OAUTH_TOKEN_INFO']
+  TOKENINFO_URL_PARAMS ||= ENV['TOKENINFO_URL_PARAMS']
 
   # default response type
   JSON_CONT = {'Content-Type' => 'application/json'}
