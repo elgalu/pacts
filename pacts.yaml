@@ -7,12 +7,6 @@ SenzaInfo:
   - InstanceType:
       Description: "Instance type to use"
       Description: "Instance type to use"
-  # AWSAccountNum replace with {{AccountInfo.AccountID}}
-  # - AWSAccountNum:
-  #     Description: "AWS account id number"
-  # AWSRegion replace with {{AccountInfo.Region}}
-  # - AWSRegion:
-  #     Description: "AWS region to deploy to"
   - AWSMintRegion:
       Description: "AWS region for the mint bucket, could be different from the instance region"
   - ScalyrKey:
@@ -61,6 +55,7 @@ SenzaComponents:
         root: true
         # etcd_discovery_domain: "etcd.{{AccountInfo.TeamID}}"
         scalyr_account_key: "{{Arguments.ScalyrKey}}"
+        # We use {{Arguments.AWSMintRegion}} instead of {{AccountInfo.Region}} because the mint bucket can by on any region
         mint_bucket: "myorg-stups-mint-{{AccountInfo.AccountID}}-{{Arguments.AWSMintRegion}}"
         ports:
           443: 443
@@ -77,7 +72,20 @@ SenzaComponents:
           PACT_BROKER_PORT: 443
           RACK_THREADS_COUNT: 20
           STAGE: "{{Arguments.Stage}}"
-          TAUPAGE_DOMAIN: "{{AccountInfo.Domain}}"
+          # Using AccountInfo is quite convenient
+          ACCOUNTINFO_DOMAIN: "{{AccountInfo.Domain}}"
+          ACCOUNTINFO_TEAMID: "{{AccountInfo.TeamID}}"
+          ACCOUNTINFO_REGION: "{{AccountInfo.Region}}"
+          ACCOUNTINFO_ACCOUNTID: "{{AccountInfo.AccountID}}"
+          ACCOUNTINFO_ACCOUNTALIAS: "{{AccountInfo.AccountAlias}}"
+          ACCOUNTINFO_VPCID: "{{AccountInfo.VpcID}}"
+          ACCINFO:
+            DOMAIN: "{{AccountInfo.Domain}}"
+            TEAMID: "{{AccountInfo.TeamID}}"
+            REGION: "{{AccountInfo.Region}}"
+            ACCOUNTID: "{{AccountInfo.AccountID}}"
+            ACCOUNTALIAS: "{{AccountInfo.AccountAlias}}"
+            VPCID: "{{AccountInfo.VpcID}}"
           # live aka production
           LIVE_PACT_BROKER_DATABASE_NAME: "live_pacts"
           LIVE_PACT_BROKER_DATABASE_HOST: "aws:kms:SECRET!!!"
@@ -92,7 +100,8 @@ SenzaComponents:
         application_logrotate_size: 256M
         application_logrotate_interval: weekly
         application_logrotate_rotate: 4
-        hostname: "{{Arguments.ApplicationId}}}"
+        hostname: "{{Arguments.ApplicationId}}"
+        # e.g. {{AccountInfo.Domain}} = myteam.example.org
         domain: "{{AccountInfo.Domain}}"
         # defaults
         privileged: false
