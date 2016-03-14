@@ -131,8 +131,8 @@ if [ "${DISPOSABLE_PSQL}" == "true" ]; then
   fi
   export PACT_BROKER_DATABASE_PASSWORD=$PGPASSWORD
 
-  # Run psql
-  PSQL_IMG=postgres:9.4.5
+  # Run psql, e.g. postgres:9.4.5 / postgres:9.4.6 / postgres:9.4
+  PSQL_IMG=postgres:9.4.6
   docker pull ${PSQL_IMG}
 
   echo ""
