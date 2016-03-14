@@ -47,7 +47,7 @@ SenzaComponents:
       TaupageConfig:
         application_id: "{{Arguments.ApplicationId}}"
         application_version: "{{Arguments.version}}"
-        appdynamics_application: "myteam.example.org"
+        appdynamics_application: "My Cool Team"
         runtime: Docker
         source: "docker.io/myusr/pacts:{{Arguments.ImgTag}}"
         health_check_path: /diagnostic/status/heartbeat
