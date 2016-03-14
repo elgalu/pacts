@@ -47,6 +47,7 @@ SenzaComponents:
       TaupageConfig:
         application_id: "{{Arguments.ApplicationId}}"
         application_version: "{{Arguments.version}}"
+        appdynamics_application: "myteam.example.org"
         runtime: Docker
         source: "docker.io/myusr/pacts:{{Arguments.ImgTag}}"
         health_check_path: /diagnostic/status/heartbeat
@@ -79,6 +80,8 @@ SenzaComponents:
           ACCOUNTINFO_ACCOUNTID: "{{AccountInfo.AccountID}}"
           ACCOUNTINFO_ACCOUNTALIAS: "{{AccountInfo.AccountAlias}}"
           ACCOUNTINFO_VPCID: "{{AccountInfo.VpcID}}"
+          # Nesting env vars like this produces something like this:
+          # ACCINFO={'VPCID': 'vpc-11111111', 'ACCOUNTALIAS': 'myorg-myteam', 'ACCOUNTID': '111111111111', 'TEAMID': 'team', 'DOMAIN': 'team.myorg.net', 'REGION': 'eu-west-1'}
           ACCINFO:
             DOMAIN: "{{AccountInfo.Domain}}"
             TEAMID: "{{AccountInfo.TeamID}}"
