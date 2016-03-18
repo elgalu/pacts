@@ -49,7 +49,7 @@ SenzaComponents:
         application_version: "{{Arguments.version}}"
         appdynamics_application: "My Cool Team"
         runtime: Docker
-        source: "docker.io/Java::Org/pacts:{{Arguments.ImgTag}}"
+        source: "docker.io/myusr/pacts:{{Arguments.ImgTag}}"
         health_check_path: /diagnostic/status/heartbeat
         health_check_timeout_seconds: 90
         health_check_port: 443
