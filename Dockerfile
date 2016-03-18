@@ -4,9 +4,19 @@
 #           |==> buildpack-deps:jessie -- https://goo.gl/hnND7b
 #                |==> ruby:2.3.0 -- https://goo.gl/eDlvs7
 #                     |==> HERE
-FROM ruby:2.3.0
+# FROM ruby:2.3.0
+
+# Changing to jRuby for AppDynamics support
+#  https://github.com/tianon/docker-brew-debian/blob/d431f09a37/jessie/Dockerfile
+#  https://github.com/docker-library/openjdk/blob/89851f0abc3a8/8-jre/Dockerfile
+#  https://github.com/cpuguy83/docker-jruby/blob/2448a2d7288d/9000/jre/Dockerfile
+FROM jruby:9.0.5.0-jre
 
 MAINTAINER Leo Gallucci <elgalu3@gmail.com>
+
+# Get latest `gem` binary
+RUN  gem install rubygems-update \
+  && gem update --system
 
 #----------------------------------------------
 # To avoid using `curl --insecure` you need to
@@ -25,6 +35,15 @@ RUN cd /tmp/rds-ca && csplit -sz aws-rds-ca-bundle.pem '/-BEGIN CERTIFICATE-/' '
 RUN for CERT in /tmp/rds-ca/xx*; do mv $CERT /usr/local/share/ca-certificates/aws-rds-ca-$(basename $CERT).crt; done
 RUN update-ca-certificates
 
+#-------------------------------------
+# To be able to install gems from git
+#-------------------------------------
+#= Git =#
+RUN apt-get update -qqy \
+  && apt-get -qqy install \
+    git-core \
+  && rm -rf /var/lib/apt/lists/*
+
 #--------------------------------------------------
 # To be able to url enconde via perl -MURI::Escape
 #--------------------------------------------------
@@ -32,6 +51,7 @@ RUN apt-get update -qqy \
   && apt-get -qqy install \
     jq \
     curl \
+    make \
   && rm -rf /var/lib/apt/lists/*
 RUN curl -L http://cpanmin.us | perl - App::cpanminus
 RUN cpanm URI::Escape
@@ -44,14 +64,9 @@ RUN rm -f /etc/service/nginx/down
 RUN rm -f /etc/nginx/sites-enabled/default
 ADD container /
 
-ADD pact_broker/Gemfile $APP_HOME/
-ADD pact_broker/Gemfile.lock $APP_HOME/
-
-WORKDIR $APP_HOME
-RUN bundle install --deployment --without='development test'
-
-USER root
 ADD pact_broker/ $APP_HOME/
+WORKDIR $APP_HOME
+RUN bundle install --without='development test'
 
 ENV PACT_BROKER_PORT=443 \
     BIND_TO=127.0.0.1 \

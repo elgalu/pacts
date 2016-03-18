@@ -54,11 +54,17 @@ fi
 [ -z "${PACT_BROKER_DATABASE_NAME}" ] && die "Required env var PACT_BROKER_DATABASE_NAME"
 
 # Replace current process with the web server one
-exec bundle exec thin --rackup config.ru \
-                      --environment development \
+exec bundle exec puma --environment development \
                       --debug \
-                      --address ${BIND_TO} \
-                      --port ${PACT_BROKER_PORT} \
-                      --threaded \
-                      --threadpool-size ${RACK_THREADS_COUNT} \
-                      start | tee ${RACK_LOG}
+                      --bind "tcp://${BIND_TO}:${PACT_BROKER_PORT}" \
+                      --threads "0:${RACK_THREADS_COUNT}" \
+                      config.ru | tee ${RACK_LOG}
+
+# exec bundle exec thin --rackup config.ru \
+#                       --environment development \
+#                       --debug \
+#                       --address ${BIND_TO} \
+#                       --port ${PACT_BROKER_PORT} \
+#                       --threaded \
+#                       --threadpool-size ${RACK_THREADS_COUNT} \
+#                       start | tee ${RACK_LOG}

@@ -14,7 +14,7 @@ Note you need to execute these in your both AWS accounts, the live "myteam" and 
     Please select the project template
     Selected 5) webapp: HTTP app with auto scaling, ELB and DNS
     Application ID [hello-world]: pacts
-    Docker image without tag/version [stups/hello-world]: docker.io/myusr/pacts
+    Docker image without tag/version [stups/hello-world]: docker.io/Java::Org/pacts
     HTTP port [8080]: 443
     HTTP health check path [/]: /diagnostic/status/heartbeat
     EC2 instance type [t2.micro]: t2.micro
@@ -35,7 +35,7 @@ Or for staging
     Please select the project template
     Selected 5) webapp: HTTP app with auto scaling, ELB and DNS
     Application ID [hello-world]: pacts-staging
-    Docker image without tag/version [stups/hello-world]: docker.io/myusr/pacts
+    Docker image without tag/version [stups/hello-world]: docker.io/Java::Org/pacts
     HTTP port [8080]: 443
     HTTP health check path [/]: /diagnostic/status/heartbeat
     EC2 instance type [t2.micro]: t2.micro
@@ -130,7 +130,7 @@ Go to [Create Application](https://yourturn.stups.example.org/application/create
 
 * Version e.g.: `v001`
 
-* Docker Deployment Artifact: `docker.io/myusr/pacts:0.0.1`
+* Docker Deployment Artifact: `docker.io/Java::Org/pacts:0.0.1`
 
 * Sample description: First attempt to deploy the pact broker, will probably fail due to cert issues or DB access.
 

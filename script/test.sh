@@ -124,12 +124,14 @@ if [ "${DISPOSABLE_PSQL}" == "true" ]; then
   export PACT_BROKER_DATABASE_NAME=pact
   PGUSER=${PACT_BROKER_DATABASE_USERNAME}
   PGDATABASE=${PACT_BROKER_DATABASE_NAME}
-  if pwgen -n1 >/dev/null 2>&1; then
-    PGPASSWORD=$(pwgen -c -n -1 $(echo $[ 7 + $[ RANDOM % 17 ]]) 1)
-  else
-    PGPASSWORD="no_pwdgen_so_hardcoded_password"
+  if [ -z "${PACT_BROKER_DATABASE_PASSWORD}" ]; then
+    if pwgen -n1 >/dev/null 2>&1; then
+      export PACT_BROKER_DATABASE_PASSWORD=$(pwgen -c -n -1 $(echo $[ 7 + $[ RANDOM % 17 ]]) 1)
+    else
+      export PACT_BROKER_DATABASE_PASSWORD="no_pwdgen_so_hardcoded_password"
+    fi
   fi
-  export PACT_BROKER_DATABASE_PASSWORD=$PGPASSWORD
+  export PGPASSWORD=$PACT_BROKER_DATABASE_PASSWORD
 
   # Run psql, e.g. postgres:9.4.5 / postgres:9.4.6 / postgres:9.4
   PSQL_IMG=postgres:9.4.6

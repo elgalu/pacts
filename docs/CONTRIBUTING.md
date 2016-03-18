@@ -37,8 +37,8 @@ How to build the image
 Login to the docker repo and push
 
     pierone login --url $REG --user elgalu
-    docker tag pacts:latest $REG/myusr/pacts:$TAG
-    docker push $REG/myusr/pacts:$TAG
+    docker tag pacts:latest $REG/Java::Org/pacts:$TAG
+    docker push $REG/Java::Org/pacts:$TAG
 
 ### Deploy
     vers="v001"
@@ -105,7 +105,7 @@ List
 
 Create version
 
-    kio ver create pacts v001 docker://docker.io/myusr/pacts:0.0.1
+    kio ver create pacts v001 docker://docker.io/Java::Org/pacts:0.0.1
     #=> Creating version pacts v001.. OK
 
 Approve

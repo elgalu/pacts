@@ -1,0 +1,35 @@
+default: &default
+  #== data objects ==#
+  # adapter: do
+  # database: sqlite3:db/pact_broker_database.sqlite3
+  # #== sqlite ==#
+  # adapter: jdbc
+  # database: sqlite:db/pact_broker_database.sqlite3
+  # #== sqlite ==#
+  # adapter: jdbc
+  # driver: org.sqlite.JDBC
+  # database: sqlite:db/pact_broker_database.sqlite3
+  # #== sqlite in memory ==#
+  # adapter: jdbc
+  # database: "sqlite::memory:"
+  #== psql ==#
+  adapter: postgres
+  # host: 172.17.0.2
+  # port: 5432
+  # database: pact
+  # user: postgres
+  # password: leo123
+
+test:
+  <<: *default
+  host: 172.17.0.2
+  port: 5432
+  database: pact
+  user: postgres
+  password: leo123
+
+development:
+  <<: *default
+
+production:
+  <<: *default

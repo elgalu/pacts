@@ -1,10 +1,18 @@
 source 'https://rubygems.org'
 
-# The Pact Broker
-gem 'pact_broker', '1.9.0'
+#-----------------#
+# The Pact Broker #
+#-----------------#
+#== MRI ===#
+# gem 'pact_broker', '1.9.1'
+#== Java local path ==#
+# gem 'pact_broker', '1.9.1.pre.jruby', path: 'vendor'
+# ll vendor/ #=> pact_broker-1.9.1.pre.jruby.gem
+#== Java on git ==#
+gem 'pact_broker', '1.9.1.pre.jruby', git: 'git://github.com/elgalu/pact_broker.git', branch: 'jruby'
 
 # PostgreSQL
-gem 'pg', '~> 0.18.3'
+gem 'pg_jruby', '~> 0.17.1'
 
 # Web server and application server for Ruby, Python and Node.js
 # https://github.com/phusion/passenger
@@ -12,7 +20,8 @@ gem 'pg', '~> 0.18.3'
 
 # A very fast & simple Ruby web server
 # https://github.com/macournoyer/thin/
-gem 'thin', '~> 1.6.4'
+# gem 'thin', '~> 1.6.4'
+gem 'puma', '~> 3.1.0'
 
 # Fast HTTP client with a chainable API and full streaming support
 # https://github.com/httprb/http
@@ -20,11 +29,12 @@ gem 'http', '~> 0.9.8'
 
 # Rack middleware for blocking & throttling
 # https://github.com/kickstarter/rack-attack
-gem 'blockenspiel', '~> 0.5.0'
+# gem 'blockenspiel', '~> 0.5.0'
 gem 'rack-attack', '~> 4.3.1'
 
 # To use ActiveSupport::Cache at active_support/cache
-gem 'activesupport', '~> 4.2.4'
+# gem 'activesupport', '~> 4.2.4'
+gem 'activesupport', '~> 4.2.6'
 
 # A simple Rack middleware to enforce ssl connections
 # https://github.com/tobmatth/rack-ssl-enforcer
