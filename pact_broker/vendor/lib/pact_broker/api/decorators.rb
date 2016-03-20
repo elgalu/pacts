@@ -1,7 +1,0 @@
-require 'pact_broker/api/decorators/pacticipant_decorator'
-require 'pact_broker/api/decorators/pacticipant_collection_decorator'
-require 'pact_broker/api/decorators/embedded_version_decorator'
-require 'pact_broker/api/decorators/pact_collection_decorator'
-require 'pact_broker/api/decorators/pact_pacticipant_decorator'
-require 'pact_broker/api/decorators/pact_details_decorator'
-require 'pact_broker/api/decorators/tag_decorator'

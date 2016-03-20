@@ -1,6 +1,0 @@
-#!/bin/sh
-set -e
-
-echo "Updating HAL browser from master at 'git@github.com:mikekelly/hal-browser.git'..."
-git subtree pull --prefix vendor/hal-browser git@github.com:mikekelly/hal-browser.git master --squash
-echo "\033[32mDone!\033[0m"
