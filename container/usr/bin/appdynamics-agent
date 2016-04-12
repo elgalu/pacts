@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+
+# Taupage compatible helper script for adding AppDynamics to your JVM process
+# taken from: https://github.com/zalando/docker-openjdk/blob/master/utils/appdynamics-agent
+# Example usage via cli
+#  exec java $(appdynamics-agent) -jar myfatjar.jar
+# Example usage global
+#  export JAVA_OPTS="${JAVA_OPTS} $(appdynamics-agent)"
+
+# Exit immediately if a command exits with a non-zero status
+set -e
+
+AGENT_JAR=/agents/appdynamics-jvm/javaagent.jar
+[ ! -z "$1" ] && AGENT_JAR=$1
+
+AGENT_OPTS=
+if [ -f "$AGENT_JAR" ]; then
+  # enable java agent
+  AGENT_OPTS=-javaagent:$AGENT_JAR
+
+  # optionally: set unique host ID
+  AGENT_DIR=$(dirname $AGENT_JAR)
+  AGENT_ID_FILE=$AGENT_DIR/uniqueHostId
+  if [ -f $AGENT_ID_FILE ]; then
+    AGENT_OPTS="$AGENT_OPTS -Dappdynamics.agent.uniqueHostId=$(cat $AGENT_ID_FILE)"
+  fi
+
+  # optionally: set analytics URL
+  if [ ! -z "$APPDYNAMICS_ANALYTICS_URL" ]; then
+    AGENT_OPTS="$AGENT_OPTS -Dappdynamics.analytics.agent.url=$APPDYNAMICS_ANALYTICS_URL"
+  fi
+fi
+
+echo $AGENT_OPTS
