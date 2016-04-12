@@ -53,6 +53,9 @@ fi
 [ -z "${PACT_BROKER_DATABASE_HOST}" ] && die "Required env var PACT_BROKER_DATABASE_HOST"
 [ -z "${PACT_BROKER_DATABASE_NAME}" ] && die "Required env var PACT_BROKER_DATABASE_NAME"
 
+# Taupage compatible helper for adding AppDynamics to your JVM process
+export JAVA_OPTS="${JAVA_OPTS} $(appdynamics-agent)"
+
 # Replace current process with the web server one
 exec bundle exec puma --environment development \
                       --debug \
