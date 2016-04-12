@@ -54,15 +54,26 @@ fi
 [ -z "${PACT_BROKER_DATABASE_NAME}" ] && die "Required env var PACT_BROKER_DATABASE_NAME"
 
 # Taupage compatible helper for adding AppDynamics to your JVM process
-export JAVA_OPTS="${JAVA_OPTS} $(appdynamics-agent)"
+#  export JAVA_OPTS="${JAVA_OPTS} $(appdynamics-agent)"
 
-# Replace current process with the web server one
-exec bundle exec puma --environment development \
-                      --debug \
-                      --bind "tcp://${BIND_TO}:${PACT_BROKER_PORT}" \
-                      --threads "0:${RACK_THREADS_COUNT}" \
-                      config.ru | tee ${RACK_LOG}
+# Torquebox + JBoss web server
+[ -z "${JBOSS_HOME}" ] && die "Required env var JBOSS_HOME"
+sed -i -- "s/8080/${PACT_BROKER_PORT}/g" ${JBOSS_HOME}/standalone/configuration/standalone.xml
+sed -i -- "s/8080/${PACT_BROKER_PORT}/g" ${JBOSS_HOME}/standalone/configuration/standalone-ha.xml
+sed -i -- "s/8080/${PACT_BROKER_PORT}/g" ${JBOSS_HOME}/domain/configuration/domain.xml
+exec jruby -S torquebox run \
+  --max-threads=${RACK_THREADS_COUNT} \
+  --bind-address="${BIND_TO}" \
+  --jvm-options="$(appdynamics-agent)"
 
+# puma (MRI / JRuby)
+# exec bundle exec puma --environment development \
+#                       --debug \
+#                       --bind "tcp://${BIND_TO}:${PACT_BROKER_PORT}" \
+#                       --threads "0:${RACK_THREADS_COUNT}" \
+#                       config.ru | tee ${RACK_LOG}
+
+# thin (MRI)
 # exec bundle exec thin --rackup config.ru \
 #                       --environment development \
 #                       --debug \
