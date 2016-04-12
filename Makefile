@@ -16,16 +16,16 @@ test:
 	@docker rm ${PSQL_CONT_NAME} || true
 	./script/test.sh
 
-build:
-	./script/gen-scm-source.sh
-	@cd pact_broker && bundle install
-	docker build -t pacts:latest .
-
 tag: checkIMG_TAG
 	git tag ${IMG_TAG}
 	git push
 	git push --tags
-	docker tag pacts:latest ${REG}/tip/pacts:${IMG_TAG}
+
+build: checkIMG_TAG
+	./script/gen-scm-source.sh
+	@cd pact_broker && bundle install
+	docker build -t pacts:latest .
+	docker tag -f pacts:latest ${REG}/tip/pacts:${IMG_TAG}
 
 push:
 	pierone login --url ${REG} --user ${MYUSER}
