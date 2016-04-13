@@ -34,7 +34,7 @@ if [ -f "$AGENT_JAR" ]; then
   # To avoid error: java.lang.NoClassDefFoundError:
   #  com/singularity/ee/agent/appagent/entrypoint/
   #  bciengine/FastMethodInterceptorDelegatorBoot
-  AGENT_OPTS="$AGENT_OPTS -Djboss.modules.system.pkgs=org.jboss.byteman,com.singularity,org.jboss.logmanager"
+  AGENT_OPTS="$AGENT_OPTS -Djboss.modules.system.pkgs=org.jboss.byteman,com.singularity"
 fi
 
 echo $AGENT_OPTS
