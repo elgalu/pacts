@@ -103,7 +103,7 @@ SenzaComponents:
         application_logrotate_size: 256M
         application_logrotate_interval: weekly
         application_logrotate_rotate: 4
-        hostname: "{{Arguments.ApplicationId}}"
+        hostname: "{{Arguments.ApplicationId}}-{{Arguments.version}}"
         # e.g. {{AccountInfo.Domain}} = myteam.example.org
         domain: "{{AccountInfo.Domain}}"
         # defaults
