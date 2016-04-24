@@ -41,6 +41,7 @@ approve:
 	USER=${MYUSER} kio ver approve ${APPLICATION_ID} $(APP_VER)
 
 # Note you can also use or export env var `AWS_DEFAULT_REGION` instead of `--region`
+# not used anymore: AWSMintRegion="${AWS_MINT_REGION}"
 senza_create: checkSTAGE
 	@echo "Will work on AWS_ACC_NAME='${AWS_ACC_NAME}'"
 	@mai login ${AWS_ACC_NAME}-PowerUser
@@ -48,7 +49,6 @@ senza_create: checkSTAGE
 	senza create --region ${AWS_REGION} pacts.yaml ${APP_VER} \
 	  ImgTag="${IMG_TAG}" \
 	  InstanceType="${INSTANCE_TYPE}" \
-	  AWSMintRegion="${AWS_MINT_REGION}" \
 	  ApplicationId="${APPLICATION_ID}" \
 	  ScalyrKey="${SCALYR_KEY}" \
 	  Stage="${STAGE}"

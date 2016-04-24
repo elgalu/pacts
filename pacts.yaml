@@ -7,8 +7,8 @@ SenzaInfo:
   - InstanceType:
       Description: "Instance type to use"
       Description: "Instance type to use"
-  - AWSMintRegion:
-      Description: "AWS region for the mint bucket, could be different from the instance region"
+  # - AWSMintRegion:
+  #     Description: "AWS region for the mint bucket, could be different from the instance region"
   - ScalyrKey:
       Description: "Scalyr logs access key"
   - Stage:
@@ -57,7 +57,9 @@ SenzaComponents:
         # etcd_discovery_domain: "etcd.{{AccountInfo.TeamID}}"
         scalyr_account_key: "{{Arguments.ScalyrKey}}"
         # We use {{Arguments.AWSMintRegion}} instead of {{AccountInfo.Region}} because the mint bucket can by on any region
-        mint_bucket: "myorg-stups-mint-{{AccountInfo.AccountID}}-{{Arguments.AWSMintRegion}}"
+        # mint_bucket: "myorg-stups-mint-{{AccountInfo.AccountID}}-{{Arguments.AWSMintRegion}}"
+        # But since senza 1.0.51 we can directly use `{{AccountInfo.MintBucket}}`
+        mint_bucket: "{{AccountInfo.MintBucket}}"
         ports:
           443: 443
         environment:
