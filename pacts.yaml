@@ -7,8 +7,8 @@ SenzaInfo:
   - InstanceType:
       Description: "Instance type to use"
       Description: "Instance type to use"
-  # - AWSMintRegion:
-  #     Description: "AWS region for the mint bucket, could be different from the instance region"
+  - AWSMintRegion:
+      Description: "AWS region for the mint bucket, could be different from the instance region"
   - ScalyrKey:
       Description: "Scalyr logs access key"
   - Stage:
@@ -57,9 +57,10 @@ SenzaComponents:
         # etcd_discovery_domain: "etcd.{{AccountInfo.TeamID}}"
         scalyr_account_key: "{{Arguments.ScalyrKey}}"
         # We use {{Arguments.AWSMintRegion}} instead of {{AccountInfo.Region}} because the mint bucket can by on any region
-        # mint_bucket: "myorg-stups-mint-{{AccountInfo.AccountID}}-{{Arguments.AWSMintRegion}}"
+        mint_bucket: "myorg-stups-mint-{{AccountInfo.AccountID}}-{{Arguments.AWSMintRegion}}"
         # But since senza 1.0.51 we can directly use `{{AccountInfo.MintBucket}}`
-        mint_bucket: "{{AccountInfo.MintBucket}}"
+        # though this is still not working: https://github.com/zalando-stups/senza/pull/191#issuecomment-213983274
+        # mint_bucket: "{{AccountInfo.MintBucket}}"
         ports:
           443: 443
         environment:
@@ -86,12 +87,12 @@ SenzaComponents:
           # ACCOUNTINFO_REGION: "{{AccountInfo.Region}}"
           # e.g. {{AccountInfo.AccountID}} == "123456789012" or "234567890123"
           # ACCOUNTINFO_ACCOUNTID: "{{AccountInfo.AccountID}}"
-          # e.g. {{AccountInfo.AccountAlias}} == "myorg-myteam"
+          # e.g. {{AccountInfo.AccountAlias}} == "myorg-myteam" or "myorg-myteam-test"
           # ACCOUNTINFO_ACCOUNTALIAS: "{{AccountInfo.AccountAlias}}"
           # e.g. {{AccountInfo.VpcID}} == "vpc-12345678"
           # ACCOUNTINFO_VPCID: "{{AccountInfo.VpcID}}"
           # e.g. {{AccountInfo.MintBucket}} == "myorg-stups-mint-123456789012-us-east-2"
-          ACCOUNTINFO_MINTBUCKET: "{{AccountInfo.MintBucket}}"
+          # ACCOUNTINFO_MINTBUCKET: "{{AccountInfo.MintBucket}}"
           # Nesting env vars like this produces something like this:
           # ACCINFO={'VPCID': 'vpc-11111111', 'ACCOUNTALIAS': 'myorg-myteam', 'ACCOUNTID': '111111111111', 'TEAMID': 'team', 'DOMAIN': 'team.myorg.net', 'REGION': 'eu-west-1'}
           # ACCINFO:
