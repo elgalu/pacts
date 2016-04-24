@@ -75,22 +75,32 @@ SenzaComponents:
           PACT_BROKER_PORT: 443
           RACK_THREADS_COUNT: 20
           STAGE: "{{Arguments.Stage}}"
-          # Using AccountInfo is quite convenient
-          ACCOUNTINFO_DOMAIN: "{{AccountInfo.Domain}}"
-          ACCOUNTINFO_TEAMID: "{{AccountInfo.TeamID}}"
-          ACCOUNTINFO_REGION: "{{AccountInfo.Region}}"
-          ACCOUNTINFO_ACCOUNTID: "{{AccountInfo.AccountID}}"
-          ACCOUNTINFO_ACCOUNTALIAS: "{{AccountInfo.AccountAlias}}"
-          ACCOUNTINFO_VPCID: "{{AccountInfo.VpcID}}"
+          #---------------------------------------#
+          # Using AccountInfo is quite convenient #
+          #---------------------------------------#
+          # e.g. {{AccountInfo.Domain}} == "myteam.example.org" or "myteam-test.example.org"
+          # ACCOUNTINFO_DOMAIN: "{{AccountInfo.Domain}}"
+          # e.g. {{AccountInfo.TeamID}} == "myteam" or "myteam-test"
+          # ACCOUNTINFO_TEAMID: "{{AccountInfo.TeamID}}"
+          # e.g. {{AccountInfo.Region}} == "us-east-2" or "us-east-3"
+          # ACCOUNTINFO_REGION: "{{AccountInfo.Region}}"
+          # e.g. {{AccountInfo.AccountID}} == "123456789012" or "234567890123"
+          # ACCOUNTINFO_ACCOUNTID: "{{AccountInfo.AccountID}}"
+          # e.g. {{AccountInfo.AccountAlias}} == "myorg-myteam"
+          # ACCOUNTINFO_ACCOUNTALIAS: "{{AccountInfo.AccountAlias}}"
+          # e.g. {{AccountInfo.VpcID}} == "vpc-12345678"
+          # ACCOUNTINFO_VPCID: "{{AccountInfo.VpcID}}"
+          # e.g. {{AccountInfo.MintBucket}} == "myorg-stups-mint-123456789012-us-east-2"
+          ACCOUNTINFO_MINTBUCKET: "{{AccountInfo.MintBucket}}"
           # Nesting env vars like this produces something like this:
           # ACCINFO={'VPCID': 'vpc-11111111', 'ACCOUNTALIAS': 'myorg-myteam', 'ACCOUNTID': '111111111111', 'TEAMID': 'team', 'DOMAIN': 'team.myorg.net', 'REGION': 'eu-west-1'}
-          ACCINFO:
-            DOMAIN: "{{AccountInfo.Domain}}"
-            TEAMID: "{{AccountInfo.TeamID}}"
-            REGION: "{{AccountInfo.Region}}"
-            ACCOUNTID: "{{AccountInfo.AccountID}}"
-            ACCOUNTALIAS: "{{AccountInfo.AccountAlias}}"
-            VPCID: "{{AccountInfo.VpcID}}"
+          # ACCINFO:
+          #   DOMAIN: "{{AccountInfo.Domain}}"
+          #   TEAMID: "{{AccountInfo.TeamID}}"
+          #   REGION: "{{AccountInfo.Region}}"
+          #   ACCOUNTID: "{{AccountInfo.AccountID}}"
+          #   ACCOUNTALIAS: "{{AccountInfo.AccountAlias}}"
+          #   VPCID: "{{AccountInfo.VpcID}}"
           # live aka production
           LIVE_PACT_BROKER_DATABASE_NAME: "live_pacts"
           LIVE_PACT_BROKER_DATABASE_HOST: "aws:kms:SECRET!!!"
@@ -105,7 +115,7 @@ SenzaComponents:
         application_logrotate_size: 256M
         application_logrotate_interval: weekly
         application_logrotate_rotate: 4
-        hostname: "{{Arguments.ApplicationId}}-{{Arguments.version}}"
+        # hostname: "{{Arguments.ApplicationId}}-{{Arguments.version}}"
         # e.g. {{AccountInfo.Domain}} = myteam.example.org
         domain: "{{AccountInfo.Domain}}"
         # defaults
