@@ -76,6 +76,10 @@ SenzaComponents:
           PACT_BROKER_PORT: 443
           RACK_THREADS_COUNT: 20
           STAGE: "{{Arguments.Stage}}"
+          APPDYNAMICS_TEAM_API_ACCN: "ourAPIaccount"
+          APPDYNAMICS_TEAM_API_USER: "ourAPIuser"
+          APPDYNAMICS_TEAM_API_PASS: "MyCoolTeam"
+          APPDYNAMICS_API_ENDPOINT: "http://demo.appdynamics.com"
           #---------------------------------------#
           # Using AccountInfo is quite convenient #
           #---------------------------------------#

@@ -71,8 +71,7 @@ module Rack::OAuth2::Bearer
     end
 
     def get_team(uid)
-      # TODO
-      'wip'
+      'todo'
     end
 
     def write_to_csv(hsh)
@@ -84,6 +83,22 @@ module Rack::OAuth2::Bearer
       CSV.open("pacts_usage.csv", "a+") { |csv| csv << ary }
       # e.g.
       #  iam_uid: leo,iam_realm: /employees,team: tip
+    end
+
+    def post_to_appdynamics(hsh)
+      # e.g.
+      #  hsh = {iam_uid: 'leo', iam_realm: '/employees', team: 'tip'}
+      #  keys   #=> ["iam_uid", "iam_realm", "team"]
+      #  values #=> ["leo", "employees", "tip"]
+      keys = hsh.keys.map(&:to_s)
+      values = hsh.values.map(&:to_s).map { |v| v.gsub('/','') }
+      # e.g.
+      #  "propertynames=iam_uid&propertynames=iam_realm&propertynames=team"
+      propertynames = keys.map { |v| "propertynames=#{v}" }.join('&')
+      # e.g.
+      #  "propertyvalues=leo&propertyvalues=employees&propertyvalues=tip"
+      propertyvalues = values.map { |v| "propertyvalues=#{v}" }.join('&')
+      # continue building the url query by reading appdynamics_rest_api.md
     end
 
     def post_to_newrelic(hsh)
