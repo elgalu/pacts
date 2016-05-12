@@ -1,6 +1,7 @@
 require 'http'
 require 'active_support/cache'
 # require 'new_relic/agent'
+require 'csv'
 
 require './lib/validations'
 require './lib/conf'
@@ -56,11 +57,36 @@ module Rack::OAuth2::Bearer
     end
 
     def store_insights(response)
-      # e.g. for a human user: 'leonardo', '/employees'
+      hsh = get_insights(response)
+      write_to_csv(hsh)
+    end
+
+    def get_insights(response)
+      # e.g. for a human user: 'leo', '/employees'
       # e.g. for a service...: 'stups_pacts', '/services'
       uid = JSON.parse(response.body)['uid']
       realm = JSON.parse(response.body)['realm'].delete('/')
-      hsh = {iam_uid: uid, iam_realm: realm}
+      team = get_team(uid)
+      hsh = {iam_uid: uid, iam_realm: realm, team: team}
+    end
+
+    def get_team(uid)
+      # TODO
+      'wip'
+    end
+
+    def write_to_csv(hsh)
+      # e.g.
+      #  hsh = {iam_uid: 'leo', iam_realm: '/employees', team: 'tip'}
+      #  ary #=> ["iam_uid: leo", "iam_realm: /employees", "team: tip"]
+      ary = hsh.map { |k,v| "#{k}: #{v}" }
+      # File.open("pacts_usage.txt", "a+") { |line| line << ary }
+      CSV.open("pacts_usage.csv", "a+") { |csv| csv << ary }
+      # e.g.
+      #  iam_uid: leo,iam_realm: /employees,team: tip
+    end
+
+    def post_to_newrelic(hsh)
       # ::NewRelic::Agent.add_custom_attributes(hsh)
       # ::NewRelic::Agent.record_custom_event('users_kpi', hsh)
     end
