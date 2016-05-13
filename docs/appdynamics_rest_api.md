@@ -26,7 +26,7 @@ Get APP_SERVER_RESTART or APPLICATION_ERROR events
     API_PARA="${API_PARA}&event-types=APP_SERVER_RESTART,APPLICATION_ERROR"
     curl --user ${APAUTH} "${APPDYNAMICS_API_ENDPOINT}/${API_PATH}${API_PARA}"
 
-See sample output at [appdynamics_events.json](http://demo.appdynamics.com)
+See sample output at [appdynamics_events.json](https://gist.github.com/elgalu/62152e253406307a09b4ca51f2581ef9)
 
 ### Get CUSTOM events
 
