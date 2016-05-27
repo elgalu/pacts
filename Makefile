@@ -27,8 +27,11 @@ build: checkIMG_TAG
 	docker build -t pacts:latest .
 	docker tag -f pacts:latest ${REG}/tip/pacts:${IMG_TAG}
 
-push:
+login:
+	@mai login ${AWS_ACC_NAME}-PowerUser
 	pierone login --url ${REG} --user ${MYUSER}
+
+push: login
 	docker push ${REG}/tip/pacts:${IMG_TAG}
 
 kio_create:
@@ -41,23 +44,19 @@ approve:
 	USER=${MYUSER} kio ver approve ${APPLICATION_ID} $(APP_VER)
 
 # Note you can also use or export env var `AWS_DEFAULT_REGION` instead of `--region`
-senza_create: checkSTAGE
+senza_create: checkSTAGE login
 	@echo "Will work on AWS_ACC_NAME='${AWS_ACC_NAME}'"
-	@mai login ${AWS_ACC_NAME}-PowerUser
-	@pierone login --url ${REG} --user ${MYUSER}
 	senza create --region ${AWS_REGION} pacts.yaml ${APP_VER} \
 	  ImgTag="${IMG_TAG}" \
 	  InstanceType="${INSTANCE_TYPE}" \
 	  ApplicationId="${APPLICATION_ID}" \
 	  AWSMintRegion="${AWS_MINT_REGION}" \
-	  ScalyrKey="${SCALYR_KEY}" \
 	  Stage="${STAGE}"
 	senza wait --region ${AWS_REGION} pacts ${APP_VER} || true
 	senza console --region ${AWS_REGION} --limit 300 pacts ${APP_VER} | grep -iE "error|warn|failed" || true
 
-senza_traffic: checkSTAGE
+senza_traffic: checkSTAGE login
 	@echo "Will update traffic on AWS_ACC_NAME='${AWS_ACC_NAME}'"
-	@mai login ${AWS_ACC_NAME}-PowerUser
 	senza traffic --region ${AWS_REGION} pacts ${APP_VER} 100
 
 # Validations

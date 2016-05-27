@@ -9,8 +9,6 @@ SenzaInfo:
       Description: "Instance type to use"
   - AWSMintRegion:
       Description: "AWS region for the mint bucket, could be different from the instance region"
-  - ScalyrKey:
-      Description: "Scalyr logs access key"
   - Stage:
       Description: "Environment type"
       AllowedValues: ["live", "test"]
@@ -33,10 +31,10 @@ SenzaComponents:
       # ERROR: AppServer CREATE_FAILED: The requested configuration is currently not supported. Please check the documentation for supported configurations. Launching EC2 instance failed.
       InstanceType: "{{Arguments.InstanceType}}"
       AutoScaling:
-        Minimum: 2
-        Maximum: 20
+        Minimum: 1
+        Maximum: 5
         MetricType: CPU
-        ScaleUpThreshold: 70
+        ScaleUpThreshold: 80
         ScaleDownThreshold: 40
       SecurityGroups:
         - app-{{Arguments.ApplicationId}}
@@ -55,7 +53,7 @@ SenzaComponents:
         health_check_port: 443
         root: true
         # etcd_discovery_domain: "etcd.{{AccountInfo.TeamID}}"
-        scalyr_account_key: "{{Arguments.ScalyrKey}}"
+        scalyr_account_key: "aws:kms:LIVE_SECRET!!!"
         # We use {{Arguments.AWSMintRegion}} instead of {{AccountInfo.Region}} because the mint bucket can by on any region
         mint_bucket: "myorg-stups-mint-{{AccountInfo.AccountID}}-{{Arguments.AWSMintRegion}}"
         # But since senza 1.0.51 we can directly use `{{AccountInfo.MintBucket}}`
