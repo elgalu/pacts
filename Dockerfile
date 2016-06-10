@@ -88,8 +88,11 @@ ENV TORQ_VER="3.1.2" \
 ENV JBOSS_HOME=${TORQUEBOX_HOME}/jboss \
     JRUBY_HOME=${TORQUEBOX_HOME}/jruby
 ENV PATH=${JRUBY_HOME}/bin:${PATH}
+# md5sum torquebox-dist-3.1.2-bin.zip #=> ff6f34c8a29b7745de9f23acd77e5ad0
+# RUN cd /root \
+#   && wget -nv "http://torquebox.org/release/org/torquebox/torquebox-dist/${TORQ_VER}/torquebox-dist-${TORQ_VER}-bin.zip" \
+#   && unzip -x torquebox-dist-${TORQ_VER}-bin.zip
 RUN cd /root \
-  && wget -nv "http://torquebox.org/release/org/torquebox/torquebox-dist/${TORQ_VER}/torquebox-dist-${TORQ_VER}-bin.zip" \
   && unzip -x torquebox-dist-${TORQ_VER}-bin.zip
 RUN cd /root \
   && mv torquebox-${TORQ_VER} torquebox \
