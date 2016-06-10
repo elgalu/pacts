@@ -66,6 +66,7 @@ exec jruby -S torquebox run \
   --bind-address="${BIND_TO}" \
   --jvm-options="$(appdynamics-agent)"
 
+# Alternatives
 # puma (MRI / JRuby)
 # exec bundle exec puma --environment development \
 #                       --debug \
