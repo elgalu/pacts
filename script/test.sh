@@ -125,11 +125,12 @@ if [ "${DISPOSABLE_PSQL}" == "true" ]; then
   PGUSER=${PACT_BROKER_DATABASE_USERNAME}
   PGDATABASE=${PACT_BROKER_DATABASE_NAME}
   if [ -z "${PACT_BROKER_DATABASE_PASSWORD}" ]; then
-    if pwgen -n1 >/dev/null 2>&1; then
-      export PACT_BROKER_DATABASE_PASSWORD=$(pwgen -c -n -1 $(echo $[ 7 + $[ RANDOM % 17 ]]) 1)
-    else
-      export PACT_BROKER_DATABASE_PASSWORD="no_pwdgen_so_hardcoded_password"
-    fi
+    export PACT_BROKER_DATABASE_PASSWORD="leo123"
+    # if pwgen -n1 >/dev/null 2>&1; then
+    #   export PACT_BROKER_DATABASE_PASSWORD=$(pwgen -c -n -1 $(echo $[ 7 + $[ RANDOM % 17 ]]) 1)
+    # else
+    #   export PACT_BROKER_DATABASE_PASSWORD="no_pwdgen_so_hardcoded_password"
+    # fi
   fi
   export PGPASSWORD=$PACT_BROKER_DATABASE_PASSWORD
 

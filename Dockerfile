@@ -7,12 +7,22 @@
 # FROM ruby:2.3.0
 
 # Changing to jRuby for AppDynamics support
-#  https://github.com/tianon/docker-brew-debian/blob/d431f09a37/jessie/Dockerfile
-#  https://github.com/docker-library/openjdk/blob/89851f0abc3a8/8-jre/Dockerfile
-#  https://github.com/cpuguy83/docker-jruby/blob/2448a2d7288d/9000/jre/Dockerfile
-FROM jruby:9.0.5.0-jre
+# Latest:
+#  https://hub.docker.com/_/jruby/
+# More details
+#   https://github.com/tianon/docker-brew-debian/blob/d431f09a37/jessie/Dockerfile
+#   https://github.com/docker-library/openjdk/blob/89851f0abc3a8/8-jre/Dockerfile
+#   https://github.com/cpuguy83/docker-jruby/blob/2448a2d7288d/9000/jre/Dockerfile
+# FROM jruby:9.0.5.0-jre
+# FROM jruby:9.1.2.0-jre
+
+# When maintaining our own jRuby docker image
+FROM elgalu/jruby:9.0.5a
+# FROM elgalu/jruby:9.1.2a
 
 MAINTAINER Leo Gallucci <elgalu3@gmail.com>
+
+USER root
 
 # Get latest `gem` binary
 RUN  gem install rubygems-update \
@@ -52,8 +62,11 @@ RUN apt-get update -qqy \
     jq \
     curl \
     make \
+    perl \
   && rm -rf /var/lib/apt/lists/*
-RUN curl -L http://cpanmin.us | perl - App::cpanminus
+# RUN curl "https://raw.githubusercontent.com/miyagawa/cpanminus/b2eeedf9d5395f100c97e9a80e6b8bc39421143e/cpanm" | perl - App::cpanminus
+ADD container/usr/bin/install_cpanm /usr/bin/
+RUN install_cpanm App::cpanminus
 RUN cpanm URI::Escape
 
 #-------------
@@ -69,6 +82,7 @@ WORKDIR $APP_HOME
 RUN bundle install --without='development test'
 
 # Experimenting with Torquebox
+# http://torquebox.org/download/
 ENV TORQ_VER="3.1.2" \
     TORQUEBOX_HOME="/root/torquebox"
 ENV JBOSS_HOME=${TORQUEBOX_HOME}/jboss \
