@@ -46,7 +46,7 @@ approve:
 # Note you can also use or export env var `AWS_DEFAULT_REGION` instead of `--region`
 senza_create: checkSTAGE login
 	@echo "Will work on AWS_ACC_NAME='${AWS_ACC_NAME}'"
-	senza create --region ${AWS_REGION} ----parameter-file ${STAGE}.yaml \
+	senza create --region ${AWS_REGION} --parameter-file ${STAGE}.yaml \
 	  pacts.yaml ${APP_VER} ImgTag="${IMG_TAG}"
 	senza wait --region ${AWS_REGION} pacts ${APP_VER} || true
 	senza console --region ${AWS_REGION} --limit 300 pacts ${APP_VER} | grep -iE "error|warn|failed" || true
