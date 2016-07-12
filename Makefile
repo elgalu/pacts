@@ -25,7 +25,7 @@ build: checkIMG_TAG
 	./script/gen-scm-source.sh
 	@cd pact_broker && bundle install
 	docker build -t pacts:latest .
-	docker tag -f pacts:latest ${REG}/tip/pacts:${IMG_TAG}
+	docker tag pacts:latest ${REG}/tip/pacts:${IMG_TAG}
 
 login:
 	@mai login ${AWS_ACC_NAME}-PowerUser
