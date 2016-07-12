@@ -1,0 +1,4 @@
+Stage: live
+ApplicationId: pacts
+InstanceType: t2.small
+AWSMintRegion: us-east-2

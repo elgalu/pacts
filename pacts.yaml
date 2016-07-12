@@ -6,7 +6,6 @@ SenzaInfo:
       Description: "Docker image tag to deploy"
   - InstanceType:
       Description: "Instance type to use"
-      Description: "Instance type to use"
   - AWSMintRegion:
       Description: "AWS region for the mint bucket, could be different from the instance region"
   - Stage:
@@ -96,7 +95,7 @@ SenzaComponents:
           # e.g. {{AccountInfo.MintBucket}} == "myorg-stups-mint-123456789012-us-east-2"
           # ACCOUNTINFO_MINTBUCKET: "{{AccountInfo.MintBucket}}"
           # Nesting env vars like this produces something like this:
-          # ACCINFO={'VPCID': 'vpc-11111111', 'ACCOUNTALIAS': 'myorg-myteam', 'ACCOUNTID': '111111111111', 'TEAMID': 'team', 'DOMAIN': 'team.myorg.net', 'REGION': 'eu-west-1'}
+          # ACCINFO={'VPCID': 'vpc-11111111', 'ACCOUNTALIAS': 'myorg-myteam', 'ACCOUNTID': '111111111111', 'TEAMID': 'team', 'DOMAIN': 'team.myorg.net', 'REGION': 'eu-central-1'}
           # ACCINFO:
           #   DOMAIN: "{{AccountInfo.Domain}}"
           #   TEAMID: "{{AccountInfo.TeamID}}"

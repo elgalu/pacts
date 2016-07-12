@@ -1,0 +1,4 @@
+Stage: test
+ApplicationId: pacts-staging
+InstanceType: t2.small
+AWSMintRegion: us-east-3
