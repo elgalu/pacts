@@ -12,10 +12,7 @@ set -xe
 # Commented out as it eats stderr and `set -e` should suffice
 #  trap 'echo "FAILED"; exit 1' ERR
 
-# echo fn that outputs to stderr http://stackoverflow.com/a/2990533/511069
-echoerr() {
-  cat <<< "$@" 1>&2;
-}
+echoerr() { awk " BEGIN { print \"$@\" > \"/dev/fd/2\" }" ; }
 
 # print error and exit
 die () {
@@ -84,6 +81,20 @@ fi
 [ -z "${OAUTH2_ACCESS_TOKEN_URL_PARAMS}" ] && \
   export OAUTH2_ACCESS_TOKEN_URL_PARAMS="${OAUTH2_ACCESS_TOKEN_URL}${OAUTH2_ACCESS_TOKEN_PARAMS}"
 
+if [ "$(uname)" == "Darwin" ]; then
+  export GTIMEOUT="gtimeout"
+else
+  export GTIMEOUT="timeout"
+fi
+
+if ! zign --version; then die "This script $0 requires zign"; fi
+if ! pg_isready --version; then
+  die "This script $0 requires psql client, e.g. brew install postgresql"
+fi
+if ! ${GTIMEOUT} --version | grep coreutils; then
+  die "This script $0 requires ${GTIMEOUT}, e.g. brew install coreutils"
+fi
+
 # ensure token works before continuing
 zign token --user ${MYUSER} --url ${OAUTH2_ACCESS_TOKEN_URL_PARAMS} -n pact
 
@@ -122,8 +133,8 @@ PORT_BIND="${PACT_BROKER_PORT}"
 # fi
 
 if [ "${DISPOSABLE_PSQL}" == "true" ]; then
-  [ "$(uname)" == "Darwin" ] && die \
-    "Running the disposable postgres is only supported in Linux for now."
+  # [ "$(uname)" == "Darwin" ] && die \
+  #   "Running the disposable postgres is only supported in Linux for now."
 
   export PACT_BROKER_DATABASE_USERNAME=postgres
   export PACT_BROKER_DATABASE_NAME=pact
@@ -156,7 +167,7 @@ if [ "${DISPOSABLE_PSQL}" == "true" ]; then
     ${PSQL_IMG}
   sleep 1 && docker logs ${PSQL_CONT_NAME}
 
-  timeout --foreground ${PSQL_WAIT_TIMEOUT} \
+  ${GTIMEOUT} --foreground ${PSQL_WAIT_TIMEOUT} \
     $(dirname "$0")/wait_psql.sh ${PSQL_CONT_NAME} || report_postgres_failed
 
   export PACT_BROKER_DATABASE_HOST=`docker inspect -f '{{ .NetworkSettings.IPAddress }}' ${PSQL_CONT_NAME}`
