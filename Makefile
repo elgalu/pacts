@@ -68,8 +68,8 @@ endif
 	@if [ "${STAGE}" != "live" ] && [ "${STAGE}" != "test" ]; then \
 	  echo "Env var STAGE=$(STAGE) should be 'live' or 'test'"; exit 1; fi
 
-# `make` won't execute a task if there is an existing file with that task name
-# so .PHONY is used to skip that logic for the listed task names
+# PHONY: Given make doesn't execute a task if there is an existing file
+# with that task name, .PHONY is used to skip that logic listing task names
 .PHONY: \
 	checkSTAGE \
 	checkIMG_TAG \

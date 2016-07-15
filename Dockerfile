@@ -22,6 +22,9 @@ FROM elgalu/jruby:9.0.5b
 
 MAINTAINER Leo Gallucci <elgalu3@gmail.com>
 
+ENV DEBIAN_FRONTEND=noninteractive \
+    DEBCONF_NONINTERACTIVE_SEEN=true
+
 USER root
 
 # Get latest `gem` binary
@@ -63,10 +66,23 @@ RUN apt-get update -qqy \
     curl \
     make \
     perl \
+    libpq-dev \
+    libdbi-perl \
+    libmodule-signature-perl \
+  && rm -rf /var/lib/apt/lists/*
+
+#------
+# CPAN
+#------
+RUN apt-get update -qqy \
+  && apt-get -qqy install \
+    cpanminus \
+  && cpanm --sudo Digest::SHA1 \
   && rm -rf /var/lib/apt/lists/*
 # RUN curl "https://raw.githubusercontent.com/miyagawa/cpanminus/b2eeedf9d5395f100c97e9a80e6b8bc39421143e/cpanm" | perl - App::cpanminus
 ADD container/usr/bin/install_cpanm /usr/bin/
-RUN install_cpanm App::cpanminus
+# Securely: https://github.com/miyagawa/cpanminus/issues/505
+RUN install_cpanm -M "https://cpan.metacpan.org/" --verify App::cpanminus
 RUN cpanm URI::Escape
 
 #-------------
@@ -77,8 +93,8 @@ RUN rm -f /etc/service/nginx/down
 RUN rm -f /etc/nginx/sites-enabled/default
 ADD container /
 
-ADD pact_broker/ $APP_HOME/
-WORKDIR $APP_HOME
+ADD pact_broker/ ${APP_HOME}/
+WORKDIR ${APP_HOME}
 RUN bundle install --without='development test'
 
 # Experimenting with Torquebox
@@ -89,11 +105,11 @@ ENV JBOSS_HOME=${TORQUEBOX_HOME}/jboss \
     JRUBY_HOME=${TORQUEBOX_HOME}/jruby
 ENV PATH=${JRUBY_HOME}/bin:${PATH}
 # md5sum torquebox-dist-3.1.2-bin.zip #=> ff6f34c8a29b7745de9f23acd77e5ad0
-# RUN cd /root \
-#   && wget -nv "http://torquebox.org/release/org/torquebox/torquebox-dist/${TORQ_VER}/torquebox-dist-${TORQ_VER}-bin.zip" \
-#   && unzip -x torquebox-dist-${TORQ_VER}-bin.zip
 RUN cd /root \
-  && unzip -x torquebox-dist-${TORQ_VER}-bin.zip
+  && echo "ff6f34c8a29b7745de9f23acd77e5ad0  torquebox-dist-${TORQ_VER}-bin.zip" > torquebox.md5 \
+  && wget -nv "http://torquebox.org/release/org/torquebox/torquebox-dist/${TORQ_VER}/torquebox-dist-${TORQ_VER}-bin.zip" \
+  && md5sum --check torquebox.md5 \
+  && unzip -qx torquebox-dist-${TORQ_VER}-bin.zip
 RUN cd /root \
   && mv torquebox-${TORQ_VER} torquebox \
   && cd ${APP_HOME} \
@@ -104,8 +120,9 @@ ENV PACT_BROKER_PORT=443 \
     RACK_THREADS_COUNT=20 \
     RACK_LOG=/var/log/rack.log
 
-EXPOSE $PACT_BROKER_PORT
-CMD /usr/bin/entry.sh
+# Restore
+ENV DEBIAN_FRONTEND="" \
+    DEBCONF_NONINTERACTIVE_SEEN=""
 
 #=====================================================
 # Meta JSON file to hold commit info of current build
@@ -114,3 +131,6 @@ COPY scm-source.json /
 # Ensure the file is up-to-date else you should update it by running
 #  ./script/gen-scm-source.sh
 # on the host machine
+
+EXPOSE ${PACT_BROKER_PORT}
+CMD ["/usr/bin/entry.sh"]

@@ -5,8 +5,9 @@
 # - connects to the application to check it works
 # - works in Linux, TravisCI and OSX
 
-# Exit immediately if a command exits with a non-zero status
-set -e
+# set -e: exit asap if a command exits with a non-zero status
+# set -x: print each command right before it is executed
+set -xe
 
 # Commented out as it eats stderr and `set -e` should suffice
 #  trap 'echo "FAILED"; exit 1' ERR
@@ -87,8 +88,12 @@ fi
 zign token --user ${MYUSER} --url ${OAUTH2_ACCESS_TOKEN_URL_PARAMS} -n pact
 
 # Cert issues
-curl https://secure-static.ztat.net/ca/zalando-service.ca > certs/zalando-service.crt
-curl https://secure-static.ztat.net/ca/zalando-root.ca > certs/zalando-root.crt
+if [ ! -f "certs/zalando-service.crt" ]; then
+  curl https://secure-static.ztat.net/ca/zalando-service.ca > certs/zalando-service.crt
+fi
+if [ ! -f "certs/zalando-root.crt" ]; then
+  curl https://secure-static.ztat.net/ca/zalando-root.ca > certs/zalando-root.crt
+fi
 
 echo "Will build the pact broker"
 docker build -t=pact_broker .
@@ -101,20 +106,20 @@ if docker ps -a | grep ${PACT_CONT_NAME}; then
   docker rm ${PACT_CONT_NAME}
 fi
 
-if [ "$(uname)" == "Darwin" ]; then
-  PORT_BIND="${PACT_BROKER_PORT}:${PACT_BROKER_PORT}"
-  if [ "true" == "$(command -v boot2docker > /dev/null 2>&1 && echo 'true' || echo 'false')" ]; then
-    test_ip=$(boot2docker ip)
-  else
-    if [ "true" == "$(command -v docker-machine > /dev/null 2>&1 && echo 'true' || echo 'false')" ]; then
-      test_ip=$(docker-machine ip default)
-    else
-      echo "Cannot detect either boot2docker or docker-machine" && exit 1
-    fi
-  fi
-else
-  PORT_BIND="${PACT_BROKER_PORT}"
-fi
+# if [ "$(uname)" == "Darwin" ]; then
+#   PORT_BIND="${PACT_BROKER_PORT}:${PACT_BROKER_PORT}"
+#   if [ "true" == "$(command -v boot2docker > /dev/null 2>&1 && echo 'true' || echo 'false')" ]; then
+#     test_ip=$(boot2docker ip)
+#   else
+#     if [ "true" == "$(command -v docker-machine > /dev/null 2>&1 && echo 'true' || echo 'false')" ]; then
+#       test_ip=$(docker-machine ip default)
+#     else
+#       echo "Cannot detect either boot2docker or docker-machine" && exit 1
+#     fi
+#   fi
+# else
+PORT_BIND="${PACT_BROKER_PORT}"
+# fi
 
 if [ "${DISPOSABLE_PSQL}" == "true" ]; then
   [ "$(uname)" == "Darwin" ] && die \
