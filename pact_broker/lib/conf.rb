@@ -3,6 +3,12 @@ require './lib/validations'
 module Conf
   # default token info endpoint to validate bearer tokens
   TOKENINFO_URL_PARAMS ||= ENV['TOKENINFO_URL_PARAMS']
+  
+  # AppDynamics Analytics API
+  APPDYNAMICS_ANALYTICS_API_ENDPOINT ||= ENV['APPDYNAMICS_ANALYTICS_API_ENDPOINT']
+  APPDYNAMICS_ACCOUNT_ID ||= ENV['APPDYNAMICS_ACCOUNT_ID']
+  APPDYNAMICS_API_KEY ||= ENV['APPDYNAMICS_API_KEY']
+  EMPLOYEES_API_URL ||= ENV['EMPLOYEES_API_URL']
 
   # default response type
   JSON_CONT = {'Content-Type' => 'application/json'}

@@ -6,7 +6,7 @@ include $(STAGE).env
 # default executed task when no name is provided
 default: none
 
-echoenv:
+env:
 	env
 
 test:
@@ -79,5 +79,5 @@ endif
 	kio_create \
 	approve \
 	senza_create \
-	echoenv \
+	env \
 	test

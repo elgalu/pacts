@@ -19,6 +19,10 @@ Set all necessary environment variables we will need.
     export TOKENINFO_URL="https://token.example.com/oauth2/tokeninfo"
     export TOKENINFO_PARAMS="?access_token="
     export TOKENINFO_URL_PARAMS="${TOKENINFO_URL}${TOKENINFO_PARAMS}"
+    export APPDYNAMICS_ANALYTICS_API_ENDPOINT="https://demo.appdynamics.com"
+    export APPDYNAMICS_ACCOUNT_ID="customer1_zxcvcxv3232"
+    export APPDYNAMICS_API_KEY="j23423-sdasf-secret!!!"
+    export EMPLOYEES_API_URL="https://https://api.example.com/employees"
     export BIND_TO="0.0.0.0"
     export PACT_BROKER_PORT=443
     export port=$PACT_BROKER_PORT

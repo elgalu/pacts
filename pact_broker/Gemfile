@@ -26,6 +26,8 @@ gem 'puma', '~> 3.1.0'
 # Fast HTTP client with a chainable API and full streaming support
 # https://github.com/httprb/http
 gem 'http', '~> 0.9.8'
+gem 'rest-client', '~> 2.0.0'
+gem 'json'
 
 # Rack middleware for blocking & throttling
 # https://github.com/kickstarter/rack-attack

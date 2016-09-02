@@ -23,6 +23,10 @@ die () {
 [ -z "${BIND_TO}" ] && die "Required env var BIND_TO"
 [ -z "${RACK_LOG}" ] && die "Required env var RACK_LOG"
 [ -z "${RACK_THREADS_COUNT}" ] && die "Required env var RACK_THREADS_COUNT"
+[ -z "${APPDYNAMICS_ANALYTICS_API_ENDPOINT}" ] && die "Required env var APPDYNAMICS_ANALYTICS_API_ENDPOINT"
+[ -z "${APPDYNAMICS_ACCOUNT_ID}" ] && die "Required env var APPDYNAMICS_ACCOUNT_ID"
+[ -z "${APPDYNAMICS_API_KEY}" ] && die "Required env var APPDYNAMICS_API_KEY"
+[ -z "${EMPLOYEES_API_URL}" ] && die "Required env var EMPLOYEES_API_URL"
 
 # Generate token full url if not already present
 [ -z "${TOKENINFO_URL_PARAMS}" ] && \

@@ -17,7 +17,7 @@
 # FROM jruby:9.1.2.0-jre
 
 # When maintaining our own jRuby docker image
-FROM elgalu/jruby:9.0.5b
+FROM elgalu/jruby:9.0.5c
 # FROM elgalu/jruby:9.1.2a #not working
 
 MAINTAINER Leo Gallucci <elgalu3@gmail.com>
@@ -69,6 +69,7 @@ RUN apt-get update -qqy \
     libpq-dev \
     libdbi-perl \
     libmodule-signature-perl \
+    software-properties-common \
   && rm -rf /var/lib/apt/lists/*
 
 #------
@@ -84,6 +85,18 @@ ADD container/usr/bin/install_cpanm /usr/bin/
 # Securely: https://github.com/miyagawa/cpanminus/issues/505
 RUN install_cpanm -M "https://cpan.metacpan.org/" --verify App::cpanminus
 RUN cpanm URI::Escape
+
+#------------------
+# Python3 and zign
+#------------------
+RUN add-apt-repository ppa:fkrull/deadsnakes \
+  && apt-get update -qqy \
+  && apt-get -qqy install \
+    python3.5 \
+    python3-pip \
+  && pip3 install -U pip \
+  && pip3 install -U stups-zign \
+  && rm -rf /var/lib/apt/lists/*
 
 #-------------
 # Pact Broker

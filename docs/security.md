@@ -93,3 +93,8 @@ Dockerfile
 Change to the [latest](https://registry.hub.docker.com/_/ubuntu/tags/manage/) date:
 
     FROM ubuntu:xenial-20160525
+
+## Certificate error:
+Open EC2 -> Load Balancers -> correct version -> Listeners -> SSL Certificate -> Change -> From ACM
+
+https://eu-central-1.console.aws.amazon.com/ec2/v2/home?region=eu-central-1#LoadBalancers:

@@ -1,6 +1,8 @@
 ## AppDynamics REST API
 Notes on how to use the AppDynamics REST API.
 
+Note: do not confuse with AppDynamics Analytics REST API which is the one we are using now. Consider this guide deprecated. 
+
 ### Setup
 
     export APPDYNAMICS_TEAM_API_ACCN="ourAPIaccount"

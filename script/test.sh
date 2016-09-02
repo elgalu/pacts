@@ -24,31 +24,42 @@ die () {
 
 # print error and exit
 required_args () {
-  echoerr ""
-  echoerr "A postgres database on your host machine is required through below"
-  echoerr "environment variables. Read POSTGRESQL.md for instructions."
-  echoerr ""
-  echoerr "Set below environment variables with appropriate values for your database:"
-  echoerr "  export PACT_BROKER_DATABASE_USERNAME=postgres"
-  echoerr "  export PACT_BROKER_DATABASE_PASSWORD=postgres"
-  echoerr "  export PACT_BROKER_DATABASE_NAME=pact"
-  echoerr "  export PACT_BROKER_DATABASE_HOST=172.17.0.2"
-  echoerr "  export TOKENINFO_URL=\"https://info.service.example.com/oauth2/tokeninfo\""
-  echoerr "  export TOKENINFO_PARAMS=\"?access_token=\""
-  echoerr "  export MYUSER=elgalu"
-  echoerr ""
-  echoerr "Current values:"
-  echoerr "  export PACT_BROKER_DATABASE_USERNAME='${PACT_BROKER_DATABASE_USERNAME}'"
-  echoerr "  export PACT_BROKER_DATABASE_PASSWORD='${PACT_BROKER_DATABASE_PASSWORD}'"
-  echoerr "  export PACT_BROKER_DATABASE_NAME='${PACT_BROKER_DATABASE_NAME}'"
-  echoerr "  export PACT_BROKER_DATABASE_HOST='${PACT_BROKER_DATABASE_HOST}'"
-  echoerr "  export TOKENINFO_URL='${TOKENINFO_URL}'"
-  echoerr "  export TOKENINFO_PARAMS='${TOKENINFO_PARAMS}'"
-  echoerr "  export MYUSER='${MYUSER}'"
-  echoerr ""
-  echoerr "And ensure you have allowed external connections."
+  # set -x: print each command right before it is executed
+  set +x
+  echo "" 1>&2
+  echo "A postgres database on your host machine is required through below" 1>&2
+  echo "environment variables. Read POSTGRESQL.md for instructions." 1>&2
+  echo "" 1>&2
+  echo "Set below environment variables with appropriate values for your database:" 1>&2
+  echo "  export PACT_BROKER_DATABASE_USERNAME=postgres" 1>&2
+  echo "  export PACT_BROKER_DATABASE_PASSWORD=postgres" 1>&2
+  echo "  export PACT_BROKER_DATABASE_NAME=pact" 1>&2
+  echo "  export PACT_BROKER_DATABASE_HOST=172.17.0.2" 1>&2
+  echo "  export TOKENINFO_URL=\"https://info.service.example.com/oauth2/tokeninfo\"" 1>&2
+  echo "  export TOKENINFO_PARAMS=\"?access_token=\"" 1>&2
+  echo "  export APPDYNAMICS_ANALYTICS_API_ENDPOINT=\"https://demo.appdynamics.com\"" 1>&2
+  echo "  export APPDYNAMICS_ACCOUNT_ID=\"customer1_zxcvcxv3232\"" 1>&2
+  echo "  export APPDYNAMICS_API_KEY=\"j23423-sdasf-secret!!!\"" 1>&2
+  echo "  export EMPLOYEES_API_URL=\"https://https://api.example.com/employees\"" 1>&2
+  echo "  export MYUSER=elgalu" 1>&2
+  echo "" 1>&2
+  echo "Current values:" 1>&2
+  echo "  export PACT_BROKER_DATABASE_USERNAME='${PACT_BROKER_DATABASE_USERNAME}'" 1>&2
+  echo "  export PACT_BROKER_DATABASE_PASSWORD='${PACT_BROKER_DATABASE_PASSWORD}'" 1>&2
+  echo "  export PACT_BROKER_DATABASE_NAME='${PACT_BROKER_DATABASE_NAME}'" 1>&2
+  echo "  export PACT_BROKER_DATABASE_HOST='${PACT_BROKER_DATABASE_HOST}'" 1>&2
+  echo "  export TOKENINFO_URL='${TOKENINFO_URL}'" 1>&2
+  echo "  export TOKENINFO_PARAMS='${TOKENINFO_PARAMS}'" 1>&2
+  echo "  export APPDYNAMICS_ANALYTICS_API_ENDPOINT='${APPDYNAMICS_ANALYTICS_API_ENDPOINT}'" 1>&2
+  echo "  export APPDYNAMICS_ACCOUNT_ID='${APPDYNAMICS_ACCOUNT_ID}'" 1>&2
+  echo "  export APPDYNAMICS_API_KEY='${APPDYNAMICS_API_KEY}'" 1>&2
+  echo "  export EMPLOYEES_API_URL='${EMPLOYEES_API_URL}'" 1>&2
+  echo "  export MYUSER='${MYUSER}'" 1>&2
+  echo "" 1>&2
+  echo "And ensure you have allowed external connections." 1>&2
   # if $2 is defined AND NOT EMPTY, use $2; otherwise, set to "150"
   errnum=${2-115}
+  set -x
   exit $errnum
 }
 
@@ -80,6 +91,10 @@ fi
 [ -z "${OAUTH2_ACCESS_TOKEN_PARAMS}" ] && export OAUTH2_ACCESS_TOKEN_PARAMS="?realm=/employees"
 [ -z "${OAUTH2_ACCESS_TOKEN_URL_PARAMS}" ] && \
   export OAUTH2_ACCESS_TOKEN_URL_PARAMS="${OAUTH2_ACCESS_TOKEN_URL}${OAUTH2_ACCESS_TOKEN_PARAMS}"
+[ -z "${EMPLOYEES_API_URL}" ] && export EMPLOYEES_API_URL="https://https://api.example.com/employees"
+[ -z "${APPDYNAMICS_ANALYTICS_API_ENDPOINT}" ] && export APPDYNAMICS_ANALYTICS_API_ENDPOINT="https://demo.appdynamics.com"
+[ -z "${APPDYNAMICS_ACCOUNT_ID}" ]             && export APPDYNAMICS_ACCOUNT_ID="customer1_zxcvcxv3232"
+[ -z "${APPDYNAMICS_API_KEY}" ]                && export APPDYNAMICS_API_KEY="j23423-sdasf-secret!!!"
 
 if [ "$(uname)" == "Darwin" ]; then
   export GTIMEOUT="gtimeout"
@@ -150,8 +165,8 @@ if [ "${DISPOSABLE_PSQL}" == "true" ]; then
   fi
   export PGPASSWORD=$PACT_BROKER_DATABASE_PASSWORD
 
-  # Run psql, e.g. postgres:9.4.5 / postgres:9.4.6 / postgres:9.4
-  PSQL_IMG=postgres:9.4.6
+  # Run psql, e.g. postgres:9.4 / postgres:9.5.4
+  PSQL_IMG=postgres:9.5.4
   docker pull ${PSQL_IMG}
 
   echo ""
@@ -159,13 +174,13 @@ if [ "${DISPOSABLE_PSQL}" == "true" ]; then
   # Using `--privileged` due to
   #  pg_ctl: could not send stop signal (PID: 55): Permission denied
   #  in TravisCI
-  docker run -d --name=${PSQL_CONT_NAME} -p 5432 \
+  docker run -d --name=${PSQL_CONT_NAME} -p 5432:5432 \
     -e POSTGRES_PASSWORD=${PGPASSWORD} \
     -e PGPASSWORD \
     -e PGUSER \
     -e PGPORT="5432" \
     ${PSQL_IMG}
-  sleep 1 && docker logs ${PSQL_CONT_NAME}
+  sleep 4 && docker logs ${PSQL_CONT_NAME}
 
   ${GTIMEOUT} --foreground ${PSQL_WAIT_TIMEOUT} \
     $(dirname "$0")/wait_psql.sh ${PSQL_CONT_NAME} || report_postgres_failed
@@ -188,6 +203,10 @@ fi
 [ -z "${PACT_BROKER_DATABASE_NAME}" ] && required_args
 [ -z "${TOKENINFO_URL}" ] && required_args
 [ -z "${TOKENINFO_PARAMS}" ] && required_args
+[ -z "${APPDYNAMICS_ANALYTICS_API_ENDPOINT}" ] && required_args
+[ -z "${APPDYNAMICS_ACCOUNT_ID}" ] && required_args
+[ -z "${APPDYNAMICS_API_KEY}" ] && required_args
+[ -z "${EMPLOYEES_API_URL}" ] && required_args
 [ -z "${MYUSER}" ] && required_args
 
 export TOKENINFO_URL_PARAMS="${TOKENINFO_URL}${TOKENINFO_PARAMS}"
@@ -207,6 +226,10 @@ docker run --name=${PACT_CONT_NAME} -d -p ${PORT_BIND} \
   -e TOKENINFO_URL \
   -e TOKENINFO_PARAMS \
   -e TOKENINFO_URL_PARAMS \
+  -e APPDYNAMICS_ANALYTICS_API_ENDPOINT \
+  -e APPDYNAMICS_ACCOUNT_ID \
+  -e APPDYNAMICS_API_KEY \
+  -e EMPLOYEES_API_URL \
   -e STAGE=local \
   pact_broker
 sleep 2 && docker logs ${PACT_CONT_NAME}
