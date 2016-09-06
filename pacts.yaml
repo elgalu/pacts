@@ -31,7 +31,7 @@ SenzaComponents:
       InstanceType: "{{Arguments.InstanceType}}"
       # https://docs.google.com/presentation/d/1W23fETIZk1ov0IOsOGhxE3-tLR5oxJwsgv5BBxC2PFA/edit#slide=id.g16d5ad4553_0_97
       # t2.small default price is $0.026 per Hour
-      SpotPrice: 0.020
+      # SpotPrice: 0.020
       AutoScaling:
         Minimum: 1
         Maximum: 5
@@ -166,6 +166,8 @@ Resources:
    PactsIamRole:
       Type: AWS::IAM::Role
       Properties:
+         # If you specify a name, you cannot do updates that require this resource to be replaced.
+         # RoleName: app-{{Arguments.ApplicationId}}
          AssumeRolePolicyDocument:
             Version: "2012-10-17"
             Statement:
