@@ -11,44 +11,77 @@ source 'https://rubygems.org'
 #== Java on git ==#
 gem 'pact_broker', '1.9.1.pre.jruby', git: 'git://github.com/elgalu/pact_broker.git', branch: 'jruby'
 
-# PostgreSQL
-gem 'pg_jruby', '~> 0.17.1'
-
-# Web server and application server for Ruby, Python and Node.js
-# https://github.com/phusion/passenger
-# gem 'passenger', '~> 5.0.20'
-
-# A very fast & simple Ruby web server
-# https://github.com/macournoyer/thin/
-# gem 'thin', '~> 1.6.4'
-gem 'puma', '~> 3.1.0'
-
-# Fast HTTP client with a chainable API and full streaming support
-# https://github.com/httprb/http
-gem 'http', '~> 0.9.8'
-gem 'rest-client', '~> 2.0.0'
-gem 'json'
-
-# Rack middleware for blocking & throttling
-# https://github.com/kickstarter/rack-attack
-# gem 'blockenspiel', '~> 0.5.0'
-gem 'rack-attack', '~> 4.3.1'
-
-# To use ActiveSupport::Cache at active_support/cache
-# gem 'activesupport', '~> 4.2.4'
-gem 'activesupport', '~> 4.2.6'
-
-# A simple Rack middleware to enforce ssl connections
-# https://github.com/tobmatth/rack-ssl-enforcer
-gem 'rack-ssl-enforcer', '~> 0.2.9'
-
-# Procfile manager (when starting the broker outside of nginx)
-gem 'foreman', '~> 0.78.0'
-
-# New Relic server monitoring agent
-# gem 'newrelic_rpm', '~> 3.14'
-
-group :test, :development do
-  # Better debugging than irb
-  gem 'pry', '~> 0.10.3'
-end
+gem 'i18n', '0.7.0'
+gem 'json', '1.8.3'
+gem 'minitest', '5.9.0'
+gem 'thread_safe', '0.3.5'
+gem 'builder', '3.2.2'
+gem 'erubis', '2.7.0'
+gem 'nokogiri', '1.6.8'
+gem 'rack', '1.6.4'
+gem 'addressable', '2.4.0'
+gem 'as-notifications', '1.0.1'
+gem 'awesome_print', '1.7.0'
+gem 'blockenspiel', '0.5.0'
+gem 'diff-lcs', '1.2.5'
+gem 'multi_json', '1.12.1'
+gem 'uber', '0.0.15'
+gem 'unf', '0.1.4'
+gem 'find_a_port', '1.0.1'
+gem 'thor', '0.19.1'
+gem 'tilt', '2.0.5'
+gem 'http-form_data', '1.0.1'
+gem 'http_parser.rb', '0.6.0'
+gem 'multi_xml', '0.5.5'
+gem 'kramdown', '1.12.0'
+gem 'mime-types', '3.1'
+gem 'mime-types-data', '3.2016.0521'
+gem 'netrc', '0.11.0'
+gem 'randexp', '0.1.7'
+gem 'rspec-support', '3.5.0'
+gem 'tins', '1.12.0'
+gem 'webrick', '1.3.1'
+gem 'pg_jruby', '0.17.1'
+gem 'rouge', '1.11.1'
+gem 'sequel', '4.38.0'
+gem 'puma', '3.1.1'
+gem 'rack-ssl-enforcer', '0.2.9'
+gem 'tzinfo', '1.2.2'
+gem 'loofah', '2.0.3'
+gem 'rack-test', '0.6.3'
+gem 'url_mount', '0.2.1'
+gem 'rack-protection', '1.5.3'
+gem 'rack-attack', '4.3.1'
+gem 'versionomy', '0.5.0'
+gem 'webmachine', '1.4.0'
+gem 'representable', '2.1.8'
+gem 'domain_name', '0.5.20160826'
+gem 'foreman', '0.78.0'
+gem 'haml', '4.0.7'
+gem 'httparty', '0.13.7'
+gem 'rspec-core', '3.5.3'
+gem 'rspec-expectations', '3.5.0'
+gem 'rspec-mocks', '3.5.0'
+gem 'term-ansicolor', '1.3.2'
+gem 'activesupport', '4.2.7.1'
+gem 'rails-html-sanitizer', '1.0.3'
+gem 'http_router', '0.11.2'
+gem 'sinatra', '1.4.7'
+gem 'disposable', '0.0.9'
+gem 'roar', '1.0.4'
+gem 'http-cookie', '1.0.2'
+gem 'rspec', '3.5.0'
+gem 'rails-deprecated_sanitizer', '1.0.3'
+gem 'activemodel', '4.2.7.1'
+gem 'padrino-support', '0.12.4'
+gem 'http', '0.9.9'
+gem 'rest-client', '2.0.0'
+gem 'pact-support', '0.5.9'
+gem 'rails-dom-testing', '1.0.7'
+gem 'reform', '1.2.6'
+gem 'padrino-core', '0.12.4'
+gem 'pact-mock_service', '0.10.2'
+gem 'actionview', '4.2.7.1'
+gem 'pact', '1.9.4'
+gem 'actionpack', '4.2.7.1'
+gem 'trailblazer', '0.1.2'

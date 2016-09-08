@@ -61,7 +61,7 @@ SenzaComponents:
         health_check_port: 443
         root: true
         # etcd_discovery_domain: "etcd.{{AccountInfo.TeamID}}"
-        # scalyr_account_key: "aws:kms:LIVE_SECRET!!!"
+        scalyr_account_key: "aws:kms:LIVE_SECRET!!!"
         # We use {{Arguments.AWSMintRegion}} instead of {{AccountInfo.Region}} because the mint bucket can by on any region
         mint_bucket: "myorg-stups-mint-{{AccountInfo.AccountID}}-{{Arguments.AWSMintRegion}}"
         # But since senza 1.0.51 we can directly use `{{AccountInfo.MintBucket}}`
@@ -70,27 +70,11 @@ SenzaComponents:
         ports:
           443: 443
         environment:
+          # see entry.sh for the rest of the env vars
           # No need to set TOKENINFO_URL here since it should be automatically
           # set by taupage left this here for reference only
           # TOKENINFO_URL: "https://info.service.example.com/oauth2/tokeninfo"
-          TOKENINFO_PARAMS: "?access_token="
-          OAUTH2_ACCESS_TOKEN_URL: "https://token.service.example.com/oauth2/access_token"
-          OAUTH2_ACCESS_TOKEN_PARAMS: "?realm=/services"
-          # In this url we can ask about which teams a user belongs to
-          EMPLOYEES_API_URL: "https://https://api.example.com/employees"
-          # Enforce https on production/staging
-          SKIP_HTTPS_ENFORCER: false
-          BIND_TO: 0.0.0.0
-          PACT_BROKER_PORT: 443
-          RACK_THREADS_COUNT: 20
           STAGE: "{{Arguments.Stage}}"
-          APPDYNAMICS_TEAM_API_ACCN: "ourAPIaccount"
-          APPDYNAMICS_TEAM_API_USER: "ourAPIuser"
-          APPDYNAMICS_TEAM_API_PASS: "someSecret!"
-          APPDYNAMICS_API_ENDPOINT: "http://demo.appdynamics.com"
-          APPDYNAMICS_ANALYTICS_API_ENDPOINT: "https://demo.appdynamics.com"
-          APPDYNAMICS_ACCOUNT_ID: "customer1_zxcvcxv3232"
-          APPDYNAMICS_API_KEY: "j23423-sdasf-secret!!!"
           #---------------------------------------#
           # Using AccountInfo is quite convenient #
           #---------------------------------------#
@@ -117,16 +101,6 @@ SenzaComponents:
           #   ACCOUNTID: "{{AccountInfo.AccountID}}"
           #   ACCOUNTALIAS: "{{AccountInfo.AccountAlias}}"
           #   VPCID: "{{AccountInfo.VpcID}}"
-          # live aka production
-          LIVE_PACT_BROKER_DATABASE_NAME: "live_pacts"
-          LIVE_PACT_BROKER_DATABASE_HOST: "aws:kms:SECRET!!!"
-          LIVE_PACT_BROKER_DATABASE_USERNAME: "aws:kms:SECRET!!!"
-          LIVE_PACT_BROKER_DATABASE_PASSWORD: "aws:kms:SECRET!!!"
-          # test (staging)
-          STAGING_PACT_BROKER_DATABASE_NAME: "staging_pact"
-          STAGING_PACT_BROKER_DATABASE_HOST: "aws:kms:SECRET!!!"
-          STAGING_PACT_BROKER_DATABASE_USERNAME: "aws:kms:SECRET!!!"
-          STAGING_PACT_BROKER_DATABASE_PASSWORD: "aws:kms:SECRET!!!"
         #configure logrotate for application.log
         application_logrotate_size: 256M
         application_logrotate_interval: weekly

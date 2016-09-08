@@ -29,7 +29,8 @@ USER root
 
 # Get latest `gem` binary
 RUN  gem install rubygems-update \
-  && gem update --system
+  && gem update --system \
+  && gem install bundler
 
 #----------------------------------------------
 # To avoid using `curl --insecure` you need to
@@ -98,35 +99,42 @@ RUN add-apt-repository ppa:fkrull/deadsnakes \
   && pip3 install -U stups-zign \
   && rm -rf /var/lib/apt/lists/*
 
-#-------------
-# Pact Broker
-#-------------
-ENV APP_HOME=/root/pact_broker
-RUN rm -f /etc/service/nginx/down
-RUN rm -f /etc/nginx/sites-enabled/default
-ADD container /
-
-ADD pact_broker/ ${APP_HOME}/
-WORKDIR ${APP_HOME}
-RUN bundle install --without='development test'
-
-# Experimenting with Torquebox
+#-----------------------------
+# Torquebox web server part 1
+#-----------------------------
 # http://torquebox.org/download/
 ENV TORQ_VER="3.1.2" \
     TORQUEBOX_HOME="/root/torquebox"
 ENV JBOSS_HOME=${TORQUEBOX_HOME}/jboss \
     JRUBY_HOME=${TORQUEBOX_HOME}/jruby
 ENV PATH=${JRUBY_HOME}/bin:${PATH}
+# If you dont have the zip locally then uncomment the wget section
+ADD root /root
+# RUN cd /root \
+#   && wget -nv "http://torquebox.org/release/org/torquebox/torquebox-dist/${TORQ_VER}/torquebox-dist-${TORQ_VER}-bin.zip" \
 # md5sum torquebox-dist-3.1.2-bin.zip #=> ff6f34c8a29b7745de9f23acd77e5ad0
 RUN cd /root \
   && echo "ff6f34c8a29b7745de9f23acd77e5ad0  torquebox-dist-${TORQ_VER}-bin.zip" > torquebox.md5 \
-  && wget -nv "http://torquebox.org/release/org/torquebox/torquebox-dist/${TORQ_VER}/torquebox-dist-${TORQ_VER}-bin.zip" \
-  && md5sum --check torquebox.md5 \
-  && unzip -qx torquebox-dist-${TORQ_VER}-bin.zip
+  && md5sum --check torquebox.md5
+
+#-------------
+# Pact Broker
+#-------------
+ENV APP_HOME=/root/pact_broker
+RUN rm -f /etc/service/nginx/down \
+  && rm -f /etc/nginx/sites-enabled/default
+ADD container /
+ADD pact_broker/ ${APP_HOME}/
+WORKDIR ${APP_HOME}
+RUN bundle install --without='development test'
+
+#------------------
+# Torquebox part 1
+#------------------
 RUN cd /root \
-  && mv torquebox-${TORQ_VER} torquebox \
-  && cd ${APP_HOME} \
-  && jruby -S torquebox deploy
+  && unzip -qx torquebox-dist-${TORQ_VER}-bin.zip \
+  && mv torquebox-${TORQ_VER} torquebox
+RUN jruby -S torquebox deploy
 
 ENV PACT_BROKER_PORT=443 \
     BIND_TO=127.0.0.1 \

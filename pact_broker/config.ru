@@ -50,10 +50,11 @@ use Rack::OAuth2::Bearer::Checker
 
 app = PactBroker::App.new do | config |
   config.log_dir = "./"
+  config.logger = ::Logger.new($stdout)
+  config.logger.level = Logger::INFO
+
   config.auto_migrate_db = true
   config.use_hal_browser = true
-  config.logger = ::Logger.new($stdout)
-  config.logger.level = Logger::WARN
 
   # Ref: https://github.com/bethesque/pact_broker/issues/39#issuecomment-154220511
   sequel_conf = {

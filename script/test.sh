@@ -91,7 +91,7 @@ fi
 [ -z "${OAUTH2_ACCESS_TOKEN_PARAMS}" ] && export OAUTH2_ACCESS_TOKEN_PARAMS="?realm=/employees"
 [ -z "${OAUTH2_ACCESS_TOKEN_URL_PARAMS}" ] && \
   export OAUTH2_ACCESS_TOKEN_URL_PARAMS="${OAUTH2_ACCESS_TOKEN_URL}${OAUTH2_ACCESS_TOKEN_PARAMS}"
-[ -z "${EMPLOYEES_API_URL}" ] && export EMPLOYEES_API_URL="https://https://api.example.com/employees"
+[ -z "${EMPLOYEES_API_URL}" ] && export EMPLOYEES_API_URL="https://api.example.com/employees"
 [ -z "${APPDYNAMICS_ANALYTICS_API_ENDPOINT}" ] && export APPDYNAMICS_ANALYTICS_API_ENDPOINT="https://demo.appdynamics.com"
 [ -z "${APPDYNAMICS_ACCOUNT_ID}" ]             && export APPDYNAMICS_ACCOUNT_ID="customer1_zxcvcxv3232"
 [ -z "${APPDYNAMICS_API_KEY}" ]                && export APPDYNAMICS_API_KEY="j23423-sdasf-secret!!!"
@@ -129,7 +129,8 @@ if docker ps -a | grep ${PACT_CONT_NAME}; then
   echo ""
   echo "Stopping and removing running instance of pact broker container"
   docker stop -t=1 ${PACT_CONT_NAME}
-  docker rm ${PACT_CONT_NAME}
+  docker rm -vf ${PACT_CONT_NAME}
+  rm -f ../pact_broker/pact_broker.log
 fi
 
 # if [ "$(uname)" == "Darwin" ]; then
