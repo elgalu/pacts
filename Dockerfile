@@ -137,7 +137,7 @@ RUN cd /root \
 RUN jruby -S torquebox deploy
 
 ENV PACT_BROKER_PORT=443 \
-    BIND_TO=127.0.0.1 \
+    BIND_TO=0.0.0.0 \
     SKIP_HTTPS_ENFORCER=true \
     RACK_THREADS_COUNT=20 \
     RACK_LOG=/var/log/rack.log
