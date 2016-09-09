@@ -79,8 +79,8 @@ module Rack::OAuth2::Bearer
       url1 += ':' if self.env.include?('SERVER_PORT')
       url1 += self.env['SERVER_PORT'] if self.env.include?('SERVER_PORT')
       url1 += self.env['REQUEST_URI'] if self.env.include?('REQUEST_URI')
-      url1 += '?' if self.env.include?('QUERY_STRING')
-      url1 += self.env['QUERY_STRING'] if self.env.include?('QUERY_STRING')
+      url1 += '?' if self.env.include?('QUERY_STRING') && self.env['QUERY_STRING'] != ''
+      url1 += self.env['QUERY_STRING'] if self.env.include?('QUERY_STRING') && self.env['QUERY_STRING'] != ''
       url1
     end
 
