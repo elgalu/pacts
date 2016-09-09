@@ -163,13 +163,21 @@ module Rack::OAuth2::Bearer
       url = "#{employees_api_url}/#{uid}"
       # require 'rest-client' #not working with Torquebox
       # response = RestClient.get(url, Authorization: "Bearer #{token}")
+        
+      # TODO: Services api url is also needed!
+      return 'unknown1' if token.size > 36
+
       response = HTTParty.get url, :headers => {"Authorization" => "Bearer #{token}"}
-      raise response.to_s if response.code != 200
-      hsh = JSON.parse(response.body)
-      teams = hsh['teams'].
-                select { |t| t['type'] == 'official' }.
-                map    { |t| t['nickname'] }
-      teams.join(',')
+      # raise response.to_s if response.code != 200
+      if response.code == 200
+        hsh = JSON.parse(response.body)
+        teams = hsh['teams'].
+                  select { |t| t['type'] == 'official' }.
+                  map    { |t| t['nickname'] }
+        teams.join(',')
+      else
+        'unknown2'
+      end
     end
 
     def write_to_csv(hsh)
