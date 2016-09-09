@@ -42,6 +42,58 @@ module Rack::OAuth2::Bearer
       end
     end
 
+    def get_env_type
+      ENV.include?('STAGE') ? ENV['STAGE'] : 'local'
+    end
+
+    def get_app_id
+      app_id = ''
+      app_id = 'pacts' if get_env_type == 'live'
+      app_id = 'pacts-staging' if get_env_type == 'staging'
+      app_id
+    end
+
+    def get_remote_ip
+      # e.g. "REMOTE_ADDR"=>"172.17.0.1"
+      self.env['REMOTE_ADDR'] if self.env.include?('REMOTE_ADDR')
+      # ip=Socket.ip_address_list.detect{ |intf| intf.ipv4_private? }
+      # ip_address = ip ? ip.ip_address : "unknown"
+    end
+
+    def get_target_host
+      # e.g. "HTTP_HOST"=>"172.17.0.3:443"
+      self.env['HTTP_HOST'] if self.env.include?('HTTP_HOST')
+    end
+
+    def get_url1
+      # e.g.
+      #      "rack.url_scheme"=>"http"
+      #      "SERVER_NAME"=>"172.17.0.3"
+      #      "SERVER_PORT"=>"443"
+      #      "REQUEST_URI"=>"/ui/relationships"
+      #      "QUERY_STRING"=>""
+      url1 = ""
+      url1 += self.env['rack.url_scheme'] if self.env.include?('rack.url_scheme')
+      url1 += '://'
+      url1 += self.env['SERVER_NAME'] if self.env.include?('SERVER_NAME')
+      url1 += ':' if self.env.include?('SERVER_PORT')
+      url1 += self.env['SERVER_PORT'] if self.env.include?('SERVER_PORT')
+      url1 += self.env['REQUEST_URI'] if self.env.include?('REQUEST_URI')
+      url1 += '?' if self.env.include?('QUERY_STRING')
+      url1 += self.env['QUERY_STRING'] if self.env.include?('QUERY_STRING')
+      url1
+    end
+
+    def get_url2
+      # e.g. "REQUEST_METHOD"=>"GET"
+      self.env['REQUEST_METHOD'] if self.env.include?('REQUEST_METHOD')
+    end
+
+    def get_description
+      # e.g. "HTTP_USER_AGENT"=>"curl/7.47.0"
+      self.env['HTTP_USER_AGENT'] if self.env.include?('HTTP_USER_AGENT')
+    end
+
     def valid_token?
       return false unless has_token?
       return true if cached_token?
@@ -73,22 +125,20 @@ module Rack::OAuth2::Bearer
       # e.g. for a service...: 'stups_pacts', '/services'
       uid = JSON.parse(response.body)['uid']
       realm = JSON.parse(response.body)['realm'].delete('/')
-      team = get_team(uid)
-
-      ip=Socket.ip_address_list.detect{ |intf| intf.ipv4_private? }
-      ip_address = ip ? ip.ip_address : "127.0.0.1"
-
-      env_type = ENV.include?('STAGE') ? ENV['STAGE'] : 'local'
 
       payload_hsh = {
         service: 'pacts',
-        env_type: env_type,
+        env_type: get_env_type,
+        app_id: get_app_id,
         uid: uid,
         env_user: ENV['USER'],
         realm: realm,
-        team: team,
-        ip_address: ip_address,
-        url1: ''
+        team: get_team(uid),
+        ip_address: get_remote_ip,
+        target_host: get_target_host,
+        description: get_description,
+        url1: get_url1,
+        url2: get_url2
       }
 
       payload_hsh
@@ -156,7 +206,7 @@ module Rack::OAuth2::Bearer
       body = [payload_hsh].to_json
 
       PactBroker.logger.info("post_to_appdynamics:url:#{url}")
-      PactBroker.logger.info("post_to_appdynamics:headers: #{headers.to_s}")
+      # PactBroker.logger.info("post_to_appdynamics:headers: #{headers.to_s}")
       PactBroker.logger.info("post_to_appdynamics:body:#{body.to_s}")
       # require 'rest-client' #not working with Torquebox
       # response = RestClient.post(url, [payload_hsh].to_json, headers)
