@@ -24,6 +24,7 @@ die () {
 [ -z "${RACK_THREADS_COUNT}" ] && die "Required env var RACK_THREADS_COUNT"
 
 # Defaults
+[ -z "${SKIP_HTTPS_ENFORCER}" ] && export SKIP_HTTPS_ENFORCER=false
 [ -z "${TOKENINFO_PARAMS}" ] && export TOKENINFO_PARAMS="?access_token=" 
 [ -z "${EMPLOYEES_API_URL}" ] && export EMPLOYEES_API_URL="https://api.example.com/employees"
 [ -z "${OAUTH2_ACCESS_TOKEN_URL}" ] && export OAUTH2_ACCESS_TOKEN_URL="https://token.service.example.com/oauth2/access_token"
