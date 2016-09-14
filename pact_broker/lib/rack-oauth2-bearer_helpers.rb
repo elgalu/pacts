@@ -176,15 +176,14 @@ module Rack::OAuth2::Bearer
         #  uid='stups_twintipcrawler'
         #  uid='stups_tip-locust'
         # 2. get application id from uid by deleting word 'stups_'
-        app_id = uid.sub('stups_', '')
-        url = "#{services_api_url}/#{app_id}"
+        url = "#{services_api_url}/#{uid}"
         response = HTTParty.get url, :headers => {"Authorization" => "Bearer #{token}"}
         # raise response.to_s if response.code != 200
         if response.code == 200
           hsh = JSON.parse(response.body)
-          teams = hsh['owner']
+          hsh['owner']
         else
-          'unknown1'
+          'unknown3'
         end
       else
         url = "#{employees_api_url}/#{uid}"
@@ -197,7 +196,7 @@ module Rack::OAuth2::Bearer
                     map    { |t| t['nickname'] }
           teams.join(',')
         else
-          'unknown2'
+          'unknown4'
         end
       end
     end
