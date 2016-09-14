@@ -37,7 +37,7 @@ push: login
 kio_create:
 	@if kio ver show ${APPLICATION_ID} $(APP_VER) >/dev/null 2>&1; then \
 	  echo "App ${APPLICATION_ID} version $(APP_VER) already in Kio!"; fi
-	@if ! kio ver show ${APPLICATION_ID} $(APP_VER) >/dev/null 2>&1; then \
+	if ! kio ver show ${APPLICATION_ID} $(APP_VER) >/dev/null 2>&1; then \
 	  USER=${MYUSER} kio ver create ${APPLICATION_ID} $(APP_VER) docker://${REG}/tip/pacts:${IMG_TAG}; fi
 
 approve:
