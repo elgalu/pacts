@@ -12,6 +12,7 @@
    APPDYNAMICS_ACCOUNT_ID
    APPDYNAMICS_API_KEY
    EMPLOYEES_API_URL
+   SERVICES_API_URL
    BIND_TO
    SKIP_HTTPS_ENFORCER).each do |var|
   raise ArgumentError, "Need environment variable '#{var}'" unless ENV[var]

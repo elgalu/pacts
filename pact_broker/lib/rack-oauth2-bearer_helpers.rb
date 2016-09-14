@@ -49,7 +49,7 @@ module Rack::OAuth2::Bearer
     def get_app_id
       app_id = ''
       app_id = 'pacts' if get_env_type == 'live'
-      app_id = 'pacts-staging' if get_env_type == 'staging'
+      app_id = 'pacts-staging' if get_env_type == 'test'
       app_id
     end
 
@@ -126,6 +126,9 @@ module Rack::OAuth2::Bearer
       uid = JSON.parse(response.body)['uid']
       realm = JSON.parse(response.body)['realm'].delete('/')
 
+      # if the user is a service let's only keep the applicaion id there
+      uid = uid.sub('stups_', '') if realm == 'services'
+
       payload_hsh = {
         service: 'pacts',
         env_type: get_env_type,
@@ -155,28 +158,47 @@ module Rack::OAuth2::Bearer
 
       employees_api_url = Conf::EMPLOYEES_API_URL
       raise ArgumentError, 'Need employees_api_url' unless employees_api_url
+      
+      services_api_url = Conf::SERVICES_API_URL
+      raise ArgumentError, 'Need services_api_url' unless services_api_url
 
       token = get_token()
-      PactBroker.logger.info("Got a token, shuffled: #{token.chars.to_a.shuffle.join}")
+      PactBroker.logger.info("Got a token, shuffled: #{token.chars.to_a.shuffle.join[0...12]}")
       raise ArgumentError, 'Need token' unless token
 
-      url = "#{employees_api_url}/#{uid}"
       # require 'rest-client' #not working with Torquebox
       # response = RestClient.get(url, Authorization: "Bearer #{token}")
         
-      # TODO: Services api url is also needed!
-      return 'unknown1' if token.size > 36
-
-      response = HTTParty.get url, :headers => {"Authorization" => "Bearer #{token}"}
-      # raise response.to_s if response.code != 200
-      if response.code == 200
-        hsh = JSON.parse(response.body)
-        teams = hsh['teams'].
-                  select { |t| t['type'] == 'official' }.
-                  map    { |t| t['nickname'] }
-        teams.join(',')
+      # TODO: Services api url is also needed but let's do some magic instead
+      if token.size > 36
+        # 1. got uid like:
+        #  uid='stups_balance-go'
+        #  uid='stups_twintipcrawler'
+        #  uid='stups_tip-locust'
+        # 2. get application id from uid by deleting word 'stups_'
+        app_id = uid.sub('stups_', '')
+        url = "#{services_api_url}/#{app_id}"
+        response = HTTParty.get url, :headers => {"Authorization" => "Bearer #{token}"}
+        # raise response.to_s if response.code != 200
+        if response.code == 200
+          hsh = JSON.parse(response.body)
+          teams = hsh['owner']
+        else
+          'unknown1'
+        end
       else
-        'unknown2'
+        url = "#{employees_api_url}/#{uid}"
+        response = HTTParty.get url, :headers => {"Authorization" => "Bearer #{token}"}
+        # raise response.to_s if response.code != 200
+        if response.code == 200
+          hsh = JSON.parse(response.body)
+          teams = hsh['teams'].
+                    select { |t| t['type'] == 'official' }.
+                    map    { |t| t['nickname'] }
+          teams.join(',')
+        else
+          'unknown2'
+        end
       end
     end
 

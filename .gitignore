@@ -1,3 +1,5 @@
 scm-source.json
 vendor/
 torquebox-dist*.zip
+user.json
+client.json

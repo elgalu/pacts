@@ -41,6 +41,7 @@ required_args () {
   echo "  export APPDYNAMICS_ACCOUNT_ID=\"customer1_zxcvcxv3232\"" 1>&2
   echo "  export APPDYNAMICS_API_KEY=\"j23423-sdasf-secret!!!\"" 1>&2
   echo "  export EMPLOYEES_API_URL=\"https://https://api.example.com/employees\"" 1>&2
+  echo "  export SERVICES_API_URL=\"https://https://api.example.com/services\"" 1>&2
   echo "  export MYUSER=elgalu" 1>&2
   echo "" 1>&2
   echo "Current values:" 1>&2
@@ -54,6 +55,7 @@ required_args () {
   echo "  export APPDYNAMICS_ACCOUNT_ID='${APPDYNAMICS_ACCOUNT_ID}'" 1>&2
   echo "  export APPDYNAMICS_API_KEY='${APPDYNAMICS_API_KEY}'" 1>&2
   echo "  export EMPLOYEES_API_URL='${EMPLOYEES_API_URL}'" 1>&2
+  echo "  export SERVICES_API_URL='${SERVICES_API_URL}'" 1>&2
   echo "  export MYUSER='${MYUSER}'" 1>&2
   echo "" 1>&2
   echo "And ensure you have allowed external connections." 1>&2
@@ -91,7 +93,10 @@ fi
 [ -z "${OAUTH2_ACCESS_TOKEN_PARAMS}" ] && export OAUTH2_ACCESS_TOKEN_PARAMS="?realm=/employees"
 [ -z "${OAUTH2_ACCESS_TOKEN_URL_PARAMS}" ] && \
   export OAUTH2_ACCESS_TOKEN_URL_PARAMS="${OAUTH2_ACCESS_TOKEN_URL}${OAUTH2_ACCESS_TOKEN_PARAMS}"
+[ -z "${OAUTH2_SERVICES_ACCESS_TOKEN_URL_PARAMS}" ] && \
+  export OAUTH2_SERVICES_ACCESS_TOKEN_URL_PARAMS="https://token.service.example.com/oauth2/access_token?realm=/services"
 [ -z "${EMPLOYEES_API_URL}" ] && export EMPLOYEES_API_URL="https://api.example.com/employees"
+[ -z "${SERVICES_API_URL}" ] && export SERVICES_API_URL="https://api.example.com/services"
 [ -z "${APPDYNAMICS_ANALYTICS_API_ENDPOINT}" ] && export APPDYNAMICS_ANALYTICS_API_ENDPOINT="https://demo.appdynamics.com"
 [ -z "${APPDYNAMICS_ACCOUNT_ID}" ]             && export APPDYNAMICS_ACCOUNT_ID="customer1_zxcvcxv3232"
 [ -z "${APPDYNAMICS_API_KEY}" ]                && export APPDYNAMICS_API_KEY="j23423-sdasf-secret!!!"
@@ -208,6 +213,7 @@ fi
 [ -z "${APPDYNAMICS_ACCOUNT_ID}" ] && required_args
 [ -z "${APPDYNAMICS_API_KEY}" ] && required_args
 [ -z "${EMPLOYEES_API_URL}" ] && required_args
+[ -z "${SERVICES_API_URL}" ] && required_args
 [ -z "${MYUSER}" ] && required_args
 
 export TOKENINFO_URL_PARAMS="${TOKENINFO_URL}${TOKENINFO_PARAMS}"
@@ -231,6 +237,7 @@ docker run --name=${PACT_CONT_NAME} -d -p ${PORT_BIND} \
   -e APPDYNAMICS_ACCOUNT_ID \
   -e APPDYNAMICS_API_KEY \
   -e EMPLOYEES_API_URL \
+  -e SERVICES_API_URL \
   -e STAGE=local \
   pact_broker
 sleep 2 && docker logs ${PACT_CONT_NAME}
@@ -290,18 +297,39 @@ echo ""
 # fi
 
 echo ""
-echo "Checking with valid token"
+echo "Checking with valid user_token"
 echo " at url: ${url}"
-token=$(zign token --user ${MYUSER} --url ${OAUTH2_ACCESS_TOKEN_URL_PARAMS} -n pact)
-# echo "Got token=$token"
+user_token=$(zign token --user ${MYUSER} --url ${OAUTH2_ACCESS_TOKEN_URL_PARAMS} -n pact)
+# echo "Got user_token=$user_token"
 curl -H "Accept:text/html" \
-     -H "Authorization: Bearer $token" -s "${url}" 2>&1 \
+     -H "Authorization: Bearer $user_token" -s "${url}" 2>&1 \
    | grep "0 pacts" || report_pact_failed
 
 echo ""
-echo "Performance test with token verification"
+echo "Performance test with user_token verification"
 echo " at url: ${url}/"
-ab -n 100 -c 10 -k -H "Authorization: Bearer $token" "${url}/"
+ab -n 100 -c 10 -k -H "Authorization: Bearer $user_token" "${url}/"
+
+echo ""
+echo "Checking with valid service_token"
+echo " at url: ${url}"
+# we will download credentials into the current working dir
+export CREDENTIALS_DIR=.
+export ACCOUNT="myteam-test"
+export APPLICATION_ID="pacts-staging"
+export MINT_S3_BUCKET="myorg-stups-mint-234567890123-us-east-3"
+mai login ${ACCOUNT}-PowerUser
+berry -a ${APPLICATION_ID} -m ${MINT_S3_BUCKET} --once .
+# note `--url` is not supported so it can only be done through `export OAUTH2_ACCESS_TOKEN_URL=...`
+export OAUTH2_ACCESS_TOKEN_URL="${OAUTH2_SERVICES_ACCESS_TOKEN_URL_PARAMS}"
+# note `-n myapp-test` is essential magic here, else it doesn't work :/
+service_token=$(zign token -n myapp-test)
+echo "Got service_token=$service_token"
+echo " it should look like a service token!"
+url="https://pacts.myteam-test.example.org/ui/relationships"
+curl -H "Accept:text/html" \
+     -H "Authorization: Bearer $service_token" -s "${url}" 2>&1 \
+   | grep -E "[0-9]+\spacts" || report_pact_failed
 
 echo ""
 echo "SUCCESS: All tests passed!"

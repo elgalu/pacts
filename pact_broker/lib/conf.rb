@@ -9,6 +9,7 @@ module Conf
   APPDYNAMICS_ACCOUNT_ID ||= ENV['APPDYNAMICS_ACCOUNT_ID']
   APPDYNAMICS_API_KEY ||= ENV['APPDYNAMICS_API_KEY']
   EMPLOYEES_API_URL ||= ENV['EMPLOYEES_API_URL']
+  SERVICES_API_URL ||= ENV['SERVICES_API_URL']
 
   # default response type
   JSON_CONT = {'Content-Type' => 'application/json'}

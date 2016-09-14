@@ -186,15 +186,15 @@ Resources:
          - IpProtocol: tcp
            FromPort: 22
            ToPort: 22
-           SourceSecurityGroupName: "Odd (SSH Bastion Host)"
+           SourceSecurityGroupName: "0.0.0.0/0"
          - IpProtocol: tcp
            FromPort: 9200
            ToPort: 9200
-           SourceSecurityGroupName: "Odd (SSH Bastion Host)"
+           SourceSecurityGroupName: "0.0.0.0/0"
          - IpProtocol: tcp
            FromPort: 9100
            ToPort: 9100
-           SourceSecurityGroupName: "app-zmon-tip"
+           SourceSecurityGroupName: "0.0.0.0/0"
 
    SgPactsLb:
       # http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-ec2-security-group.html

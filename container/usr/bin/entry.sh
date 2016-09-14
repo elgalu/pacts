@@ -27,6 +27,7 @@ die () {
 [ -z "${SKIP_HTTPS_ENFORCER}" ] && export SKIP_HTTPS_ENFORCER=false
 [ -z "${TOKENINFO_PARAMS}" ] && export TOKENINFO_PARAMS="?access_token=" 
 [ -z "${EMPLOYEES_API_URL}" ] && export EMPLOYEES_API_URL="https://api.example.com/employees"
+[ -z "${SERVICES_API_URL}" ] && export SERVICES_API_URL="https://api.example.com/services"
 [ -z "${OAUTH2_ACCESS_TOKEN_URL}" ] && export OAUTH2_ACCESS_TOKEN_URL="https://token.service.example.com/oauth2/access_token"
 [ -z "${OAUTH2_ACCESS_TOKEN_PARAMS}" ] && export OAUTH2_ACCESS_TOKEN_PARAMS="?realm=/services"
 [ -z "${APPDYNAMICS_TEAM_API_ACCN}" ] && export APPDYNAMICS_TEAM_API_ACCN="ourAPIaccount"
