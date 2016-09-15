@@ -127,6 +127,7 @@ module Rack::OAuth2::Bearer
       realm = JSON.parse(response.body)['realm'].delete('/')
 
       # if the user is a service let's only keep the applicaion id there
+      team = get_team(uid)
       uid = uid.sub('stups_', '') if realm == 'services'
 
       payload_hsh = {
@@ -136,7 +137,7 @@ module Rack::OAuth2::Bearer
         uid: uid,
         env_user: ENV['USER'],
         realm: realm,
-        team: get_team(uid),
+        team: team,
         ip_address: get_remote_ip,
         target_host: get_target_host,
         description: get_description,
