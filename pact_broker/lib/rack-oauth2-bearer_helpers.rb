@@ -127,7 +127,7 @@ module Rack::OAuth2::Bearer
       realm = JSON.parse(response.body)['realm'].delete('/')
 
       # if the user is a service let's only keep the applicaion id there
-      team = get_team(uid)
+      team = get_team(uid, realm)
       uid = uid.sub('stups_', '') if realm == 'services'
 
       payload_hsh = {
@@ -154,8 +154,9 @@ module Rack::OAuth2::Bearer
       # %x(zign token -n imposter uid).delete("\n")
     end
 
-    def get_team(uid)
+    def get_team(uid, realm)
       raise ArgumentError, 'Need uid' unless uid
+      raise ArgumentError, 'Need realm' unless realm
 
       employees_api_url = Conf::EMPLOYEES_API_URL
       raise ArgumentError, 'Need employees_api_url' unless employees_api_url
@@ -170,13 +171,7 @@ module Rack::OAuth2::Bearer
       # require 'rest-client' #not working with Torquebox
       # response = RestClient.get(url, Authorization: "Bearer #{token}")
         
-      # TODO: Services api url is also needed but let's do some magic instead
-      if token.size > 36
-        # 1. got uid like:
-        #  uid='stups_balance-go'
-        #  uid='stups_twintipcrawler'
-        #  uid='stups_tip-locust'
-        # 2. get application id from uid by deleting word 'stups_'
+      if realm == 'services'
         url = "#{services_api_url}/#{uid}"
         response = HTTParty.get url, :headers => {"Authorization" => "Bearer #{token}"}
         # raise response.to_s if response.code != 200

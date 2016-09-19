@@ -326,7 +326,13 @@ export OAUTH2_ACCESS_TOKEN_URL="${OAUTH2_SERVICES_ACCESS_TOKEN_URL_PARAMS}"
 service_token=$(zign token -n myapp-test)
 echo "Got service_token=$service_token"
 echo " it should look like a service token!"
+
 url="https://pacts.myteam-test.example.org/ui/relationships"
+curl -H "Accept:text/html" \
+     -H "Authorization: Bearer $service_token" -s "${url}" 2>&1 \
+   | grep -E "[0-9]+\spacts" || report_pact_failed
+
+url="https://pacts.myteam.example.org/ui/relationships"
 curl -H "Accept:text/html" \
      -H "Authorization: Bearer $service_token" -s "${url}" 2>&1 \
    | grep -E "[0-9]+\spacts" || report_pact_failed
