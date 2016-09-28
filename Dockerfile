@@ -17,7 +17,7 @@
 # FROM jruby:9.1.2.0-jre
 
 # When maintaining our own jRuby docker image
-FROM elgalu/jruby:9.0.5c
+FROM elgalu/jruby:9.0.5d
 # FROM elgalu/jruby:9.1.2a #not working
 
 MAINTAINER Leo Gallucci <elgalu3@gmail.com>
@@ -28,9 +28,9 @@ ENV DEBIAN_FRONTEND=noninteractive \
 USER root
 
 # Get latest `gem` binary
-RUN  gem install rubygems-update \
-  && gem update --system \
-  && gem install bundler
+# RUN  gem install rubygems-update \
+#   && gem update --system
+RUN gem install bundler -v 1.11.2
 
 #----------------------------------------------
 # To avoid using `curl --insecure` you need to
@@ -76,16 +76,16 @@ RUN apt-get update -qqy \
 #------
 # CPAN
 #------
-RUN apt-get update -qqy \
-  && apt-get -qqy install \
-    cpanminus \
-  && cpanm --sudo Digest::SHA1 \
-  && rm -rf /var/lib/apt/lists/*
-# RUN curl "https://raw.githubusercontent.com/miyagawa/cpanminus/b2eeedf9d5395f100c97e9a80e6b8bc39421143e/cpanm" | perl - App::cpanminus
-ADD container/usr/bin/install_cpanm /usr/bin/
-# Securely: https://github.com/miyagawa/cpanminus/issues/505
-RUN install_cpanm -M "https://cpan.metacpan.org/" --verify App::cpanminus
-RUN cpanm URI::Escape
+# RUN apt-get update -qqy \
+#   && apt-get -qqy install \
+#     cpanminus \
+#   && cpanm --sudo Digest::SHA1 \
+#   && rm -rf /var/lib/apt/lists/*
+# # RUN curl "https://raw.githubusercontent.com/miyagawa/cpanminus/b2eeedf9d5395f100c97e9a80e6b8bc39421143e/cpanm" | perl - App::cpanminus
+# ADD container/usr/bin/install_cpanm /usr/bin/
+# # Securely: https://github.com/miyagawa/cpanminus/issues/505
+# RUN install_cpanm -M "https://cpan.metacpan.org/" --verify App::cpanminus
+# RUN cpanm URI::Escape
 
 #------------------
 # Python3 and zign
@@ -129,7 +129,7 @@ WORKDIR ${APP_HOME}
 RUN bundle install --without='development test'
 
 #------------------
-# Torquebox part 1
+# Torquebox part 2
 #------------------
 RUN cd /root \
   && unzip -qx torquebox-dist-${TORQ_VER}-bin.zip \
@@ -139,7 +139,7 @@ RUN jruby -S torquebox deploy
 ENV PACT_BROKER_PORT=443 \
     BIND_TO=0.0.0.0 \
     SKIP_HTTPS_ENFORCER=true \
-    RACK_THREADS_COUNT=20 \
+    RACK_THREADS_COUNT=10 \
     RACK_LOG=/var/log/rack.log
 
 # Restore

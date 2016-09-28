@@ -11,6 +11,7 @@ source 'https://rubygems.org'
 #== Java on git ==#
 gem 'pact_broker', '1.9.1.pre.jruby', git: 'git://github.com/elgalu/pact_broker.git', branch: 'jruby'
 
+gem 'bundler', '1.11.2'
 gem 'i18n', '0.7.0'
 gem 'json', '1.8.3'
 gem 'minitest', '5.9.0'
