@@ -17,7 +17,7 @@
 # FROM jruby:9.1.2.0-jre
 
 # When maintaining our own jRuby docker image
-FROM elgalu/jruby:9.0.5d
+FROM elgalu/jruby:9.0.5e
 # FROM elgalu/jruby:9.1.2a #not working
 
 MAINTAINER Leo Gallucci <elgalu3@gmail.com>
@@ -139,7 +139,7 @@ RUN jruby -S torquebox deploy
 ENV PACT_BROKER_PORT=443 \
     BIND_TO=0.0.0.0 \
     SKIP_HTTPS_ENFORCER=true \
-    RACK_THREADS_COUNT=10 \
+    RACK_THREADS_COUNT=20 \
     RACK_LOG=/var/log/rack.log
 
 # Restore
