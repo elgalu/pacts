@@ -35,13 +35,13 @@ push: login
 	docker push ${REG}/tip/pacts:${IMG_TAG}
 
 kio_create:
-	@if kio ver show ${APPLICATION_ID} $(APP_VER) >/dev/null 2>&1; then \
+	@if kio version show ${APPLICATION_ID} $(APP_VER) >/dev/null 2>&1; then \
 	  echo "App ${APPLICATION_ID} version $(APP_VER) already in Kio!"; fi
-	if ! kio ver show ${APPLICATION_ID} $(APP_VER) >/dev/null 2>&1; then \
-	  USER=${MYUSER} kio ver create ${APPLICATION_ID} $(APP_VER) docker://${REG}/tip/pacts:${IMG_TAG}; fi
+	if ! kio version show ${APPLICATION_ID} $(APP_VER) >/dev/null 2>&1; then \
+	  USER=${MYUSER} kio version create ${APPLICATION_ID} $(APP_VER) docker://${REG}/tip/pacts:${IMG_TAG}; fi
 
 approve:
-	USER=${MYUSER} kio ver approve ${APPLICATION_ID} $(APP_VER)
+	USER=${MYUSER} kio version approve ${APPLICATION_ID} $(APP_VER)
 
 # Note you can also use or export env var `AWS_DEFAULT_REGION` instead of `--region`
 senza_create: checkSTAGE login
