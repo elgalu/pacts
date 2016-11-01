@@ -22,7 +22,8 @@ MODES="get|put|del|del_user|test"
 READ_CHECK=1
 JENKINS_RUN=/tools/run
 ZIGN_URL="https://token.example.com/access_token"
-PACT_BROKER_URL="https://pacts.myteam-test.example.org"
+STAGING_PACT_BROKER_URL="https://pacts.myteam-test.example.org"
+LIVE_PACT_BROKER_URL="https://pacts."
 
 err() {
   >&2 echo -e "${1}"

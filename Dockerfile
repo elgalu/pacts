@@ -17,7 +17,7 @@
 # FROM jruby:9.1.2.0-jre
 
 # When maintaining our own jRuby docker image
-FROM elgalu/jruby:9.0.5e
+FROM elgalu/jruby:9.0.5f
 # FROM elgalu/jruby:9.1.2a #not working
 
 MAINTAINER Leo Gallucci <elgalu3@gmail.com>
