@@ -128,6 +128,7 @@ SenzaComponents:
       - Fn::GetAtt:
         - SgPactsLb
         - GroupId
+        #- default_protection
       Scheme: internet-facing
       # MainDomain: pacts-{{Arguments.Stage}}.{{AccountInfo.TeamID}}
       # VersionDomain: pacts-{{Arguments.Stage}}-{{SenzaInfo.StackVersion}}.{{AccountInfo.TeamID}}
@@ -169,7 +170,7 @@ Resources:
                  Action:
                  - "s3:GetObject"
                  Resource: arn:aws:s3:::myorg-stups-mint-{{AccountInfo.AccountID}}-{{Arguments.AWSMintRegion}}/*
-     
+
    SgPacts:
       # http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-ec2-security-group.html
       Type: AWS::EC2::SecurityGroup

@@ -17,6 +17,7 @@
 # FROM jruby:9.1.2.0-jre
 
 # When maintaining our own jRuby docker image
+# https://github.com/elgalu/jruby-in-docker
 FROM elgalu/jruby:9.0.5f
 # FROM elgalu/jruby:9.1.2a #not working
 
@@ -137,7 +138,7 @@ RUN cd /root \
 RUN jruby -S torquebox deploy
 
 ENV PACT_BROKER_PORT=443 \
-    BIND_TO=0.0.0.0 \
+    BIND_TO="0.0.0.0" \
     SKIP_HTTPS_ENFORCER=true \
     RACK_THREADS_COUNT=20 \
     RACK_LOG=/var/log/rack.log
@@ -145,6 +146,15 @@ ENV PACT_BROKER_PORT=443 \
 # Restore
 ENV DEBIAN_FRONTEND="" \
     DEBCONF_NONINTERACTIVE_SEEN=""
+
+#------------------------------
+# Fix cves security violations
+#------------------------------
+# By upgrading all packages
+RUN apt-get update -qqy \
+  && apt-get -qqy upgrade \
+  && apt-get -qqy dist-upgrade \
+  && rm -rf /var/lib/apt/lists/*
 
 #=====================================================
 # Meta JSON file to hold commit info of current build
