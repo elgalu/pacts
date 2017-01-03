@@ -29,7 +29,8 @@ build: checkIMG_TAG
 
 login:
 	@mai login ${AWS_ACC_NAME}-PowerUser
-	pierone login --url ${REG} --user ${MYUSER}
+	pierone login
+# pierone login --url ${REG} --user ${MYUSER}
 
 push: login
 	docker push ${REG}/tip/pacts:${IMG_TAG}
