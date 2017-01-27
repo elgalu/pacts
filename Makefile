@@ -28,9 +28,7 @@ build: checkIMG_TAG
 	docker tag pacts:latest ${REG}/tip/pacts:${IMG_TAG}
 
 login:
-	@mai login ${AWS_ACC_NAME}-PowerUser
-	pierone login
-# pierone login --url ${REG} --user ${MYUSER}
+	zaws login ${AWS_ACC_NAME} PowerUser
 
 push: login
 	docker push ${REG}/tip/pacts:${IMG_TAG}

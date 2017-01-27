@@ -85,7 +85,7 @@ fi
 [ -z "${PACT_BROKER_PORT}" ]           && export PACT_BROKER_PORT=443
 [ -z "${BIND_TO}" ]                    && export BIND_TO="0.0.0.0"
 [ -z "${PSQL_WAIT_TIMEOUT}" ]          && export PSQL_WAIT_TIMEOUT="10s"
-[ -z "${PACT_WAIT_TIMEOUT}" ]          && export PACT_WAIT_TIMEOUT="15s"
+[ -z "${PACT_WAIT_TIMEOUT}" ]          && export PACT_WAIT_TIMEOUT="35s"
 [ -z "${PACT_CONT_NAME}" ]             && export PACT_CONT_NAME="broker_app"
 [ -z "${PSQL_CONT_NAME}" ]             && export PSQL_CONT_NAME="postgres_test"
 [ -z "${SKIP_HTTPS_ENFORCER}" ]        && export SKIP_HTTPS_ENFORCER="true"
@@ -318,7 +318,7 @@ export CREDENTIALS_DIR=.
 export ACCOUNT="myteam-test"
 export APPLICATION_ID="pacts-staging"
 export MINT_S3_BUCKET="myorg-stups-mint-234567890123-us-east-3"
-mai login ${ACCOUNT}-PowerUser
+zaws login ${ACCOUNT} PowerUser
 berry -a ${APPLICATION_ID} -m ${MINT_S3_BUCKET} --once .
 # note `--url` is not supported so it can only be done through `export OAUTH2_ACCESS_TOKEN_URL=...`
 export OAUTH2_ACCESS_TOKEN_URL="${OAUTH2_SERVICES_ACCESS_TOKEN_URL_PARAMS}"

@@ -8,7 +8,7 @@
 ## Create a web-app senza definition
 Note you need to execute these in your both AWS accounts, the live "myteam" and the testing account "myteam-test".
 
-    mai login myteam-PowerUser
+    zaws login myteam PowerUser
     senza init --region us-east-2 pacts.yaml
 
     Please select the project template
@@ -29,7 +29,7 @@ Note you need to execute these in your both AWS accounts, the live "myteam" and 
 
 Or for staging
 
-    mai login myteam-PowerUser
+    zaws login myteam PowerUser
     senza init --region us-east-3 pacts-staging.yaml
 
     Please select the project template
@@ -87,7 +87,7 @@ Filter region, e.g. EU (Ireland)
     Alias: pacts_access or pacts_stage_access
     Descr: Pacts encryption for DB and other access
 
-* Key Administrators roles: `sso-PowerUser`
+* Key Administrators roles: `sso PowerUser`
 
 * Key Usage permissions roles: `app-pacts` or `app-pacts-staging` depending on the account
 
@@ -95,13 +95,13 @@ Go to your terminal and encrypt the DB username using this `pacts_access` key
 
     pip3 install --upgrade awscli
 
-    #`mai login` if you get ExpiredTokenException
-    mai login myteam-PowerUser
+    #`zaws login` if you get ExpiredTokenException
+    zaws login myteam PowerUser
     AWS_DEFAULT_REGION=us-east-2 aws kms encrypt --key-id alias/pacts_access --plaintext "postgres" | jq .CiphertextBlob
 
 Or staging:
 
-    mai login myteam-test-PowerUser
+    zaws login myteam-test PowerUser
     AWS_DEFAULT_REGION=us-east-3 aws kms encrypt --key-id alias/pacts_stage_access --plaintext "postgres" | jq .CiphertextBlob
 
 You can include `| xclip -selection c` at the end to directly copy it to the clipboard, on Ubuntu.

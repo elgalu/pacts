@@ -11,11 +11,11 @@
     pip3 install --upgrade stups httpie-zign
     stups configure stups.example.org
 
-### Mai
+### zaws
 Note `myteam` is our account name:
 
-    mai login myteam-PowerUser
-    mai set-default myteam-PowerUser
+    zaws login myteam PowerUser
+    zaws set-default myteam PowerUser
 
 ### Region
     echo -e "[default]\nregion = us-east-2\n" > $HOME/.aws/config
