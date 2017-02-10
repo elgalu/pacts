@@ -1,16 +1,16 @@
 ## Prepare
-    export OAUTH2_ACCESS_TOKEN_URL="https://token.example.com/access_token"
-    export OAUTH2_ACCESS_TOKEN_PARAMS="?realm=/employees"
+    export OAUTH2_ACCESS_TOKEN_URL="https://token.service.example.com/oauth2/access_token"
+    export OAUTH2_ACCESS_TOKEN_PARAMS="?realm=/services"
     export OAUTH2_ACCESS_TOKEN_URL_PARAMS="${OAUTH2_ACCESS_TOKEN_URL}${OAUTH2_ACCESS_TOKEN_PARAMS}"
     token=$(zign token --user elgalu --url ${OAUTH2_ACCESS_TOKEN_URL_PARAMS} -n pact)
     export DISPOSABLE_PSQL=true
-    export TOKENINFO_URL="https://token.example.com/oauth2/tokeninfo"
+    export TOKENINFO_URL="https://info.service.example.com/oauth2/tokeninfo"
     export TOKENINFO_PARAMS="?access_token="
     export TOKENINFO_URL_PARAMS="${TOKENINFO_URL}${TOKENINFO_PARAMS}"
     export APPDYNAMICS_ANALYTICS_API_ENDPOINT = "https://demo.appdynamics.com"
     export APPDYNAMICS_ACCOUNT_ID = "customer1_zxcvcxv3232"
     export APPDYNAMICS_API_KEY = "j23423-sdasf-secret!!!"
-    export EMPLOYEES_API_URL = "https://https://api.example.com/employees"
+    export EMPLOYEES_API_URL = "https://https://api.example.com/services"
     export SERVICES_API_URL = "https://https://api.example.com/services"
     REG="docker.io"
 

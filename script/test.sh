@@ -89,8 +89,8 @@ fi
 [ -z "${PACT_CONT_NAME}" ]             && export PACT_CONT_NAME="broker_app"
 [ -z "${PSQL_CONT_NAME}" ]             && export PSQL_CONT_NAME="postgres_test"
 [ -z "${SKIP_HTTPS_ENFORCER}" ]        && export SKIP_HTTPS_ENFORCER="true"
-[ -z "${OAUTH2_ACCESS_TOKEN_URL}" ]    && export OAUTH2_ACCESS_TOKEN_URL="https://token.example.com/access_token"
-[ -z "${OAUTH2_ACCESS_TOKEN_PARAMS}" ] && export OAUTH2_ACCESS_TOKEN_PARAMS="?realm=/employees"
+[ -z "${OAUTH2_ACCESS_TOKEN_URL}" ]    && export OAUTH2_ACCESS_TOKEN_URL="https://token.service.example.com/oauth2/access_token"
+[ -z "${OAUTH2_ACCESS_TOKEN_PARAMS}" ] && export OAUTH2_ACCESS_TOKEN_PARAMS="?realm=/services"
 [ -z "${OAUTH2_ACCESS_TOKEN_URL_PARAMS}" ] && \
   export OAUTH2_ACCESS_TOKEN_URL_PARAMS="${OAUTH2_ACCESS_TOKEN_URL}${OAUTH2_ACCESS_TOKEN_PARAMS}"
 [ -z "${OAUTH2_SERVICES_ACCESS_TOKEN_URL_PARAMS}" ] && \
@@ -354,4 +354,3 @@ vers="v001"
 
 echo ""
 echo "SUCCESS: All tests passed!"
-

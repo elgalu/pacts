@@ -36,8 +36,8 @@ Bad token
 Get valid token. Note you need python3 and `pip3 install httpie-zign`. You also need to replace `elgalu` with your token service user id, most likely is the same as your machine `$USER`.
 This will be a user token to test from your machine, if you need to do this from another service machine like an AWS Jenkins one see "Service token" below.
 
-    OAUTH2_ACCESS_TOKEN_URL="https://token.example.com/access_token"
-    OAUTH2_ACCESS_TOKEN_PARAMS="?realm=/employees"
+    OAUTH2_ACCESS_TOKEN_URL="https://token.service.example.com/oauth2/access_token"
+    OAUTH2_ACCESS_TOKEN_PARAMS="?realm=/services"
     OAUTH2_ACCESS_TOKEN_URL_PARAMS="${OAUTH2_ACCESS_TOKEN_URL}${OAUTH2_ACCESS_TOKEN_PARAMS}"
     token=$(zign token --user elgalu --url $OAUTH2_ACCESS_TOKEN_URL_PARAMS -n pact)
 
@@ -99,8 +99,8 @@ Destroy pacts
             "$SHOST/pacts/provider/prov2/consumer/cons2/version/1.0.0"
 
 ## Version example
-    OAUTH2_ACCESS_TOKEN_URL="https://token.example.com/access_token"
-    OAUTH2_ACCESS_TOKEN_PARAMS="?realm=/employees"
+    OAUTH2_ACCESS_TOKEN_URL="https://token.service.example.com/oauth2/access_token"
+    OAUTH2_ACCESS_TOKEN_PARAMS="?realm=/services"
     OAUTH2_ACCESS_TOKEN_URL_PARAMS="${OAUTH2_ACCESS_TOKEN_URL}${OAUTH2_ACCESS_TOKEN_PARAMS}"
     SHOST=https://pacts.myteam-test.example.org
     token=$(zign token --user elgalu --url $OAUTH2_ACCESS_TOKEN_URL_PARAMS -n pact)

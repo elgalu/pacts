@@ -21,7 +21,7 @@ DEPTH_MAX=3
 MODES="get|put|del|del_user|test"
 READ_CHECK=1
 JENKINS_RUN=/tools/run
-ZIGN_URL="https://token.example.com/access_token"
+ZIGN_URL="https://token.service.example.com/oauth2/access_token"
 STAGING_PACT_BROKER_URL="https://pacts.myteam-test.example.org"
 LIVE_PACT_BROKER_URL="https://pacts."
 
