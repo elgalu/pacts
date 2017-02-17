@@ -3,7 +3,7 @@ Examples.
 
 ### Requisites
 Avoid using `curl --insecure` else your oauth2 tokens may be intercepted by a MITM impostor.
-To do so you may need [specific certs](https://github.com/zalando/docker-ubuntu/blob/master/Dockerfile#L10) if dealing with self-signed certificates.
+To do so you may need [specific certs](https://github.com/zalando/docker-ubuntu/blob/9aa87617e1cad53eccd2a5e624b7b073f7cc34fd/Dockerfile#L21) if dealing with self-signed certificates.
 
 ### Localhost
 
