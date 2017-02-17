@@ -1,0 +1,42 @@
+X-Zalando-Team: myusr
+X-Zalando-Type: code
+
+autobranch:
+  pattern: '{number}-{title}'
+  length: 60
+
+commit:
+  message:
+    patterns:
+      - '(?:(?:[a-zA-Z0-9_\-]*|[a-zA-Z0-9_\-]+\/[a-zA-Z0-9_\-]+)#|GH-)\d+'
+      - '#?[A-Z]+-[0-9]+'
+      - '#[0-9+]'
+approvals:
+  minimum: 2
+  #ignore: pr_opener
+  ignore: none
+  pattern: "^(:\\+1:|👍)$"
+  veto:
+    pattern: "^(:\\-1:|👎)$"
+  from:
+    orgs:
+      - myusr
+    collaborators: true
+
+specification:
+  title:
+    minimum-length:
+      enabled: true
+      length: 8
+  body:
+    minimum-length:
+      enabled: true
+      length: 8
+    contains-url: true
+    contains-issue-number: true
+  template:
+    differs-from-body: true
+
+pull-request:
+  labels:
+    additional: true

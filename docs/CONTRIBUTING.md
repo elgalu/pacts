@@ -10,7 +10,7 @@
     export APPDYNAMICS_ANALYTICS_API_ENDPOINT = "https://demo.appdynamics.com"
     export APPDYNAMICS_ACCOUNT_ID = "customer1_zxcvcxv3232"
     export APPDYNAMICS_API_KEY = "j23423-sdasf-secret!!!"
-    export EMPLOYEES_API_URL = "https://https://api.example.com/services"
+    export EMPLOYEES_API_URL = "https://https://api.example.com/employees"
     export SERVICES_API_URL = "https://https://api.example.com/services"
     REG="docker.io"
 
