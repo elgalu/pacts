@@ -1,5 +1,5 @@
 X-Zalando-Team: myusr
-X-Zalando-Type: code
+X-Zalando-Type: tools
 
 autobranch:
   pattern: '{number}-{title}'
@@ -12,7 +12,7 @@ commit:
       - '#?[A-Z]+-[0-9]+'
       - '#[0-9+]'
 approvals:
-  minimum: 2
+  minimum: 1
   #ignore: pr_opener
   ignore: none
   pattern: "^(:\\+1:|👍)$"
