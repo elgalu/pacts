@@ -5,7 +5,7 @@
 * [etcd cluster](./etcd.md)
 
 ## Create spilo senza definition
-    mai
+    zaws
     senza init spilo.yaml
 
 Select `postgresapp: HA Postgres app` project [template](https://github.com/zalando-stups/senza/blob/master/senza/templates/postgresapp.py)

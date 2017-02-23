@@ -340,17 +340,17 @@ curl -H "Accept:text/html" \
 # vers="v000"
 vers="v001"
 
-# # Optionally also test on deployed version, on test
-# url="https://pacts-${vers}.myteam-test.example.org/ui/relationships"
-# curl -H "Accept:text/html" \
-#      -H "Authorization: Bearer $service_token" -s "${url}" 2>&1 \
-#    | grep -E "[0-9]+\spacts" || report_pact_failed
+# Optionally also test on deployed version, on test
+url="https://pacts-${vers}.myteam-test.example.org/ui/relationships"
+curl -H "Accept:text/html" \
+     -H "Authorization: Bearer $service_token" -s "${url}" 2>&1 \
+   | grep -E "[0-9]+\spacts" || report_pact_failed
 
-# # Optionally also test on deployed version, on live
-# url="https://pacts-${vers}.myteam.example.org/ui/relationships"
-# curl -H "Accept:text/html" \
-#      -H "Authorization: Bearer $service_token" -s "${url}" 2>&1 \
-#    | grep -E "[0-9]+\spacts" || report_pact_failed
+# Optionally also test on deployed version, on live
+url="https://pacts-${vers}.myteam.example.org/ui/relationships"
+curl -H "Accept:text/html" \
+     -H "Authorization: Bearer $service_token" -s "${url}" 2>&1 \
+   | grep -E "[0-9]+\spacts" || report_pact_failed
 
 echo ""
 echo "SUCCESS: All tests passed!"
